@@ -1,0 +1,18 @@
+date: 10/14/2012
+
+--> changed the /randomSong command so that it can no longer be called multiple times in a row, it must finish reordering the songs before it executes again.
+
+--> changed the /removesong command to remove the song the bot is currently playing or the last song added to its queue if it is not currently playing.
+
+date: 10/15/2012
+
+--> songs are now always added at the end of the bots queuelist.
+
+date: 10/20/2012
+
+--> fixed ban command to properly kick as well as add the user to the ban list.
+
+date: 10/24/2012
+
+-->added in error handling for when a song gets stuck, djs now have 20 seconds to skip their song before being removed if
+it isn't loading or just plain stuck.
