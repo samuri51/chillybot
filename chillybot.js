@@ -110,7 +110,7 @@ bot.speak('The afk limit is currently active, please chat or awesome to reset yo
   };
 };
 
-setInterval(repeatAfkMessage, 600000) //repeats every 10 minutes if afk is set to on.
+setInterval(repeatAfkMessage, 600 * 1000) //repeats every 10 minutes if afk is set to on.
 
 
 
@@ -121,7 +121,7 @@ bot.speak('Welcome to straight chillin the rules are blablabla.'); //set the mes
   };
 };
 
-setInterval(repeatMessage, 900000)  //repeats this message every 15 mins if /messageOn has been used.
+setInterval(repeatMessage, 900 * 1000)  //repeats this message every 15 mins if /messageOn has been used.
 
 
 
