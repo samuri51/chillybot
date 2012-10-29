@@ -676,6 +676,7 @@ bot.on('speak', function (data) {
   var ban = data.text.slice(6);
   var checkBan = blackList.indexOf(ban);
   var checkUser = theUsersList.indexOf(ban);
+  var checkUser = theUsersList.indexOf(ban);
   if (checkBan == -1)
   {
       blackList.push(theUsersList[checkUser-1], theUsersList[checkUser]);
@@ -789,16 +790,9 @@ djs20[data.user[0].userid] = { nbSong: 0 };
 	{
 	condition = false;
 	}
-
 	
 	
-//adds a user to the afk list when they join the stage.
-if(AFK == true && condition == false);
-{
-currentDjs.push(data.user[0].userid);
-}
-
-
+	
 //updates the afk position of the person who joins the stage.
 if(AFK == true);
 {
@@ -811,7 +805,16 @@ justSaw1(data.user[0].userid);
 if(AFK == true);
 {
 justSaw2(data.user[0].userid);
-}	
+}		
+	
+	
+	
+//adds a user to the afk list when they join the stage.
+if(AFK == true && condition == false);
+{
+currentDjs.push(data.user[0].userid);
+}
+
 
 
 //tells a dj trying to get on stage how to add themselves to the queuelist
