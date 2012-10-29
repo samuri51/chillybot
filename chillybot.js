@@ -15,6 +15,7 @@ var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
+var songLengthLimit = 8; //set song limit in minutes, set to zero for no limit
 var myId = null;
 var detail = null;
 var current = null;
@@ -52,6 +53,7 @@ global.curSongWatchdog = null;
 global.takedownTimer = null;
 global.lastdj = null;
 global.checkLast = null;
+global.songLimitTimer = null;
 
 var bot = new Bot(AUTH, USERID, ROOMID);
 bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
@@ -130,6 +132,15 @@ setInterval(repeatMessage, 900 * 1000)  //repeats this message every 15 mins if 
 bot.on('newsong', function (data){ 
   var length = data.room.metadata.current_song.metadata.length;
 
+  
+    //this is for the song length limit
+  if(songLimitTimer != null) {
+    clearTimeout(songLimitTimer);
+    songLimitTimer = null;
+    bot.speak("@"+theUsersList[checkLast+1]+", Thanks buddy ;-)");	
+  }
+  
+  
   // If watch dog has been previously set, 
   // clear since we've made it to the next song
   if(curSongWatchdog != null) {
@@ -150,6 +161,7 @@ bot.on('newsong', function (data){
   // Set this after processing things from last timer calls
   lastdj = data.room.metadata.current_dj;
   checkLast = theUsersList.indexOf(lastdj);
+  
 
   
   // Set a new watchdog timer for the current song.
@@ -164,6 +176,17 @@ bot.on('newsong', function (data){
       }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
     }, (length + 10) * 1000); // Timer expires 10 seconds after the end of the song, if not cleared by a newsong
   
+   
+   //this boots the user if their song is over the length limit
+   if((length / 60) >= songLengthLimit && songLengthLimit != 0)
+	  {
+      bot.speak("@"+theUsersList[checkLast+1]+", your song is over " +songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
+      //START THE 20 SEC TIMER
+      songLimitTimer = setTimeout( function() {
+        songLimitTimer = null;
+        bot.remDj(lastdj); // Remove Saved DJ from last newsong call
+      }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
+	  }
 
 });
 
