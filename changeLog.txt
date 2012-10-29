@@ -16,3 +16,7 @@ date: 10/24/2012
 
 -->added in error handling for when a song gets stuck, djs now have 20 seconds to skip their song before being removed if
 it isn't loading or just plain stuck.
+
+date: 10/29/2012
+
+-->added a song length limit option
