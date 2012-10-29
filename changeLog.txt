@@ -19,4 +19,8 @@ it isn't loading or just plain stuck.
 
 date: 10/29/2012
 
--->added a song length limit option
+--> added a song length limit option
+
+--> added warnings to afk limit, will warn 5 mins before afk runs out and 1 minute before.
+
+--> fixed /getTags to read the current song and not the last song.
