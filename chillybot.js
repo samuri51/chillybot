@@ -16,6 +16,8 @@ var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want
 var roomName = 'straight chillin' //put your room's name here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 8; //set song limit in minutes, set to zero for no limit
+var afkLimit = 20; //set the afk limit in minutes here
+var botAutoDj = true // set to false to have your bot not automatically dj
 var myId = null;
 var detail = null;
 var current = null;
@@ -33,6 +35,8 @@ var songCount = 0;
 var stageCount = 1;
 var snagSong = null;
 var lastSeen = {};
+var lastSeen1 = {};
+var lastSeen2 = {};
 var AFK = false;
 var MESSAGE = false;
 var checkWhoIsDj;
@@ -61,6 +65,7 @@ bot.listen(xxxx, 'xxx.x.x.x');
 
 
 
+
 //prints all debugging information to the console in real time (alot of data)
 bot.debug = false;
 
@@ -70,6 +75,18 @@ bot.debug = false;
 justSaw = function (uid) {
    return lastSeen[uid] = Date.now();
 };
+
+//updates the afk list
+justSaw1 = function (uid) {
+   return lastSeen1[uid] = Date.now();
+};
+
+
+//updates the afk list
+justSaw2 = function (uid) {
+   return lastSeen2[uid] = Date.now();
+};
+
 
 
 //checks if a person is afk or not
@@ -83,20 +100,50 @@ isAfk = function (userId, num) {
    return false;
 };
 
+//checks if a person is afk or not
+isAfk1 = function (userId, num) {
+   var last = lastSeen1[userId];
+   var age_ms = Date.now() - last;
+   var age_m = Math.floor(age_ms / 1000 / 60);
+   if (age_m >= num) {
+      return true;
+   };
+   return false;
+};
 
+//checks if a person is afk or not
+isAfk2 = function (userId, num) {
+   var last = lastSeen2[userId];
+   var age_ms = Date.now() - last;
+   var age_m = Math.floor(age_ms / 1000 / 60);
+   if (age_m >= num) {
+      return true;
+   };
+   return false;
+};
 
 //removes afk dj's after afklimit is up.
-afkCheck = function () {
-   var afkLimit = 20; //An Afk Limit of 20 minutes.
+afkCheck = function () {   
    for (i = 0; i < currentDjs.length; i++) {
       afker = currentDjs[i]; //Pick a DJ
-      if ((isAfk(afker, afkLimit)) && AFK == true) { //if Dj is afk then
-	   var isAfkMod = modList.indexOf(afker);
-	   var whatIsAfkerName = theUsersList.indexOf(afker) + 1;
+	  var isAfkMod = modList.indexOf(afker);
+      var whatIsAfkerName = theUsersList.indexOf(afker) + 1;
+	  if ((isAfk1(afker, (afkLimit - 5))) && AFK == true && afker != USERID && isAfkMod == -1) 
+	  {
+	  bot.speak('@' +theUsersList[whatIsAfkerName]+ ' you have 5 minutes left of afk, chat or awesome please.');
+	  justSaw1(afker);
+	  }	  
+	  if ((isAfk2(afker, (afkLimit - 1))) && AFK == true && afker != USERID && isAfkMod == -1) 
+	  {
+	  bot.speak('@' +theUsersList[whatIsAfkerName]+ ' you have 1 minute left of afk, chat or awesome please.');
+	  justSaw2(afker);
+	  }	  
+      if ((isAfk(afker, afkLimit)) && AFK == true) { //if Dj is afk then	   
 	     if(afker != USERID && isAfkMod == -1 && afker != checkWhoIsDj) //checks to see if afker is a mod or a bot or the current dj, if they are is does not kick them.
 		 {	
          bot.speak('@' +theUsersList[whatIsAfkerName]+ ' you are over the afk limit of ' +afkLimit+ ' minutes.');
-         bot.remDj(afker); //remove them
+		 justSaw(afker);
+         bot.remDj(afker); //remove them		 
 		 }
       }; 
    };
@@ -104,7 +151,7 @@ afkCheck = function () {
 setInterval(afkCheck, 5000) //This repeats the check every five seconds.
 
 
-
+/*
 repeatAfkMessage = function () {
 if(AFK == true)
   {
@@ -113,7 +160,7 @@ bot.speak('The afk limit is currently active, please chat or awesome to reset yo
 };
 
 setInterval(repeatAfkMessage, 600 * 1000) //repeats every 10 minutes if afk is set to on.
-
+*/
 
 
 repeatMessage = function () {
@@ -133,12 +180,14 @@ bot.on('newsong', function (data){
   var length = data.room.metadata.current_song.metadata.length;
 
   
-    //this is for the song length limit
+  
+    //this is for the some length limit
   if(songLimitTimer != null) {
     clearTimeout(songLimitTimer);
     songLimitTimer = null;
     bot.speak("@"+theUsersList[checkLast+1]+", Thanks buddy ;-)");	
   }
+  
   
   
   // If watch dog has been previously set, 
@@ -147,6 +196,7 @@ bot.on('newsong', function (data){
     clearTimeout(curSongWatchdog);
     curSongWatchdog = null;
   }
+  
   
   
   // If takedown Timer has been set, 
@@ -158,10 +208,12 @@ bot.on('newsong', function (data){
   }
 
   
+  
   // Set this after processing things from last timer calls
   lastdj = data.room.metadata.current_dj;
   checkLast = theUsersList.indexOf(lastdj);
   var modIndex = modList.indexOf(lastdj);
+  //console.log(modIndex);
   
 
   
@@ -178,8 +230,9 @@ bot.on('newsong', function (data){
     }, (length + 10) * 1000); // Timer expires 10 seconds after the end of the song, if not cleared by a newsong
   
    
+   
    //this boots the user if their song is over the length limit
-   if((length / 60) >= songLengthLimit && songLengthLimit != 0 && modIndex == -1))
+   if((length / 60) >= songLengthLimit && songLengthLimit != 0 && modIndex == -1)
 	  {
       bot.speak("@"+theUsersList[checkLast+1]+", your song is over " +songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
       //START THE 20 SEC TIMER
@@ -198,6 +251,12 @@ bot.on('newsong', function (data){
 //checks at the beggining of the song
  bot.on('newsong', function (data) { 
 
+ //procedure for getting song tags
+   song = data.room.metadata.current_song.metadata.song;
+   album = data.room.metadata.current_song.metadata.album; 
+   genre = data.room.metadata.current_song.metadata.genre;
+ 
+ 
  
  //adds a song to the end of your bots queue
 if(snagSong == true)
@@ -252,9 +311,9 @@ bot.playlistAll(function(playlist) {
  
  
  
- //puts bot on stage if there is one dj on stage, and removes them when there is 5 dj's on stage.
+  //puts bot on stage if there is one dj on stage, and removes them when there is 5 dj's on stage.
  current = data.room.metadata.djcount;
- if(current == 1)
+ if(current >= 1 && current <= 3 && botAutoDj == true)
  {
  bot.addDj();
  current = null;
@@ -267,11 +326,16 @@ bot.playlistAll(function(playlist) {
  } 
  });
 
+
  
  //bot gets on stage and starts djing if no song is playing.
 bot.on('nosong', function (data) {
+if(botAutoDj == true)
+{
 bot.addDj();
-skipOn = false; })
+}
+skipOn = false; 
+})
 
 
 
@@ -299,6 +363,15 @@ bot.on('speak', function (data) {
 	{
 	justSaw(data.userid);
 	}	
+	if(AFK == true);
+	{
+	justSaw1(data.userid);
+	}	
+	if(AFK == true);
+	{
+	justSaw2(data.userid);
+	}	
+	
 	
 	
 	
@@ -358,6 +431,11 @@ bot.on('speak', function (data) {
   {
     AFK = false;
 	bot.speak('the afk list is now inactive.');	
+  }  
+  else if(text.match(/^\/smoke/))
+  {
+    
+	bot.speak('smoke em\' if ya got em.');	
   }  
   else if(text.match(/^\/skipsong/) && condition == true)
   {
@@ -471,7 +549,7 @@ bot.on('speak', function (data) {
   }
   else if(data.text == '/getTags')
   {
-  bot.speak('the last song was: ' + song + ', the album was: ' + album + ', the genre was: ' + genre);
+  bot.speak('song name: ' + song + ', album: ' + album + ', genre: ' + genre);
   }
   else if(data.text == '/dice')
   {
@@ -626,6 +704,15 @@ if(AFK == true);
 	{
 	justSaw(data.room.metadata.votelog[0][0]);
 	}
+if(AFK == true);
+	{
+	justSaw1(data.room.metadata.votelog[0][0]);
+	}	
+if(AFK == true);
+	{
+	justSaw2(data.room.metadata.votelog[0][0]);
+	}	
+	
  })
 
 
@@ -635,6 +722,14 @@ if(AFK == true);
 	{
 	justSaw(data.userid);
 	}
+if(AFK == true);
+	{
+	justSaw1(data.userid);
+	}	
+if(AFK == true);
+	{
+	justSaw2(data.userid);
+	}	
  })
 
 
@@ -706,7 +801,7 @@ currentDjs.push(data.user[0].userid);
 
 //tells a dj trying to get on stage how to add themselves to the queuelist
 var ifUser2 = queueList.indexOf(data.user[0].userid);	
-if(queue == true && ifUser2 == -1)
+if(queue == true && ifUser2 == -1 && queueList.length != 0)
 {
 bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
 }
@@ -718,8 +813,9 @@ if(queue == true)
 {
 var ifUser = queueList.indexOf(data.user[0].userid);
 var firstOnly = queueList.indexOf(data.user[0].userid);
+var queueListLength = queueList.length;
 
-  if(queueList[firstOnly] != queueList[1] || ifUser == -1 && data.user[0].userid != USERID)
+  if(queueList[firstOnly] != queueList[1] || ifUser == -1 && data.user[0].userid != USERID && queueListLength != 0)
   {
   bot.remDj(data.user[0].userid);
   }}
@@ -763,6 +859,10 @@ console.log('DEBUGGING: ', queueList, queueName);
 //starts up when bot first enters the room
 bot.on('roomChanged', function (data) {
 
+
+
+
+
 //finds out who the currently playing dj's are.
 currentDjs = data.room.metadata.djs;
 
@@ -772,6 +872,7 @@ var currentPlayers = data.room.metadata.djs;
 for (var i = 0; i < currentPlayers.length; i++) {
     djs20[currentPlayers[i]] = { nbSong: 0 };
   }
+
 
   
 //list of escorts, users, and moderators is reset    
@@ -809,6 +910,11 @@ detail = data.room.description;
 
 //starts up when a new person joins the room
 bot.on('registered', function (data) {
+
+if(queue == true)
+{
+bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
+}
 
 
 //gets newest user and prints greeting
@@ -879,7 +985,7 @@ var checkLeave = theUsersList.indexOf(data.user[0].userid);
 	theUsersList.splice(checkLeave, 2);
 	}	
 	
-/*
+
 var queueLeave = data.user[0].name;
 var leaveCheck = queueList.indexOf(queueLeave);         //uncomment this section of code to have the bot remove people that leave the room from the queue list.
 var leaveName = queueName.indexOf(queueLeave);
@@ -888,20 +994,14 @@ if(leaveCheck != -1);
 	queueList.splice(leaveCheck, 2);
 	queueName.splice(leaveName, 1);
 	}	
-*/
+
  })
 
 
 
 
 //activates at the end of a song.
-bot.on('endsong', function(data) { 
-  
-  //procedure for getting song tags
-    song = data.room.metadata.current_song.metadata.song;
-    album = data.room.metadata.current_song.metadata.album; 
-	genre = data.room.metadata.current_song.metadata.genre;
-        
+bot.on('endsong', function(data) {         
 	
 	//iterates through the dj list incrementing dj song counts and
 	//removing them if they are over the limit.
@@ -910,7 +1010,7 @@ bot.on('endsong', function(data) {
     if (djs20[djId] && ++djs20[djId].nbSong >= playLimit) {
     var checklist33 = theUsersList.indexOf(djId) + 1;
 	var checklist34 = modList.indexOf(djId);
-	if(checklist34 == -1 && queue == true && djId != USERID)
+	if(checklist34 == -1 && queue == true && djId != USERID && queueList.length != 0)
 	{
 	bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs'); 
     bot.remDj(djId);
