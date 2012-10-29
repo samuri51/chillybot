@@ -161,6 +161,7 @@ bot.on('newsong', function (data){
   // Set this after processing things from last timer calls
   lastdj = data.room.metadata.current_dj;
   checkLast = theUsersList.indexOf(lastdj);
+  var modIndex = modList.indexOf(lastdj);
   
 
   
@@ -178,7 +179,7 @@ bot.on('newsong', function (data){
   
    
    //this boots the user if their song is over the length limit
-   if((length / 60) >= songLengthLimit && songLengthLimit != 0)
+   if((length / 60) >= songLengthLimit && songLengthLimit != 0 && modIndex == -1))
 	  {
       bot.speak("@"+theUsersList[checkLast+1]+", your song is over " +songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
       //START THE 20 SEC TIMER
