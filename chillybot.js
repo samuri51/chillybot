@@ -799,6 +799,21 @@ currentDjs.push(data.user[0].userid);
 }
 
 
+//updates the afk position of the person who joins the stage.
+if(AFK == true);
+{
+justSaw(data.user[0].userid);
+}	
+if(AFK == true);
+{
+justSaw1(data.user[0].userid);
+}	
+if(AFK == true);
+{
+justSaw2(data.user[0].userid);
+}	
+
+
 //tells a dj trying to get on stage how to add themselves to the queuelist
 var ifUser2 = queueList.indexOf(data.user[0].userid);	
 if(queue == true && ifUser2 == -1 && queueList.length != 0)
