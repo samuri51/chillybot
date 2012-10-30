@@ -218,7 +218,7 @@ bot.on('newsong', function (data){
   lastdj = data.room.metadata.current_dj;
   checkLast = theUsersList.indexOf(lastdj);
   var modIndex = modList.indexOf(lastdj);
-  
+  //console.log(modIndex);
   
 
   
@@ -237,14 +237,17 @@ bot.on('newsong', function (data){
    
    
    //this boots the user if their song is over the length limit
-   if((length / 60) >= songLengthLimit && songLengthLimit != 0 && modIndex == -1)
-	  {
+   if((length / 60) >= songLengthLimit)
+       {
+	     if(songLengthLimit != 0 && modIndex == -1)
+		  {
       bot.speak("@"+theUsersList[checkLast+1]+", your song is over " +songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
       //START THE 20 SEC TIMER
       songLimitTimer = setTimeout( function() {
         songLimitTimer = null;
         bot.remDj(lastdj); // Remove Saved DJ from last newsong call
       }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
+	     }
 	  }
 
 });
@@ -284,11 +287,14 @@ bot.playlistAll(function(playlist) {
 
   
   
-  if (queue == true && songCount != 1 && queueList.length != 0 && djsOnStage != 5)
+  if (queue == true && songCount != 1)
   {
+   if(queueList.length != 0 && djsOnStage != 5)
+      {
   songCount++;
   bot.speak('@' + queueName[0] + ' you have: ' + stageCount + ' song to get on stage.');
   stageCount--;
+      }
   }
   else if (songCount == 1)
   {
@@ -323,10 +329,13 @@ bot.playlistAll(function(playlist) {
  
   //puts bot on stage if there is one dj on stage, and removes them when there is 5 dj's on stage.
  current = data.room.metadata.djcount;
- if(current >= 1 && current <= 3 && botAutoDj == true)
+ if(current >= 1 && current <= 3)
  {
+   if(botAutoDj == true)
+     {
  bot.addDj();
  current = null;
+     }
  }
  
  if(current == 5)
@@ -393,7 +402,8 @@ bot.on('speak', function (data) {
 	current = null;
 	}
   }  
-  else if (text.match(/^\/randomSong$/) && condition == true && randomOnce != 1) {  
+  else if (text.match(/^\/randomSong$/) && condition == true){
+            if(randomOnce != 1) {           
     bot.playlistAll(function(playlist) {
 	            var i = 0;				
 				bot.speak("Reorder initiated.");
@@ -413,10 +423,13 @@ bot.on('speak', function (data) {
                     }
                 }, 1000);
 				
-            });			    
+            });		
+    }			
   }  
-  else if(text.match('/bumptop') && condition == true && queue == true)
+  else if(text.match('/bumptop') && condition == true)
   {
+    if(queue == true)
+	  {
     var topOfQueue = data.text.slice(10);
 	var index35 = queueList.indexOf(topOfQueue);
 	var index46 = queueName.indexOf(topOfQueue);
@@ -431,6 +444,7 @@ bot.on('speak', function (data) {
 	queueName.unshift(index81);    
 	bot.speak('The queue is now: ' + queueName);
 	}
+	 }
   }   
   else if(text.match(/^\/voteskipon/) && condition == true)
   { 
@@ -678,7 +692,9 @@ bot.on('speak', function (data) {
 	bot.speak('There is currently no queue.');
 	}	
   }
-  else if (text.match('/removefromqueue') && queue == true && condition == true) {  
+  else if (text.match('/removefromqueue') && queue == true){
+     if(condition == true)   
+	    {
 	var removeFromQueue = data.text.slice(18);
 	var index5 = queueList.indexOf(removeFromQueue);
 	var index6 = queueName.indexOf(removeFromQueue);
@@ -688,6 +704,7 @@ bot.on('speak', function (data) {
 	queueName.splice(index6, 1);
 	bot.speak('The queue is now: ' + queueName);
 	}	
+	   }
   }
   else if (text.match(/^\/removeme$/) && queue == true) {  
 	var list1 = queueList.indexOf(data.name);
