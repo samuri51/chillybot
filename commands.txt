@@ -44,6 +44,10 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /removesong --> the bot removes the song it is currently playing or the last song added to it's queue if it is not currently playing.
 
+/voteskipon<space><number> --> set the vote skip limit and turn it on.
+
+/voteskipon<space><number> --> turn the vote skip limit off.
+
 
 
 COMMANDS: (public)
@@ -81,6 +85,8 @@ COMMANDS: (public)
 /hello --> greets the user.
 
 /props --> gives the currently playing dj a high five.
+
+/skip --> votes for the currently playing dj to be removed from stage.
 
 
 
