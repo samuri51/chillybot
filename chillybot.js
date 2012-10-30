@@ -15,9 +15,10 @@ var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
-var songLengthLimit = 8; //set song limit in minutes, set to zero for no limit
+var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var botAutoDj = true // set to false to have your bot not automatically dj
+var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
 var myId = null;
 var detail = null;
 var current = null;
@@ -43,7 +44,11 @@ var checkWhoIsDj;
 var GREET = true;
 var djs20 = [];
 var randomOnce = 0;
+var voteSkip = false;
+var voteCountSkip = 0;
+var votesLeft = HowManyVotesToSkip;
 
+global.checkVotes = [];
 global.theUsersList = [];
 global.blackList = [];
 global.modList = [];
@@ -250,6 +255,11 @@ bot.on('newsong', function (data){
 
 //checks at the beggining of the song
  bot.on('newsong', function (data) { 
+ 
+ //resets counters and array for vote skipping
+ checkVotes = [];
+ voteCountSkip = 0;
+ votesLeft = HowManyVotesToSkip;
 
  //procedure for getting song tags
    song = data.room.metadata.current_song.metadata.song;
@@ -421,7 +431,55 @@ bot.on('speak', function (data) {
 	queueName.unshift(index81);    
 	bot.speak('The queue is now: ' + queueName);
 	}
-  } 
+  }   
+  else if(text.match(/^\/voteskipon/) && condition == true)
+  { 
+   checkVotes = [];  
+   HowManyVotesToSkip = Number(data.text.slice(12))
+   if(isNaN(HowManyVotesToSkip) || HowManyVotesToSkip == 0)
+   {
+   bot.speak("error, please enter a valid number");
+   }
+     
+	 if(!isNaN(HowManyVotesToSkip))
+	 {
+   bot.speak("vote skipping is now active, current votes needed to pass "
+             + "the vote is " + HowManyVotesToSkip);
+   voteSkip = true;
+   voteCountSkip = 0;
+   votesLeft = HowManyVotesToSkip;
+     }
+   }
+  else if(text.match(/^\/voteskipoff$/) && condition == true)
+   {    
+   bot.speak("vote skipping is now inactive");
+   voteSkip = false;
+   voteCountSkip = 0;
+   votesLeft = HowManyVotesToSkip;
+   }
+   else if(text.match(/^\/skip$/) && voteSkip == true)
+   {
+   var checkIfOnList = checkVotes.indexOf(data.userid)
+   var checkIfMod = modList.indexOf(lastdj);
+   if(checkIfOnList == -1)
+    {
+    voteCountSkip += 1;
+    votesLeft -= 1;
+    checkVotes.unshift(data.userid);
+	
+	var findLastDj = theUsersList.indexOf(lastdj);
+	  if(votesLeft != 0 && checkIfMod == -1)
+	  {
+      bot.speak("Current Votes for a song skip: " + voteCountSkip +
+          " Votes needed to skip the song: " + votesLeft);
+	  }
+	    if(votesLeft == 0 && checkIfMod == -1)
+		 {
+		 bot.speak("@" + theUsersList[findLastDj + 1] + " you have been voted off stage");
+		 bot.remDj(lastdj);
+		 }	 
+    }
+  }
    else if(text.match(/^\/afkon/) && condition == true)
   {
     AFK = true;
@@ -468,7 +526,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
   {
    bot.speak('the commands are  /awesome, ' +
-             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /admincommands, /queuecommands');
+             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /admincommands, /queuecommands');
   }  
   else if(text.match(/^\/queuecommands/))
   {
@@ -477,7 +535,7 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
   {
    bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-          '/snagon, /snagoff, /removesong, /greeton, /greetoff', data.userid);
+          '/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff', data.userid);
    condition = false;
   }  
   else if (text.match(/^\/tableflip/)) {
@@ -657,6 +715,10 @@ bot.on('speak', function (data) {
 	djs20[currentDjs[i]] = { nbSong: 0 };
     }  
   }
+  else if(text.match('/surf'))
+   {
+    bot.speak('http://25.media.tumblr.com/tumblr_mce8z6jN0d1qbzqexo1_r1_500.gif');
+   }
   else if (text.match(/^\/queueOff$/) && condition == true) {  
     bot.speak('the queue is now inactive.');
 	queue = false;
