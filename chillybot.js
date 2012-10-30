@@ -133,22 +133,31 @@ afkCheck = function () {
       afker = currentDjs[i]; //Pick a DJ
 	  var isAfkMod = modList.indexOf(afker);
       var whatIsAfkerName = theUsersList.indexOf(afker) + 1;
-	  if ((isAfk1(afker, (afkLimit - 5))) && AFK == true && afker != USERID && isAfkMod == -1) 
+	  if ((isAfk1(afker, (afkLimit - 5))) && AFK == true)
 	  {
+	    if(afker != USERID && isAfkMod == -1) 
+		 {
 	  bot.speak('@' +theUsersList[whatIsAfkerName]+ ' you have 5 minutes left of afk, chat or awesome please.');
 	  justSaw1(afker);
+	     }
 	  }	  
-	  if ((isAfk2(afker, (afkLimit - 1))) && AFK == true && afker != USERID && isAfkMod == -1) 
+	  if ((isAfk2(afker, (afkLimit - 1))) && AFK == true)
 	  {
+	    if(afker != USERID && isAfkMod == -1) 
+		  {
 	  bot.speak('@' +theUsersList[whatIsAfkerName]+ ' you have 1 minute left of afk, chat or awesome please.');
 	  justSaw2(afker);
+	      }
 	  }	  
       if ((isAfk(afker, afkLimit)) && AFK == true) { //if Dj is afk then	   
-	     if(afker != USERID && isAfkMod == -1 && afker != checkWhoIsDj) //checks to see if afker is a mod or a bot or the current dj, if they are is does not kick them.
-		 {	
+	     if(afker != USERID && isAfkMod == -1) //checks to see if afker is a mod or a bot or the current dj, if they are is does not kick them.
+		 {
+            if(afker != checkWhoIsDj)	
+               {			
          bot.speak('@' +theUsersList[whatIsAfkerName]+ ' you are over the afk limit of ' +afkLimit+ ' minutes.');
 		 justSaw(afker);
-         bot.remDj(afker); //remove them		 
+         bot.remDj(afker); //remove them	
+               }		 
 		 }
       }; 
    };
