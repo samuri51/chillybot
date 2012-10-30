@@ -24,3 +24,7 @@ date: 10/29/2012
 --> added warnings to afk limit, will warn 5 mins before afk runs out and 1 minute before.
 
 --> fixed /getTags to read the current song and not the last song.
+
+date: 10/30/2012
+
+--> added the ability for a vote skipping option(toggles on and off)
