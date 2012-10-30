@@ -218,7 +218,7 @@ bot.on('newsong', function (data){
   lastdj = data.room.metadata.current_dj;
   checkLast = theUsersList.indexOf(lastdj);
   var modIndex = modList.indexOf(lastdj);
-  //console.log(modIndex);
+  
   
 
   
@@ -621,6 +621,10 @@ bot.on('speak', function (data) {
   num = 0;
    }
   }  
+  else if(text.match('/surf'))
+   {
+   bot.speak('http://25.media.tumblr.com/tumblr_mce8z6jN0d1qbzqexo1_r1_500.gif');
+   }
   else if(data.text == '/unfanme')
   {
   bot.speak('@' + name + ' i am no longer your fan.');
@@ -880,10 +884,13 @@ currentDjs.push(data.user[0].userid);
 
 
 //tells a dj trying to get on stage how to add themselves to the queuelist
-var ifUser2 = queueList.indexOf(data.user[0].userid);	
-if(queue == true && ifUser2 == -1 && queueList.length != 0)
+var ifUser2 = queueList.indexOf(data.user[0].userid);
+if(queue == true && ifUser2 == -1) 
 {
+  if(queueList.length != 0)
+  {
 bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
+  }
 }
 	
 
@@ -895,9 +902,12 @@ var ifUser = queueList.indexOf(data.user[0].userid);
 var firstOnly = queueList.indexOf(data.user[0].userid);
 var queueListLength = queueList.length;
 
-  if(queueList[firstOnly] != queueList[1] || ifUser == -1 && data.user[0].userid != USERID && queueListLength != 0)
+  if(queueList[firstOnly] != queueList[1] || ifUser == -1)      
   {
+   if(data.user[0].userid != USERID && queueListLength != 0)
+    {
   bot.remDj(data.user[0].userid);
+    }
   }}
 if(queue == true)
 {
