@@ -482,8 +482,13 @@ bot.on('speak', function (data) {
    }
    else if(text.match(/^\/skip$/) && voteSkip == true)
    {
+   var takeBotOff = modList.indexOf(USERID);
    var checkIfOnList = checkVotes.indexOf(data.userid)
    var checkIfMod = modList.indexOf(lastdj);
+   if(takeBotOff != -1)
+     {
+	 modList.splice(takeBotOff, 1);
+	 }   
    if(checkIfOnList == -1)
     {
     voteCountSkip += 1;
