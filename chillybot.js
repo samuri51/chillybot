@@ -33,8 +33,6 @@ var album = null;
 var genre = null;
 var skipOn = null;
 var queue = false;
-var songCount = 0;
-var stageCount = 1;
 var snagSong = null;
 var lastSeen = {};
 var lastSeen1 = {};
@@ -48,6 +46,8 @@ var randomOnce = 0;
 var voteSkip = false;
 var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
+var djsOnStage = null;
+var sayOnce = true;
 
 global.checkVotes = [];
 global.theUsersList = [];
@@ -64,12 +64,12 @@ global.takedownTimer = null;
 global.lastdj = null;
 global.checkLast = null;
 global.songLimitTimer = null;
+global.beginTimer = null;
 
 
 var bot = new Bot(AUTH, USERID, ROOMID);
 bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
 bot.listen(xxxx, 'xxx.x.x.x');
-
 
 
 
@@ -229,7 +229,7 @@ bot.on('newsong', function (data){
   lastdj = data.room.metadata.current_dj;
   checkLast = theUsersList.indexOf(lastdj);
   var modIndex = modList.indexOf(lastdj);
-  //console.log(modIndex);
+  
   
 
   
@@ -292,28 +292,7 @@ bot.playlistAll(function(playlist) {
 }); 
  }  
  
- 
- //checks how many dj's are currently on the stage.
-  var djsOnStage = data.room.metadata.djcount;
 
-  
-  
-  if (queue == true && songCount != 1)
-  {
-   if(queueList.length != 0 && djsOnStage != 5)
-      {
-  songCount++;
-  bot.speak('@' + queueName[0] + ' you have: ' + stageCount + ' song to get on stage.');
-  stageCount--;
-      }
-  }
-  else if (songCount == 1)
-  {
-  queueList.splice(0, 2);
-  queueName.splice(0, 1);
-  songCount = 0;
-  stageCount = 1;
-  }   
   
   
  var userId = USERID; // the bots userid
@@ -836,6 +815,9 @@ if(AFK == true);
 //checks when a dj leaves the stage
 bot.on('rem_dj', function (data) {
 
+//removes one from dj count when a dj leaves the stage.
+djsOnStage -= 1;
+
 
 //removes user from the dj list when they leave the stage
 delete djs20[data.user[0].userid];
@@ -848,6 +830,20 @@ var check30 = currentDjs.indexOf(data.user[0].userid);
 currentDjs.splice(check30, 1);
 }
 
+
+//if queue is turned on once someone leaves the stage the first person
+//in line has 60 seconds to get on stage before being remove from the queue
+if (queue == true && queueList.length != 0 && sayOnce == true)
+     {
+ sayOnce = false;	 
+ bot.speak('@' + queueName[0] + ' you have one minute to get on stage.');
+     beginTimer = setTimeout( function() { 
+	 queueList.splice(0, 2);
+     queueName.splice(0, 1);  
+	 sayOnce = true;
+        }, 60 * 1000);
+     }
+ 
 
 
 //takes a user off the escort list if they leave the stage.
@@ -870,6 +866,9 @@ currentDjs.splice(checkDj, 1);
  
  //this activates when a user joins the stage.
 bot.on('add_dj', function (data) {
+
+//adds one to dj count when a dj gets on the stage.
+djsOnStage += 1;
 
 
 //sets dj's songcount to zero when they enter the stage.
@@ -913,6 +912,7 @@ currentDjs.push(data.user[0].userid);
 
 
 
+
 //tells a dj trying to get on stage how to add themselves to the queuelist
 var ifUser2 = queueList.indexOf(data.user[0].userid);
 if(queue == true && ifUser2 == -1) 
@@ -932,9 +932,9 @@ var ifUser = queueList.indexOf(data.user[0].userid);
 var firstOnly = queueList.indexOf(data.user[0].userid);
 var queueListLength = queueList.length;
 
-  if(queueList[firstOnly] != queueList[1] || ifUser == -1 && queueListLength != 0)      
+  if(firstOnly != 1 || ifUser == -1)      
   {
-   if(data.user[0].userid != USERID)
+   if(data.user[0].userid != USERID && queueListLength != 0)
     {
   bot.remDj(data.user[0].userid);
     }
@@ -946,6 +946,8 @@ var checkName2 = queueName.indexOf(data.user[0].name);
 console.log('DEBUGGING: ', checkQueue);
 if(checkQueue != -1 && checkQueue == 0)
 {
+clearTimeout(beginTimer);
+sayOnce = true;
 queueList.splice(checkQueue, 2);
 queueName.splice(checkName2, 1);
 console.log('DEBUGGING: ', queueList, queueName);
@@ -980,11 +982,14 @@ console.log('DEBUGGING: ', queueList, queueName);
 bot.on('roomChanged', function (data) {
 
 
-
-
-
 //finds out who the currently playing dj's are.
 currentDjs = data.room.metadata.djs;
+
+
+
+//number of djs set when a dj gets on stage.
+djsOnStage = currentDjs.length;
+
 
 
 //initializes currently playing dj's song count to zero.
