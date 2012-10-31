@@ -167,6 +167,27 @@ afkCheck = function () {
 setInterval(afkCheck, 5000) //This repeats the check every five seconds.
 
 
+
+queueCheck15 = function(){
+//if queue is turned on once someone leaves the stage the first person
+//in line has 60 seconds to get on stage before being remove from the queue
+if (queue == true && queueList.length != 0)
+     {
+	 if(sayOnce == true && djsOnStage < 5)
+	   {
+ sayOnce = false;	 
+ bot.speak('@' + queueName[0] + ' you have 30 seconds to get on stage.');
+     beginTimer = setTimeout( function() { 
+	 queueList.splice(0, 2);
+     queueName.splice(0, 1);  
+	 sayOnce = true;
+        }, 30 * 1000);
+		}
+     }
+}
+
+setInterval(queueCheck15, 5000) //repeats the check every five seconds. 
+
 /*
 repeatAfkMessage = function () {
 if(AFK == true)
@@ -817,7 +838,7 @@ if(AFK == true);
 //checks when a dj leaves the stage
 bot.on('rem_dj', function (data) {
 
-//removes one from dj count when a dj leaves the stage.
+//removes one from dj count
 djsOnStage -= 1;
 
 
@@ -833,19 +854,6 @@ currentDjs.splice(check30, 1);
 }
 
 
-//if queue is turned on once someone leaves the stage the first person
-//in line has 60 seconds to get on stage before being remove from the queue
-if (queue == true && queueList.length != 0 && sayOnce == true)
-     {
- sayOnce = false;	 
- bot.speak('@' + queueName[0] + ' you have 30 seconds to get on stage.');
-     beginTimer = setTimeout( function() { 
-	 queueList.splice(0, 2);
-     queueName.splice(0, 1);  
-	 sayOnce = true;
-        }, 30 * 1000);
-     }
- 
 
 
 //takes a user off the escort list if they leave the stage.
@@ -869,7 +877,7 @@ currentDjs.splice(checkDj, 1);
  //this activates when a user joins the stage.
 bot.on('add_dj', function (data) {
 
-//adds one to dj count when a dj gets on the stage.
+//adds one to dj count
 djsOnStage += 1;
 
 
@@ -985,9 +993,9 @@ bot.on('roomChanged', function (data) {
 currentDjs = data.room.metadata.djs;
 
 
-
-//number of djs set when a dj gets on stage.
+//counts how many djs there are on stage
 djsOnStage = currentDjs.length;
+
 
 
 
