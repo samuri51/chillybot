@@ -624,14 +624,12 @@ bot.on('speak', function (data) {
   else if(data.text == '/roominfo')
   {
   bot.speak(detail);
-  detail = null;
   }  
   else if(data.text == '/fanme')
   {
   bot.speak('@' + name + ' i am now your fan!');
   myId = data.userid;
   bot.becomeFan(myId);
-  myId = null;
   }
   else if(data.text == '/getTags')
   {
@@ -658,7 +656,6 @@ bot.on('speak', function (data) {
   bot.speak('@' + name + ' i am no longer your fan.');
   myId = data.userid;
   bot.removeFan(myId);
-  myId = null;
   }
   else if (text.match(/^\/m/)) {
     bot.speak(text.substring(3));	
