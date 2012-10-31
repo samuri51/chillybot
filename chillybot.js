@@ -46,7 +46,6 @@ var randomOnce = 0;
 var voteSkip = false;
 var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
-var djsOnStage = null;
 var sayOnce = true;
 
 global.checkVotes = [];
@@ -815,10 +814,6 @@ if(AFK == true);
 //checks when a dj leaves the stage
 bot.on('rem_dj', function (data) {
 
-//removes one from dj count when a dj leaves the stage.
-djsOnStage -= 1;
-
-
 //removes user from the dj list when they leave the stage
 delete djs20[data.user[0].userid];
 
@@ -866,9 +861,6 @@ currentDjs.splice(checkDj, 1);
  
  //this activates when a user joins the stage.
 bot.on('add_dj', function (data) {
-
-//adds one to dj count when a dj gets on the stage.
-djsOnStage += 1;
 
 
 //sets dj's songcount to zero when they enter the stage.
@@ -985,11 +977,6 @@ bot.on('roomChanged', function (data) {
 
 //finds out who the currently playing dj's are.
 currentDjs = data.room.metadata.djs;
-
-
-
-//number of djs set when a dj gets on stage.
-djsOnStage = currentDjs.length;
 
 
 
