@@ -722,6 +722,8 @@ bot.on('speak', function (data) {
 	}	
   }
   else if (text.match(/^\/queueOn$/) && condition == true) {  
+    queueList = [];
+	queueName = [];
     bot.speak('the queue is now active.');
 	queue = true;	
 	for (var i = 0; i < currentDjs.length; i++){
