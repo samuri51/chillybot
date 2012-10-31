@@ -9,6 +9,7 @@
 	the song skipping algorithm.
 */
 
+
 var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
@@ -63,6 +64,7 @@ global.takedownTimer = null;
 global.lastdj = null;
 global.checkLast = null;
 global.songLimitTimer = null;
+
 
 var bot = new Bot(AUTH, USERID, ROOMID);
 bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
@@ -930,9 +932,9 @@ var ifUser = queueList.indexOf(data.user[0].userid);
 var firstOnly = queueList.indexOf(data.user[0].userid);
 var queueListLength = queueList.length;
 
-  if(queueList[firstOnly] != queueList[1] || ifUser == -1)      
+  if(queueList[firstOnly] != queueList[1] || ifUser == -1 && queueListLength != 0)      
   {
-   if(data.user[0].userid != USERID && queueListLength != 0)
+   if(data.user[0].userid != USERID)
     {
   bot.remDj(data.user[0].userid);
     }
