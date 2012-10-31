@@ -170,7 +170,7 @@ setInterval(afkCheck, 5000) //This repeats the check every five seconds.
 
 queueCheck15 = function(){
 //if queue is turned on once someone leaves the stage the first person
-//in line has 60 seconds to get on stage before being remove from the queue
+//in line has 30 seconds to get on stage before being remove from the queue
 if (queue == true && queueList.length != 0)
      {
 	 if(sayOnce == true && djsOnStage < 5)
