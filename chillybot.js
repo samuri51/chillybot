@@ -46,6 +46,7 @@ var randomOnce = 0;
 var voteSkip = false;
 var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
+var djsOnStage = null;
 var sayOnce = true;
 
 global.checkVotes = [];
@@ -318,7 +319,7 @@ bot.playlistAll(function(playlist) {
  
   //puts bot on stage if there is one dj on stage, and removes them when there is 5 dj's on stage.
  current = data.room.metadata.djcount;
- if(current >= 1 && current <= 3)
+ if(current >= 1 && current <= 3 && queueList.length == 0)
  {
    if(botAutoDj == true)
      {
@@ -814,6 +815,10 @@ if(AFK == true);
 //checks when a dj leaves the stage
 bot.on('rem_dj', function (data) {
 
+//removes one from dj count when a dj leaves the stage.
+djsOnStage -= 1;
+
+
 //removes user from the dj list when they leave the stage
 delete djs20[data.user[0].userid];
 
@@ -831,12 +836,12 @@ currentDjs.splice(check30, 1);
 if (queue == true && queueList.length != 0 && sayOnce == true)
      {
  sayOnce = false;	 
- bot.speak('@' + queueName[0] + ' you have one minute to get on stage.');
+ bot.speak('@' + queueName[0] + ' you have 30 seconds to get on stage.');
      beginTimer = setTimeout( function() { 
 	 queueList.splice(0, 2);
      queueName.splice(0, 1);  
 	 sayOnce = true;
-        }, 60 * 1000);
+        }, 30 * 1000);
      }
  
 
@@ -861,6 +866,9 @@ currentDjs.splice(checkDj, 1);
  
  //this activates when a user joins the stage.
 bot.on('add_dj', function (data) {
+
+//adds one to dj count when a dj gets on the stage.
+djsOnStage += 1;
 
 
 //sets dj's songcount to zero when they enter the stage.
@@ -920,17 +928,14 @@ bot.pm('The queue is currently active. To add yourself to the queue type /addme.
 //removes a user from the queue list when they join the stage.
 if(queue == true)
 {
-var ifUser = queueList.indexOf(data.user[0].userid);
+//var ifUser = queueList.indexOf(data.user[0].userid);
 var firstOnly = queueList.indexOf(data.user[0].userid);
 var queueListLength = queueList.length;
-
-  if(firstOnly != 1 || ifUser == -1)      
-  {
-   if(data.user[0].userid != USERID && queueListLength != 0)
-    {
+console.log(queueList, queueName);
+  if(firstOnly != 1 && queueListLength != 0)     
+  {       
 	console.log("removed");
   bot.remDj(data.user[0].userid);
-    }
   }}
 if(queue == true)
 {
@@ -943,7 +948,6 @@ clearTimeout(beginTimer);
 sayOnce = true;
 queueList.splice(checkQueue, 2);
 queueName.splice(checkName2, 1);
-console.log('DEBUGGING: ', queueList, queueName);
 }}
  })
 
@@ -977,6 +981,11 @@ bot.on('roomChanged', function (data) {
 
 //finds out who the currently playing dj's are.
 currentDjs = data.room.metadata.djs;
+
+
+
+//number of djs set when a dj gets on stage.
+djsOnStage = currentDjs.length;
 
 
 
@@ -1105,7 +1114,7 @@ var checkLeave = theUsersList.indexOf(data.user[0].userid);
 	theUsersList.splice(checkLeave, 2);
 	}	
 	
-
+/*
 var queueLeave = data.user[0].name;
 var leaveCheck = queueList.indexOf(queueLeave);         //uncomment this section of code to have the bot remove people that leave the room from the queue list.
 var leaveName = queueName.indexOf(queueLeave);
@@ -1114,6 +1123,7 @@ if(leaveCheck != -1);
 	queueList.splice(leaveCheck, 2);
 	queueName.splice(leaveName, 1);
 	}	
+*/
 
  })
 
