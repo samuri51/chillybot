@@ -1,4 +1,21 @@
+Features
+---------------
+Queue
+afk limit
+song length limit
+ban list
+song play limit
+vote skipping
+room greeting
+various other features
+ability to toggle just about everything
+very easy to use! entirely script based just download node, run the script and your off!
+
+
+
 This is a bot for straight_chillin11 on turntable.fm but the code can be used in any room.
+If you notice any bugs or have any questions, comments, or concerns feel free to open an issue
+and i will try to respond.
 
 -----------------------------------------------------------------------------------
 This bot uses the turntable api by alain gilbert which can be found here:
