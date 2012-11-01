@@ -9,8 +9,10 @@ vote skipping
 room greeting
 add songs to your bots playlist
 randomize your bots playlist
+autodjing when 3 or less djs or when no djs on stage
 skips stuck songs and gives others 20 seconds to skip
-various other features
+very noninstrusive, only enforces the queue when people are in the queue
+(very easy to make it enforce it all the time, just ask)
 ability to toggle just about everything
 very easy to use! entirely script based just download node, run the script and your off!
 
