@@ -7,6 +7,9 @@ ban list
 song play limit
 vote skipping
 room greeting
+add songs to your bots playlist
+randomize your bots playlist
+skips stuck songs and gives others 20 seconds to skip
 various other features
 ability to toggle just about everything
 very easy to use! entirely script based just download node, run the script and your off!
