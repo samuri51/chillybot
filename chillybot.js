@@ -1043,7 +1043,7 @@ detail = data.room.description;
 //starts up when a new person joins the room
 bot.on('registered', function (data) {
 
-if(queue == true)
+if(queue == true && djsOnStage == 5)
 {
 bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
 }
