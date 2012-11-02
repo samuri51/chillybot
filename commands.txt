@@ -28,7 +28,7 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /greetoff --> turns the room greeting off.
 
-/messageOn --> toggles on a message that the bot says every 10 minutes.
+/messageOn --> the bot says the room info in chat every 15 minutes.
 
 /messageOff --> toggles off the bots message.
 
