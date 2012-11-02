@@ -203,7 +203,7 @@ setInterval(repeatAfkMessage, 600 * 1000) //repeats every 10 minutes if afk is s
 repeatMessage = function () {
 if(MESSAGE == true)
   {
-bot.speak('Welcome to straight chillin the rules are blablabla.'); //set the message you wish the bot to repeat here i.e rules and such.
+bot.speak('Welcome to ' + roomName + ', the rules are simple, ' + detail); //set the message you wish the bot to repeat here i.e rules and such.
   };
 };
 
