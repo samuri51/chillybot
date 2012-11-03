@@ -14,12 +14,12 @@ var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
-var roomName = 'straight chillin' //put your room's name here.
+var roomName = 'your room name here' //put your room's name here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
-var botAutoDj = true // set to false to have your bot not automatically dj
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
+var getonstage = true;
 var myId = null;
 var detail = null;
 var current = null;
@@ -170,7 +170,7 @@ setInterval(afkCheck, 5000) //This repeats the check every five seconds.
 
 queueCheck15 = function(){
 //if queue is turned on once someone leaves the stage the first person
-//in line has 30 seconds to get on stage before being remove from the queue
+//in line has 60 seconds to get on stage before being remove from the queue
 if (queue == true && queueList.length != 0)
      {
 	 if(sayOnce == true && djsOnStage < 5)
@@ -342,14 +342,14 @@ bot.playlistAll(function(playlist) {
  current = data.room.metadata.djcount;
  if(current >= 1 && current <= 3 && queueList.length == 0)
  {
-   if(botAutoDj == true)
+   if(getonstage == true)
      {
  bot.addDj();
  current = null;
      }
  }
  
- if(current == 5)
+ if(current == 5 && getonstage == true)
  {
  bot.remDj();
  current = null;
@@ -360,7 +360,7 @@ bot.playlistAll(function(playlist) {
  
  //bot gets on stage and starts djing if no song is playing.
 bot.on('nosong', function (data) {
-if(botAutoDj == true)
+if(getonstage == true)
 {
 bot.addDj();
 }
@@ -584,8 +584,24 @@ bot.on('speak', function (data) {
   }
   else  if (text.match(/^\/mom$/)) 
     {
-    bot.speak('@'+name+' ur mom is fat');
-	}
+  var x = Math.floor(Math.random() * 4);
+  switch(x)
+  {
+  case 0:
+  bot.speak('@' + name + ' ur mom is fat');
+  break;
+  case 1:
+  bot.speak('@' + name + ' yo momma sooo fat....');
+  break;
+  case 2:
+  bot.speak('@' + name + ' damn yo momma fat');
+  break;
+  case 3:
+  bot.speak('@' + name + ' your mother is an outstanding member of the community ' +
+            'and well liked by all.');
+  break;
+  }
+    }
   else if (text.match(/^\/chilly$/)) 
    {
     bot.speak('@'+name+' is pleasantly chilled.');
@@ -599,6 +615,19 @@ bot.on('speak', function (data) {
    {
    bot.speak('i am no longer skipping my songs');
     skipOn = false;
+   }
+    else if (text.match(/^\/getonstage$/) && condition == true) 
+   {
+     if(getonstage == false)
+	 {
+	 bot.speak('I am now auto djing');
+	 getonstage = true;
+	 }
+	 else if(getonstage == true)
+	 {
+	 bot.speak('I am no longer auto djing');
+	 getonstage = false;
+	 }    
    }
   else if (text.match(/^\/beer$/))
     {
@@ -1171,5 +1200,5 @@ bot.on('endsong', function(data) {
 	  }}
  
 });
- 
+
 
