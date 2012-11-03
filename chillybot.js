@@ -556,7 +556,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
   {
    bot.speak('the commands are  /awesome, ' +
-             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /admincommands, /queuecommands');
+             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /getonstage, /admincommands, /queuecommands');
   }  
   else if(text.match(/^\/queuecommands/))
   {
