@@ -556,7 +556,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
   {
    bot.speak('the commands are  /awesome, ' +
-             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /getonstage, /admincommands, /queuecommands');
+             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /admincommands, /queuecommands');
   }  
   else if(text.match(/^\/queuecommands/))
   {
@@ -565,7 +565,7 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
   {
    bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-          '/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff', data.userid);
+          '/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage' , data.userid);
    condition = false;
   }  
   else if (text.match(/^\/tableflip/)) {
