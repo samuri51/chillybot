@@ -501,7 +501,7 @@ bot.on('speak', function (data) {
 	  if(votesLeft != 0 && checkIfMod == -1)
 	  {
       bot.speak("Current Votes for a song skip: " + voteCountSkip +
-          " Votes needed to skip the song: " + votesLeft);
+          " Votes needed to skip the song: " + HowManyVotesToSkip);
 	  }
 	    if(votesLeft == 0 && checkIfMod == -1)
 		 {
