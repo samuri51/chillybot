@@ -28,3 +28,7 @@ date: 10/29/2012
 date: 10/30/2012
 
 --> added the ability for a vote skipping option(toggles on and off)
+
+date: 11/02/2012
+
+--> added the ability to toggle the bots autodjing in real time

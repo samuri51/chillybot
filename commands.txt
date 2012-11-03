@@ -48,6 +48,8 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /voteskipon<space><number> --> turn the vote skip limit off.
 
+/getonstage --> the first time you type it, it turns autodjing off, the second time you type it, it turns it back on again.
+
 
 
 COMMANDS: (public)
