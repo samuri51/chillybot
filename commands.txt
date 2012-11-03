@@ -60,7 +60,7 @@ COMMANDS: (public)
 
 /awesome --> the bot awesomes the currently playing song if they are not already.
 
-/mom --> tells the person that used the command that their mom is fat.
+/mom --> tells the person something about their mom...
 
 /chilly --> tells the person that used the command that they are chilled.
 
