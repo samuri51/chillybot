@@ -32,3 +32,7 @@ date: 10/30/2012
 date: 11/02/2012
 
 --> added the ability to toggle the bots autodjing in real time
+
+date: 11/10/2012
+
+--> added the ability to ban users from djing

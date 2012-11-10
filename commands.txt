@@ -50,6 +50,10 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /getonstage --> the first time you type it, it turns autodjing off, the second time you type it, it turns it back on again.
 
+/banstage<space><@name> --> bans a user from playing songs on stage but does not kick them from the room
+
+/unbanstage<space><@name> --> removes the user specified from the stage banning list
+
 
 
 COMMANDS: (public)
