@@ -14,7 +14,7 @@ var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
-var roomName = 'your room name here' //put your room's name here.
+var roomName = 'straight chillin' //put your room's name here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
@@ -32,23 +32,24 @@ var song = null;
 var album = null;
 var genre = null;
 var skipOn = null;
-var queue = false;
+var queue = true;
 var snagSong = null;
 var lastSeen = {};
 var lastSeen1 = {};
 var lastSeen2 = {};
-var AFK = false;
-var MESSAGE = false;
+var AFK = true;
+var MESSAGE = true;
 var checkWhoIsDj;
 var GREET = true;
 var djs20 = [];
 var randomOnce = 0;
-var voteSkip = false;
+var voteSkip = true;
 var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
 var djsOnStage = null;
 var sayOnce = true;
 
+global.stageList = [];
 global.checkVotes = [];
 global.theUsersList = [];
 global.blackList = [];
@@ -565,7 +566,7 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
   {
    bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-          '/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage' , data.userid);
+          '/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.userid);
    condition = false;
   }  
   else if (text.match(/^\/tableflip/)) {
@@ -587,7 +588,7 @@ bot.on('speak', function (data) {
   var x = Math.floor(Math.random() * 4);
   switch(x)
   {
-  case 0:
+  case 0: 
   bot.speak('@' + name + ' ur mom is fat');
   break;
   case 1:
@@ -602,6 +603,10 @@ bot.on('speak', function (data) {
   break;
   }
     }
+	else if (text.match(/^\/dance$/)) 
+   {
+    bot.speak('http://www.gifbin.com/f/986269');
+   }
   else if (text.match(/^\/chilly$/)) 
    {
     bot.speak('@'+name+' is pleasantly chilled.');
@@ -798,11 +803,34 @@ bot.on('speak', function (data) {
 	 condition = false;
     }
   }    
+  else if(text.match('/banstage') && condition == true)
+  {  
+  var ban = data.text.slice(11);
+  var checkBan = stageList.indexOf(ban);
+  var checkUser = theUsersList.indexOf(ban);
+  if (checkBan == -1)
+    {
+      stageList.push(theUsersList[checkUser-1], theUsersList[checkUser]);
+	  bot.remDj(theUsersList[checkUser-1]);		  
+	  condition = false;
+    }
+  }  
+  else if(text.match('/unbanstage') && condition == true)
+  {
+  var ban2 = data.text.slice(13);
+  index = stageList.indexOf(ban2);
+   if(index != -1)
+   {    
+      stageList.splice(stageList[index-1], 2);	 
+	  console.log('DEBUGGING: ', blackList);
+      condition = false;	  
+	  index = null;
+    }
+  }     
   else if(text.match('/ban') && condition == true)
   {  
   var ban = data.text.slice(6);
   var checkBan = blackList.indexOf(ban);
-  var checkUser = theUsersList.indexOf(ban);
   var checkUser = theUsersList.indexOf(ban);
   if (checkBan == -1)
   {
@@ -822,7 +850,7 @@ bot.on('speak', function (data) {
       condition = false;	  
 	  index = null;
     }
-  }   
+  }
 });
 
 
@@ -988,6 +1016,15 @@ sayOnce = true;
 queueList.splice(checkQueue, 2);
 queueName.splice(checkName2, 1);
 }}
+
+//checks to see if user is on the banned from stage list, if they are they are removed from stage
+   for (var g=0; g<stageList.length; g++) {
+    if (data.user[0].userid == stageList[g]) {
+      bot.remDj(data.user[0].userid);
+	  bot.pm('You are banned from djing', data.user[0].userid);
+      break;
+    }
+  }
  })
 
  
@@ -1102,7 +1139,8 @@ var checkList = theUsersList.indexOf(data.user[0].userid);
       bot.bootUser(roomjoin.userid, 'You are on the banlist.');
       break;
     }
-  }
+  }  
+  
 });
 
 
