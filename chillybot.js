@@ -808,7 +808,7 @@ bot.on('speak', function (data) {
   var ban = data.text.slice(11);
   var checkBan = stageList.indexOf(ban);
   var checkUser = theUsersList.indexOf(ban);
-  if (checkBan == -1)
+  if (checkBan == -1 && checkUser != -1)
     {
       stageList.push(theUsersList[checkUser-1], theUsersList[checkUser]);
 	  bot.remDj(theUsersList[checkUser-1]);		  
@@ -832,7 +832,7 @@ bot.on('speak', function (data) {
   var ban = data.text.slice(6);
   var checkBan = blackList.indexOf(ban);
   var checkUser = theUsersList.indexOf(ban);
-  if (checkBan == -1)
+  if (checkBan == -1 && checkUser != -1)
   {
       blackList.push(theUsersList[checkUser-1], theUsersList[checkUser]);
 	  bot.boot(theUsersList[checkUser-1]);		  
