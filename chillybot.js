@@ -19,7 +19,7 @@ var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
-var spamLimit = 4; //number of times a user can spam being kicked off the stage within 10 secs
+var spamLimit = 5; //number of times a user can spam being kicked off the stage within 10 secs
 var getonstage = true;
 var myId = null;
 var detail = null;
@@ -50,6 +50,7 @@ var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
 var djsOnStage = null;
 var sayOnce = true;
+var timer = null;
 
 
 
@@ -1081,16 +1082,24 @@ if(queue == true)
 				break;
 			}
 	}
+	
+//if person rejoins before timer is up, clear the timer.
+if(timer != null)
+	{
+		clearTimeout(timer);
+		timer = null;
+	}
 
 //clears a persons spam count after 10 seconds
-var timer = setTimeout(function()
+timer = setTimeout(function()
 	{
+		timer = null;
 		people[data.user[0].userid] = { spamCount: 0 };
 	}, 10 * 1000);
 	
 //if person exceeds spam count within 10 seconds they are kicked
 if(people[data.user[0].userid].spamCount >= spamLimit)
-	{
+	{		
 		bot.boot(data.user[0].userid, 'stop spamming');
 	}
 	
