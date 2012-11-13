@@ -132,6 +132,8 @@ PM COMMANDS: (public)
 
 /commands --> pm's the user a list of the bots public commands.
 
+/pmcommands --> tells the sender the pm commands
+
 
 
 
