@@ -13,7 +13,7 @@
 var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';    //set the roomid of the room you want the bot to go to here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';       //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
@@ -77,7 +77,6 @@ global.beginTimer = null;
 var bot = new Bot(AUTH, USERID, ROOMID);
 //bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
 bot.listen(xxxx, 'xxx.x.x.x');
-
 
 
 //prints all debugging information to the console in real time (alot of data)
@@ -827,7 +826,8 @@ bot.on('speak', function (data) {
 	{  
 		var list3 = queueList.indexOf(data.name);
 		var list10 = currentDjs.indexOf(data.userid)
-		if(list3 == -1 && list10 == -1)
+		var checkStageList = stageList.indexOf(data.userid);
+		if(list3 == -1 && list10 == -1 && checkStageList == -1)
 			{
 				queueList.push(data.name, data.userid);
 				queueName.push(data.name);
@@ -1055,6 +1055,16 @@ if(queue == true)
 			console.log("removed");
 			bot.remDj(data.user[0].userid);
 			++people[data.user[0].userid].spamCount;
+			clearTimeout(timer);
+			if(timer != null)
+					{						
+						clearTimeout(timer);
+						timer = null;
+					}
+				timer = setTimeout(function()
+					{
+						people[data.user[0].userid] = { spamCount: 0 };
+					}, 10 * 1000);	
 		}
 	}
 if(queue == true)
@@ -1079,21 +1089,24 @@ if(queue == true)
 				bot.remDj(data.user[0].userid);
 				bot.pm('You are banned from djing', data.user[0].userid);
 				++people[data.user[0].userid].spamCount;
+				if(timer != null)
+					{						
+						clearTimeout(timer);
+						timer = null;
+					}
+				timer = setTimeout(function()
+					{
+						people[data.user[0].userid] = { spamCount: 0 };
+					}, 10 * 1000);	
 				break;
 			}
 	}
-
-
-//clears a persons spam count after 10 seconds
-timer = setTimeout(function()
-	{
-		people[data.user[0].userid] = { spamCount: 0 };
-	}, 10 * 1000);
+	
+	
 	
 //if person exceeds spam count within 10 seconds they are kicked
 if(people[data.user[0].userid].spamCount >= spamLimit)
-	{	
-		clearTimeout(timer);
+	{		
 		bot.boot(data.user[0].userid, 'stop spamming');
 	}
 	
