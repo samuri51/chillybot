@@ -13,12 +13,13 @@
 var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';    //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
+var spamLimit = 5; //number of times a user can spam being kicked off the stage within 10 secs
 var getonstage = true;
 var myId = null;
 var detail = null;
@@ -37,6 +38,7 @@ var snagSong = null;
 var lastSeen = {};
 var lastSeen1 = {};
 var lastSeen2 = {};
+var people = [];
 var AFK = true;
 var MESSAGE = true;
 var checkWhoIsDj;
@@ -49,6 +51,9 @@ var votesLeft = HowManyVotesToSkip;
 var djsOnStage = null;
 var sayOnce = true;
 
+
+
+global.userIds = [];
 global.stageList = [];
 global.checkVotes = [];
 global.theUsersList = [];
@@ -1048,6 +1053,7 @@ if(queue == true)
 		{       
 			console.log("removed");
 			bot.remDj(data.user[0].userid);
+			++people[data.user[0].userid].spamCount;
 		}
 	}
 if(queue == true)
@@ -1071,9 +1077,23 @@ if(queue == true)
 			{
 				bot.remDj(data.user[0].userid);
 				bot.pm('You are banned from djing', data.user[0].userid);
+				++people[data.user[0].userid].spamCount;
 				break;
 			}
 	}
+
+//clears a persons spam count after 10 seconds
+var timer = setTimeout(function()
+	{
+		people[data.user[0].userid] = { spamCount: 0 };
+	}, 10 * 1000);
+	
+//if person exceeds spam count within 10 seconds they are kicked
+if(people[data.user[0].userid].spamCount >= spamLimit)
+	{
+		bot.boot(data.user[0].userid, 'stop spamming');
+	}
+	
  })
 
  
@@ -1225,7 +1245,8 @@ for (var i = 0; i < currentPlayers.length; i++)
 		djs20[currentPlayers[i]] = { nbSong: 0 };
 	}
 
-
+  
+  
   
 //list of escorts, users, and moderators is reset    
 escortList = [];
@@ -1251,8 +1272,20 @@ for (var i=0; i<users.length; i++)
 	{
 		var user = users[i];
 		user.lastActivity = user.loggedIn = new Date();
-		theUsersList.push(user.userid, user.name);	
+		theUsersList.push(user.userid, user.name);
+		userIds.push(user.userid);
 	}
+
+
+	
+	
+//sets everyones spam count to zero	
+for (var z = 0; z < userIds.length; z++) 
+	{
+		people[userIds[z]] = { spamCount: 0 };
+	}
+	
+
 });
 
 
@@ -1296,6 +1329,10 @@ for (var i=0; i<blackList.length; i++)
 				break;
 			}
 	}  
+
+	
+//sets new persons spam count to zero
+people[data.user[0].userid] = { spamCount: 0 };
   
 });
 
@@ -1337,7 +1374,7 @@ bot.on('deregistered', function (data) {
 delete lastSeen[data.user[0].userid];
 delete lastSeen1[data.user[0].userid];
 delete lastSeen2[data.user[0].userid];
-
+delete people[data.user[0].userid];
 
 
 //updates the users list when a user leaves the room.
