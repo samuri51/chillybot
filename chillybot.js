@@ -1057,14 +1057,14 @@ if(queue == true)
 			++people[data.user[0].userid].spamCount;
 			clearTimeout(timer);
 			if(timer != null)
-					{						
-						clearTimeout(timer);
-						timer = null;
-					}
-				timer = setTimeout(function()
-					{
-						people[data.user[0].userid] = { spamCount: 0 };
-					}, 10 * 1000);	
+				{						
+					clearTimeout(timer);
+					timer = null;
+				}
+			timer = setTimeout(function()
+				{
+					people[data.user[0].userid] = { spamCount: 0 };
+				}, 10 * 1000);	
 		}
 	}
 if(queue == true)
