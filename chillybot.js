@@ -1087,7 +1087,7 @@ if(queue == true)
 		if (data.user[0].userid == stageList[g])
 			{
 				bot.remDj(data.user[0].userid);
-				bot.pm('You are banned from djing', data.user[0].userid);
+				bot.speak('@' +data.user[0].name+ ' you are banned from djing');
 				++people[data.user[0].userid].spamCount;
 				if(timer != null)
 					{						
@@ -1396,9 +1396,11 @@ delete people[data.user[0].userid];
 //updates the users list when a user leaves the room.
 var user = data.user[0].userid;
 var checkLeave = theUsersList.indexOf(data.user[0].userid);
+var checkUserIds = userIds.indexOf(data.user[0].userid);
 if (checkLeave != -1)
 	{
 		theUsersList.splice(checkLeave, 2);
+		userIds.splice(checkUserIds, 1);
 	}	
  })
 
