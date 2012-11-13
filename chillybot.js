@@ -1055,6 +1055,30 @@ queueName.splice(checkName2, 1);
 	 condition = false;
     }
   } 
+  else if(text.match('/banstage') && condition == true)
+  {  
+  var ban = data.text.slice(11);
+  var checkBan = stageList.indexOf(ban);
+  var checkUser = theUsersList.indexOf(ban);
+  if (checkBan == -1 && checkUser != -1)
+    {
+      stageList.push(theUsersList[checkUser-1], theUsersList[checkUser]);
+	  bot.remDj(theUsersList[checkUser-1]);		  
+	  condition = false;
+    }
+  }  
+  else if(text.match('/unbanstage') && condition == true)
+  {
+  var ban2 = data.text.slice(13);
+  index = stageList.indexOf(ban2);
+   if(index != -1)
+   {    
+      stageList.splice(stageList[index-1], 2);	 
+	  console.log('DEBUGGING: ', blackList);
+      condition = false;	  
+	  index = null;
+    }
+  }    
   else if(text.match('/ban') && condition == true)
   {  
   var ban = data.text.slice(6);
@@ -1078,31 +1102,7 @@ queueName.splice(checkName2, 1);
       condition = false;	  
 	  index = null;
     }
-  }
- else if(text.match('/banstage') && condition == true)
-  {  
-  var ban = data.text.slice(11);
-  var checkBan = stageList.indexOf(ban);
-  var checkUser = theUsersList.indexOf(ban);
-  if (checkBan == -1 && checkUser != -1)
-    {
-      stageList.push(theUsersList[checkUser-1], theUsersList[checkUser]);
-	  bot.remDj(theUsersList[checkUser-1]);		  
-	  condition = false;
-    }
-  }  
-  else if(text.match('/unbanstage') && condition == true)
-  {
-  var ban2 = data.text.slice(13);
-  index = stageList.indexOf(ban2);
-   if(index != -1)
-   {    
-      stageList.splice(stageList[index-1], 2);	 
-	  console.log('DEBUGGING: ', blackList);
-      condition = false;	  
-	  index = null;
-    }
-  }       
+  }    
   else if(text.match(/^\/commands/))
   {
    bot.pm('the commands are  /awesome, ' +
@@ -1111,6 +1111,10 @@ queueName.splice(checkName2, 1);
   else if(text.match(/^\/queuecommands/))
   {
    bot.pm('the commands are /queue, /removefromqueue, /removeme, /addme, /queueOn, /queueOff, /bumptop', data.senderid);
+  }  
+  else if(text.match(/^\/pmcommands/) && condition == true)
+  {
+   bot.pm('/admincommands, /queuecommands, /commands, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly', data.senderid);
   }  
   else if(text.match('/admincommands') && condition == true)
   {
