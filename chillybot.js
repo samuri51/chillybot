@@ -654,7 +654,7 @@ bot.on('speak', function (data) {
   }
   else if(data.text == '/stopescortme')
   {
-  bot.speak('@' + name + ' you will no longer be escorted after your next song');
+  bot.speak('@' + name + ' you will no longer be escorted after you play your song');
   var escortIndex = escortList.indexOf(data.userid);
   if(escortIndex != -1)
   {
@@ -1103,6 +1103,15 @@ queueName.splice(checkName2, 1);
 	  index = null;
     }
   }    
+  else if(data.text == '/stopescortme')
+  {
+  bot.pm('you will no longer be escorted after you play your song', data.senderid);
+  var escortIndex = escortList.indexOf(data.senderid);
+  if(escortIndex != -1)
+  {
+  escortList.splice(escortIndex, 1);
+  }
+  }
   else if (data.text == '/escortme') 
    {	
     var djListIndex = currentDjs.indexOf(data.senderid);
@@ -1124,7 +1133,7 @@ queueName.splice(checkName2, 1);
   }  
   else if(text.match(/^\/pmcommands/) && condition == true)
   {
-   bot.pm('/admincommands, /queuecommands, /commands, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme', data.senderid);
+   bot.pm('/admincommands, /queuecommands, /commands, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme', data.senderid);
   }  
   else if(text.match('/admincommands') && condition == true)
   {
