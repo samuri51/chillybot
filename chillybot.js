@@ -1110,7 +1110,7 @@ queueName.splice(checkName2, 1);
 	if(djListIndex != -1 && escortmeIndex == -1)
 	{
 	escortList.push(data.senderid);	
-	bot.pm('@' + name1 + ' you will be escorted after your next song', data.senderid);
+	bot.pm('@' + theUsersList[name1] + ' you will be escorted after your next song', data.senderid);
 	}
    }
   else if(text.match(/^\/commands/))
