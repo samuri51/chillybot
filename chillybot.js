@@ -1330,7 +1330,7 @@ bot.on('endsong', function(data) {
 	  if(data.room.metadata.current_dj == escortList[i]){
 	  var lookname = theUsersList.indexOf(data.room.metadata.current_dj) + 1;
 	  bot.remDj(escortList[i]);
-	  bot.speak('@'+theUsersList[lookname]+ 'had enabled escortme');
+	  bot.speak('@'+theUsersList[lookname]+ ' had enabled escortme');
 	  var removeFromList = escortList.indexOf(escortList[i]);
 	  escortList.splice(removeFromList, 1);
 	  }}
