@@ -1028,6 +1028,7 @@ queueName.splice(checkName2, 1);
 //checks when the bot recieves a pm
  bot.on('pmmed', function (data) {
  var text = data.text;
+ var name1 = theUsersList.indexOf(data.senderid) + 1;
  //checks to see if the speaker is a moderator or not.
    var modIndex = modList.indexOf(data.senderid);  
     if (modIndex != -1)
@@ -1039,7 +1040,6 @@ queueName.splice(checkName2, 1);
 	condition = false;
 	}	
   if (text.match(/^\/chilly$/)) {
-	var name1 = theUsersList.indexOf(data.senderid) + 1;
     bot.speak('@'+theUsersList[name1]+' is pleasantly chilled.');
   }
   else if (text.match(/^\/m/) && condition == true) {
@@ -1103,6 +1103,16 @@ queueName.splice(checkName2, 1);
 	  index = null;
     }
   }    
+  else if (data.text == '/escortme') 
+   {	
+    var djListIndex = currentDjs.indexOf(data.userid);
+	var escortmeIndex = escortList.indexOf(data.userid);
+	if(djListIndex != -1 && escortmeIndex == -1)
+	{
+	escortList.push(data.userid);	
+	bot.pm('@' + name1 + ' you will be escorted after your next song', data.senderid);
+	}
+   }
   else if(text.match(/^\/commands/))
   {
    bot.pm('the commands are  /awesome, ' +
@@ -1114,7 +1124,7 @@ queueName.splice(checkName2, 1);
   }  
   else if(text.match(/^\/pmcommands/) && condition == true)
   {
-   bot.pm('/admincommands, /queuecommands, /commands, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly', data.senderid);
+   bot.pm('/admincommands, /queuecommands, /commands, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme', data.senderid);
   }  
   else if(text.match('/admincommands') && condition == true)
   {
@@ -1306,10 +1316,12 @@ bot.on('endsong', function(data) {
     }
 	
 		
-     //iterates through the escort list and escorts all djs on the list off the stage.
+     //iterates through the escort list and escorts all djs on the list off the stage.	  
 	  for (var i = 0; i<escortList.length; i++){
 	  if(data.room.metadata.current_dj == escortList[i]){
+	  var lookname = theUsersList.indexOf(data.room.metadata.current_dj) + 1;
 	  bot.remDj(escortList[i]);
+	  bot.speak('@'+theUsersList[lookname]+ 'had enabled escortme');
 	  var removeFromList = escortList.indexOf(escortList[i]);
 	  escortList.splice(removeFromList, 1);
 	  }}
