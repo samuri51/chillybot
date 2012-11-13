@@ -69,7 +69,7 @@ global.beginTimer = null;
 
 
 var bot = new Bot(AUTH, USERID, ROOMID);
-bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
+//bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
 bot.listen(xxxx, 'xxx.x.x.x');
 
 
@@ -438,6 +438,10 @@ bot.on('speak', function (data) {
             });		
     }			
   }  
+  else if(text.match('turntable.fm/') && !text.match('turntable.fm/straight_chillin11') && modIndex == -1)
+  {
+   bot.boot(data.userid, 'do not advertise other rooms here'); 
+  }
   else if(text.match('/bumptop') && condition == true)
   {
     if(queue == true)
@@ -792,17 +796,7 @@ bot.on('speak', function (data) {
   else if (text.match(/^\/queueOff$/) && condition == true) {  
     bot.speak('the queue is now inactive.');
 	queue = false;
-  }
-   else if(text.match('/stage') && condition == true)
-  {  
-  var ban = data.text.slice(8);
-  var checkUser = theUsersList.indexOf(ban) -1;
-  if (checkUser != -1)
-  {
-     bot.remDj(theUsersList[checkUser]);
-	 condition = false;
-    }
-  }    
+  }  
   else if(text.match('/banstage') && condition == true)
   {  
   var ban = data.text.slice(11);
@@ -1034,16 +1028,95 @@ queueName.splice(checkName2, 1);
 //checks when the bot recieves a pm
  bot.on('pmmed', function (data) {
  var text = data.text;
+ //checks to see if the speaker is a moderator or not.
+   var modIndex = modList.indexOf(data.senderid);  
+    if (modIndex != -1)
+	{
+	condition = true;
+	}
+	else
+	{
+	condition = false;
+	}	
   if (text.match(/^\/chilly$/)) {
-    bot.speak('@'+name+' is pleasantly chilled.');
+	var name1 = theUsersList.indexOf(data.senderid) + 1;
+    bot.speak('@'+theUsersList[name1]+' is pleasantly chilled.');
   }
-  else if (text.match(/^\/m/)) {
+  else if (text.match(/^\/m/) && condition == true) {
     bot.speak(text.substring(3));	
   }  
+  else if(text.match('/stage') && condition == true)
+  {  
+  var ban = data.text.slice(8);
+  var checkUser = theUsersList.indexOf(ban) -1;
+  if (checkUser != -1)
+  {
+     bot.remDj(theUsersList[checkUser]);
+	 condition = false;
+    }
+  } 
+  else if(text.match('/ban') && condition == true)
+  {  
+  var ban = data.text.slice(6);
+  var checkBan = blackList.indexOf(ban);
+  var checkUser = theUsersList.indexOf(ban);
+  if (checkBan == -1 && checkUser != -1)
+  {
+      blackList.push(theUsersList[checkUser-1], theUsersList[checkUser]);
+	  bot.boot(theUsersList[checkUser-1]);		  
+	  condition = false;
+    }
+  }  
+  else if(text.match('/unban') && condition == true)
+  {
+  var ban2 = data.text.slice(8);
+  index = blackList.indexOf(ban2);
+   if(index != -1)
+   {    
+      blackList.splice(blackList[index-1], 2);	 
+	  console.log('DEBUGGING: ', blackList);
+      condition = false;	  
+	  index = null;
+    }
+  }
+ else if(text.match('/banstage') && condition == true)
+  {  
+  var ban = data.text.slice(11);
+  var checkBan = stageList.indexOf(ban);
+  var checkUser = theUsersList.indexOf(ban);
+  if (checkBan == -1 && checkUser != -1)
+    {
+      stageList.push(theUsersList[checkUser-1], theUsersList[checkUser]);
+	  bot.remDj(theUsersList[checkUser-1]);		  
+	  condition = false;
+    }
+  }  
+  else if(text.match('/unbanstage') && condition == true)
+  {
+  var ban2 = data.text.slice(13);
+  index = stageList.indexOf(ban2);
+   if(index != -1)
+   {    
+      stageList.splice(stageList[index-1], 2);	 
+	  console.log('DEBUGGING: ', blackList);
+      condition = false;	  
+	  index = null;
+    }
+  }       
   else if(text.match(/^\/commands/))
   {
    bot.pm('the commands are  /awesome, ' +
              ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /admincommands, /queuecommands', data.senderid);
+  }  
+  else if(text.match(/^\/queuecommands/))
+  {
+   bot.pm('the commands are /queue, /removefromqueue, /removeme, /addme, /queueOn, /queueOff, /bumptop', data.senderid);
+  }  
+  else if(text.match('/admincommands') && condition == true)
+  {
+   bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+          '/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.senderid);
+   condition = false;
   }  
  });
  
