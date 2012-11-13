@@ -561,7 +561,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
   {
    bot.speak('the commands are  /awesome, ' +
-             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /admincommands, /queuecommands');
+             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands');
   }  
   else if(text.match(/^\/queuecommands/))
   {
@@ -687,6 +687,18 @@ bot.on('speak', function (data) {
   num = 0;
    }
   }  
+  else if(text.match(/^\/dive/))
+  {
+    var checkDj = currentDjs.indexOf(data.userid);
+	if(checkDj != -1)
+	{
+		bot.remDj(data.userid);
+	}
+	else
+	{
+		bot.pm('you must be on stage to use that command.', data.userid);
+	}
+  }
   else if(text.match('/surf'))
    {
    bot.speak('http://25.media.tumblr.com/tumblr_mce8z6jN0d1qbzqexo1_r1_500.gif');
@@ -1125,8 +1137,8 @@ queueName.splice(checkName2, 1);
   else if(text.match(/^\/commands/))
   {
    bot.pm('the commands are  /awesome, ' +
-             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /admincommands, /queuecommands', data.senderid);
-  }  
+             ' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands', data.senderid);
+  }   
   else if(text.match(/^\/queuecommands/))
   {
    bot.pm('the commands are /queue, /removefromqueue, /removeme, /addme, /queueOn, /queueOff, /bumptop', data.senderid);
