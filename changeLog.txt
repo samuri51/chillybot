@@ -36,3 +36,7 @@ date: 11/02/2012
 date: 11/10/2012
 
 --> added the ability to ban users from djing
+
+date: 11/12/2012
+
+--> added alot of command to the pm.
