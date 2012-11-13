@@ -1105,11 +1105,11 @@ queueName.splice(checkName2, 1);
   }    
   else if (data.text == '/escortme') 
    {	
-    var djListIndex = currentDjs.indexOf(data.userid);
-	var escortmeIndex = escortList.indexOf(data.userid);
+    var djListIndex = currentDjs.indexOf(data.senderid);
+	var escortmeIndex = escortList.indexOf(data.senderid);
 	if(djListIndex != -1 && escortmeIndex == -1)
 	{
-	escortList.push(data.userid);	
+	escortList.push(data.senderid);	
 	bot.pm('@' + name1 + ' you will be escorted after your next song', data.senderid);
 	}
    }
