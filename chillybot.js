@@ -1082,24 +1082,18 @@ if(queue == true)
 				break;
 			}
 	}
-	
-//if person rejoins before timer is up, clear the timer.
-if(timer != null)
-	{
-		clearTimeout(timer);
-		timer = null;
-	}
+
 
 //clears a persons spam count after 10 seconds
 timer = setTimeout(function()
 	{
-		timer = null;
 		people[data.user[0].userid] = { spamCount: 0 };
 	}, 10 * 1000);
 	
 //if person exceeds spam count within 10 seconds they are kicked
 if(people[data.user[0].userid].spamCount >= spamLimit)
-	{		
+	{	
+		clearTimeout(timer);
 		bot.boot(data.user[0].userid, 'stop spamming');
 	}
 	
