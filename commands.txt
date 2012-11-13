@@ -94,6 +94,8 @@ COMMANDS: (public)
 
 /skip --> votes for the currently playing dj to be removed from stage.
 
+/dive --> removes you from stage if your on stage.
+
 
 
 
