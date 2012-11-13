@@ -40,3 +40,8 @@ date: 11/10/2012
 date: 11/12/2012
 
 --> added alot of command to the pm.
+
+date: 11/13/2012
+
+--> added anti spam protection, bot now kicks if a person gets removed from stage 5 times 
+in 10 seconds
