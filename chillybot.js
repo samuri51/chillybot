@@ -603,7 +603,7 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.userid);
+			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.userid);
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
@@ -1231,7 +1231,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.senderid);
+				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.senderid);
 		condition = false;
 	}  
  });
