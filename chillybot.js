@@ -1488,9 +1488,9 @@ bot.on('endsong', function(data) {
 		{
 			var checklist33 = theUsersList.indexOf(djId) + 1;
 			var checklist34 = modList.indexOf(djId);
-			if(checklist34 == -1 && queue == true)
+			if(checklist34 == -1 && queue == true) //only enforces when queue is turned on, does not remove moderators
 				{
-					if(djId != USERID && queueList.length != 0)
+					if(djId != USERID) //&& queueList.length != 0) //uncomment this to only enforce the song limit when there are people in the queue
 						{
 							bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs'); 
 							bot.remDj(djId);
