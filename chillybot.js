@@ -13,7 +13,7 @@
 var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';       //set the roomid of the room you want the bot to go to here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
@@ -51,13 +51,16 @@ var votesLeft = HowManyVotesToSkip;
 var djsOnStage = null;
 var sayOnce = true;
 var timer = null;
+var artist = null;
 
-
-
+//banned artist list (you can also add songs)
+global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain' , 'katy perry', 'eminem', 'porter robinson',
+ 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia'];
 global.userIds = [];
 global.stageList = [];
 global.checkVotes = [];
 global.theUsersList = [];
+//banned users list, put userids in string form here for permanent banning.
 global.blackList = [];
 global.modList = [];
 global.escortList = [];
@@ -77,6 +80,7 @@ global.beginTimer = null;
 var bot = new Bot(AUTH, USERID, ROOMID);
 //bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
 bot.listen(xxxx, 'xxx.x.x.x');
+
 
 
 //prints all debugging information to the console in real time (alot of data)
@@ -322,11 +326,14 @@ bot.on('newsong', function (data){
  checkVotes = [];
  voteCountSkip = 0;
  votesLeft = HowManyVotesToSkip;
-
+ 
+ 
+ 
  //procedure for getting song tags
    song = data.room.metadata.current_song.metadata.song;
    album = data.room.metadata.current_song.metadata.album; 
    genre = data.room.metadata.current_song.metadata.genre;
+   artist = data.room.metadata.current_song.metadata.artist;
  
  
  
@@ -382,6 +389,23 @@ if(snagSong == true)
 		bot.remDj();
 		current = null;
 	} 
+	
+	
+ 
+  //removes current dj from stage if they play a banned song or artist.
+ if(bannedArtists.length != 0)
+	{
+		for(var j = 0; j<bannedArtists.length; j++)
+			{
+				if(artist.toLowerCase().match(bannedArtists[j]) || song.toLowerCase().match(bannedArtists[j]))
+					{
+						var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
+						bot.remDj(checkWhoIsDj);
+						bot.speak('@' +theUsersList[nameDj]+ ' you have played a banned artist.');
+						break;
+					}
+			}
+	}
 });
 
 
@@ -603,7 +627,7 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.userid);
+			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.userid);
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
@@ -708,7 +732,7 @@ bot.on('speak', function (data) {
 	}
   else if(data.text == '/getTags')
 	{
-		bot.speak('song name: ' + song + ', album: ' + album + ', genre: ' + genre);
+		bot.speak('artist name: '+artist+ ', song name: ' + song + ', album: ' + album + ', genre: ' + genre);
 	}
   else if(data.text == '/dice')
 	{
@@ -1231,7 +1255,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.senderid);
+				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.senderid);
 		condition = false;
 	}  
  });
