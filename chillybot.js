@@ -444,13 +444,7 @@ bot.on('speak', function (data) {
 	if(AFK == true);
 		{
 			justSaw(data.userid);
-		}	
-	if(AFK == true);
-		{
 			justSaw1(data.userid);
-		}	
-	if(AFK == true);
-		{
 			justSaw2(data.userid);
 		}	
 	
@@ -626,8 +620,8 @@ bot.on('speak', function (data) {
 	}  
   else if(text.match('/admincommands') && condition == true)
 	{
-		bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.userid);
+		bot.pm('the mod commands are /ban @, /unban, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @' , data.userid);
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
@@ -933,14 +927,8 @@ bot.on('speak', function (data) {
 bot.on('update_votes', function (data){
 	if(AFK == true);
 		{
-			justSaw(data.room.metadata.votelog[0][0]);
-		}
-	if(AFK == true);
-		{
-			justSaw1(data.room.metadata.votelog[0][0]);
-		}	
-	if(AFK == true);
-		{
+			justSaw(data.room.metadata.votelog[0][0]);	
+			justSaw1(data.room.metadata.votelog[0][0]);		
 			justSaw2(data.room.metadata.votelog[0][0]);
 		}	
 	
@@ -952,13 +940,7 @@ bot.on('snagged', function (data) {
 	if(AFK == true);
 		{
 			justSaw(data.userid);
-		}
-	if(AFK == true);
-		{
 			justSaw1(data.userid);
-		}	
-	if(AFK == true);
-		{
 			justSaw2(data.userid);
 		}	
  })
@@ -1034,13 +1016,7 @@ djs20[data.user[0].userid] = { nbSong: 0 };
 if(AFK == true);
 	{
 		justSaw(data.user[0].userid);
-	}	
-if(AFK == true);
-	{
 		justSaw1(data.user[0].userid);
-	}	
-if(AFK == true);
-	{
 		justSaw2(data.user[0].userid);
 	}		
 	
@@ -1196,6 +1172,16 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 				index = null;
 			}
 	}    
+	else if(text.match('/userid') && condition == true)
+	{  
+		var ban = data.text.slice(9);
+		var checkUser = theUsersList.indexOf(ban);
+		if (checkUser != -1)
+			{
+				bot.pm(theUsersList[checkUser-1], data.senderid);		  
+				condition = false;
+			}
+	}  
   else if(text.match('/ban') && condition == true)
 	{  
 		var ban = data.text.slice(6);
@@ -1254,8 +1240,8 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if(text.match('/admincommands') && condition == true)
 	{
-		bot.pm('the mod commands are /ban, /unban, /skipon, /skipoff, /stage, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff #, /greeton, /greetoff, /getonstage, /banstage, /unbanstage' , data.senderid);
+		bot.pm('the mod commands are /ban @, /unban, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @' , data.senderid);
 		condition = false;
 	}  
  });
