@@ -49,3 +49,8 @@ in 10 seconds
 date: 11/16/2012
 
 --> added the ability to ban artists and songs, simply add them in to the bannedArtists array(must be lower case)
+
+date: 11/17/2012
+
+--> added vip list, this will kick everyone on stage other than the vip whos userid is in this array, do not add userids to this
+array unless you want everyone else to be kicked.
