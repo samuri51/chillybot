@@ -15,6 +15,7 @@ var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
+var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only the part that comes after turntable.fm/
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
@@ -490,7 +491,7 @@ bot.on('speak', function (data) {
 						});		
 				}			
 	}  
-  else if(text.match('turntable.fm/') && !text.match('turntable.fm/straight_chillin11') && modIndex == -1)
+  else if(text.match('turntable.fm/') && !text.match('turntable.fm/' + ttRoomName) && modIndex == -1)
 	{
 		bot.boot(data.userid, 'do not advertise other rooms here'); 
 	}
