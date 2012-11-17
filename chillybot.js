@@ -10,10 +10,13 @@
 */
 
 
+/*******************************SetUp*****************************************************************************/
+
+
 var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';  //set the roomid of the room you want the bot to go to here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only the part that comes after turntable.fm/
 var playLimit = 4; //set the playlimit here (default 4 songs)
@@ -21,6 +24,23 @@ var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
 var spamLimit = 5; //number of times a user can spam being kicked off the stage within 10 secs
+
+global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain' , 'katy perry', 'eminem', 'porter robinson', //banned artist list (you can also add songs)
+ 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia', 'infected mushroom'];
+global.blackList = ['13131313131', '1313131313131']; //banned users list, put userids in string form here for permanent banning.
+global.stageList = []; //put userids in here to ban from djing permanently
+
+var bot = new Bot(AUTH, USERID, ROOMID); //do not touch
+bot.listen(xxxx, 'xxx.x.x.x');  //set the port and ip that you want the bot use here.
+
+bot.debug = false; //prints all debugging information to the console in real time (alot of data)
+
+
+/************************************EndSetUp**********************************************************************/
+
+
+
+
 var getonstage = true;
 var myId = null;
 var detail = null;
@@ -54,15 +74,9 @@ var sayOnce = true;
 var timer = null;
 var artist = null;
 
-//banned artist list (you can also add songs)
-global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain' , 'katy perry', 'eminem', 'porter robinson',
- 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia', 'infected mushroom'];
 global.userIds = [];
-global.stageList = [];
 global.checkVotes = [];
 global.theUsersList = [];
-//banned users list, put userids in string form here for permanent banning.
-global.blackList = [];
 global.modList = [];
 global.escortList = [];
 global.currentDjs = [];
@@ -76,16 +90,6 @@ global.lastdj = null;
 global.checkLast = null;
 global.songLimitTimer = null;
 global.beginTimer = null;
-
-
-var bot = new Bot(AUTH, USERID, ROOMID);
-//bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
-bot.listen(xxxx, 'xxx.x.x.x');
-
-
-//prints all debugging information to the console in real time (alot of data)
-bot.debug = false;
-
 
 
 //updates the afk list
