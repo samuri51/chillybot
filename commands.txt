@@ -56,6 +56,8 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /userid<space><@name> --> get the userid of the person whos name you enter
 
+/dive --> removes you from stage
+
 
 
 COMMANDS: (public)
