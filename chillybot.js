@@ -19,7 +19,7 @@ var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only the part that comes after turntable.fm/
-var playLimit = 4; //set the playlimit here (default 4 songs)
+var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no limit
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
@@ -1490,7 +1490,7 @@ bot.on('endsong', function(data) {
 			var checklist34 = modList.indexOf(djId);
 			if(checklist34 == -1 && queue == true) //only enforces when queue is turned on, does not remove moderators
 				{
-					if(djId != USERID) //&& queueList.length != 0) //uncomment this to only enforce the song limit when there are people in the queue
+					if(djId != USERID && playLimit != 0) //&& queueList.length != 0) //uncomment this to only enforce the song limit when there are people in the queue
 						{
 							bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs'); 
 							bot.remDj(djId);
