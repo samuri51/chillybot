@@ -33,9 +33,9 @@ global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe'];	//banned us
 global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe'];//put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
 					
 global.vipList = []; /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
-						want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
-						if there is only one vip, add the bots userid as well so that the vip can hear their own music.
-					 */
+                        want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
+                        if there is only one vip, add the bots userid as well so that the vip can hear their own music.
+                     */
 
 var bot = new Bot(AUTH, USERID, ROOMID); //do not touch
 bot.listen(xxxx, 'xxx.x.x.x');  //set the port and ip that you want the bot use here.
