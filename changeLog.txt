@@ -45,3 +45,7 @@ date: 11/13/2012
 
 --> added anti spam protection, bot now kicks if a person gets removed from stage 5 times 
 in 10 seconds
+
+date: 11/16/2012
+
+--> added the ability to ban artists and songs, simply add them in to the bannedArtists array(must be lower case)
