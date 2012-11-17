@@ -1172,7 +1172,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 				index = null;
 			}
 	}    
-	else if(text.match('/userid') && condition == true)
+ else if(text.match('/userid') && condition == true)
 	{  
 		var ban = data.text.slice(9);
 		var checkUser = theUsersList.indexOf(ban);
