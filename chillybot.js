@@ -13,7 +13,7 @@
 var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';  //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only the part that comes after turntable.fm/
 var playLimit = 4; //set the playlimit here (default 4 songs)
@@ -56,7 +56,7 @@ var artist = null;
 
 //banned artist list (you can also add songs)
 global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain' , 'katy perry', 'eminem', 'porter robinson',
- 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia'];
+ 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia', 'infected mushroom'];
 global.userIds = [];
 global.stageList = [];
 global.checkVotes = [];
@@ -81,7 +81,6 @@ global.beginTimer = null;
 var bot = new Bot(AUTH, USERID, ROOMID);
 //bot.tcpListen(xxxx, 'xxx.x.x.x'); //set the port and ip that you want the bot use here.
 bot.listen(xxxx, 'xxx.x.x.x');
-
 
 
 //prints all debugging information to the console in real time (alot of data)
@@ -392,7 +391,7 @@ if(snagSong == true)
 	} 
 	
 	
- 
+ var checkIfAdmin = modList.indexOf(checkWhoIsDj);
   //removes current dj from stage if they play a banned song or artist.
  if(bannedArtists.length != 0)
 	{
@@ -400,10 +399,13 @@ if(snagSong == true)
 			{
 				if(artist.toLowerCase().match(bannedArtists[j]) || song.toLowerCase().match(bannedArtists[j]))
 					{
-						var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
-						bot.remDj(checkWhoIsDj);
-						bot.speak('@' +theUsersList[nameDj]+ ' you have played a banned artist.');
-						break;
+						if(checkIfAdmin == -1)
+							{
+								var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
+								bot.remDj(checkWhoIsDj);
+								bot.speak('@' +theUsersList[nameDj]+ ' you have played a banned artist.');
+								break;
+							}
 					}
 			}
 	}
