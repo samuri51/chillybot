@@ -30,7 +30,7 @@ global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain'
 global.blackList = ['13131313131', '1313131313131']; //banned users list, put userids in string form here for permanent banning.
 global.stageList = []; //put userids in here to ban from djing permanently
 
-global.vipList = []; /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
+global.vipList = []; /* this is the vip list, it accepts userids in string form as input, this is for when you have a special guest or guests in your room and you only
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
 						if there is only one vip, add the bots userid as well so that the vip can hear their own music.
 					 */
