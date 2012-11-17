@@ -9,6 +9,7 @@ vote skipping
 room greeting
 add songs to your bots playlist
 randomize your bots playlist
+Vip list (for when special guests come to dj)
 autodjing when 3 or less djs or when no djs on stage
 skips stuck songs and gives others 20 seconds to skip
 very noninstrusive, only enforces the queue when people are in the queue
