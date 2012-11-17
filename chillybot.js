@@ -30,6 +30,11 @@ global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain'
 global.blackList = ['13131313131', '1313131313131']; //banned users list, put userids in string form here for permanent banning.
 global.stageList = []; //put userids in here to ban from djing permanently
 
+global.vipList = []; /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
+                        want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
+						if there is only one vip, add the bots userid as well so that the vip can hear their own music.
+					 */
+
 var bot = new Bot(AUTH, USERID, ROOMID); //do not touch
 bot.listen(xxxx, 'xxx.x.x.x');  //set the port and ip that you want the bot use here.
 
@@ -215,6 +220,26 @@ if (queue == true && queueList.length != 0)
 
 setInterval(queueCheck15, 5000) //repeats the check every five seconds. 
 
+
+
+vipListCheck = function(){
+//this kicks all users off stage when the vip list is not empty
+if (vipList.length != 0 && djsOnStage.length != vipList.length)
+    {
+		for(var p = 0; p < currentDjs.length; p++)
+			{
+				var checkIfVip = vipList.indexOf(currentDjs[p]);
+				if(checkIfVip == -1)
+					{
+						bot.remDj(currentDjs[p]);
+					}
+			}
+	}	
+}
+
+
+setInterval(vipListCheck, 5000) //repeats the check every five seconds. 
+
 /*
 repeatAfkMessage = function () 
 	{
@@ -381,7 +406,7 @@ if(snagSong == true)
  current = data.room.metadata.djcount;
  if(current >= 1 && current <= 3 && queueList.length == 0)
  {
-   if(getonstage == true)
+   if(getonstage == true && vipList.length == 0)
      {
 		bot.addDj();
 		current = null;
@@ -419,7 +444,7 @@ if(snagSong == true)
  
  //bot gets on stage and starts djing if no song is playing.
 bot.on('nosong', function (data) {
-if(getonstage == true)
+if(getonstage == true && vipList.length == 0)
 	{
 		bot.addDj();
 	}
@@ -1007,6 +1032,15 @@ if (checkDj != -1)
  
  //this activates when a user joins the stage.
 bot.on('add_dj', function (data) {
+
+//removes dj when they try to join the stage if the vip list has members in it.
+var checkVip = vipList.indexOf(data.user[0].userid);
+if(vipList.length != 0 && checkVip == -1)
+	{
+		bot.remDj(data.user[0].userid);
+		bot.pm('The vip list is currently active, only the vips may dj at this time', data.user[0].userid);
+	}
+
 
 //adds one to dj count
 djsOnStage += 1;
