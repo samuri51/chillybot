@@ -25,8 +25,8 @@ var afkLimit = 20; //set the afk limit in minutes here
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
 var spamLimit = 5; //number of times a user can spam being kicked off the stage within 10 secs
 
-global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain' , 'katy perry', 'eminem', 'porter robinson', //banned artist list (you can also add songs)
- 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia', 'infected mushroom'];
+global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain' , 'katy perry', 'eminem', 'porter robinson', //banned artist/ song list (MUST BE LOWERCASE)
+ 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia', 'infected mushroom']; 
 global.blackList = ['13131313131', '1313131313131']; //banned users list, put userids in string form here for permanent banning.
 global.stageList = []; //put userids in here to ban from djing permanently
 
