@@ -54,6 +54,8 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /unbanstage<space><@name> --> removes the user specified from the stage banning list
 
+/userid<space><@name> --> get the userid of the person whos name you enter
+
 
 
 COMMANDS: (public)
