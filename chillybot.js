@@ -1170,7 +1170,7 @@ if(queue == true)
 //checks to see if user is on the manually added banned from stage list, if they are they are removed from stage
    for (var z=0; z<bannedFromStage.length; z++) 
 	{
-		if (bannedFromStage[z].match(data.user[0].userid)) //== bannedFromStage[z])
+		if (bannedFromStage[z].match(data.user[0].userid))
 			{
 				bot.remDj(data.user[0].userid);
 				bot.speak('@' +data.user[0].name+ ' you are banned from djing');
