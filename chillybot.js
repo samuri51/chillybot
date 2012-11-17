@@ -920,6 +920,16 @@ bot.on('speak', function (data) {
 			index = null;
 		}
 	}
+  else if(text.match('/userid') && condition == true)
+	{  
+		var ban = data.text.slice(9);
+		var checkUser = theUsersList.indexOf(ban);
+		if (checkUser != -1)
+			{
+				bot.pm(theUsersList[checkUser-1], data.userid);		  
+				condition = false;
+			}
+	}  
 });
 
 
