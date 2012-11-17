@@ -644,7 +644,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
 	{
 		bot.speak('the commands are  /awesome, ' +
-					' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands');
+					' /mom, /chilly, /cheers, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
 	{
@@ -653,7 +653,7 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @' , data.userid);
+			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform' , data.userid);
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
@@ -671,6 +671,15 @@ bot.on('speak', function (data) {
   else if (text.match(/^\/removedj$/) && condition == true)
 	{
 		bot.remDj();
+	}
+  else if (text.match(/^\/inform$/) && condition == true)
+	{
+		var checkDjsName = theUsersList.indexOf(checkWhoIsDj) + 1;
+		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or be removed');
+	}
+  else if (text.match(/^\/cheers$/))
+	{
+		bot.speak('@' +name+ ' raises their glass for a toast');
 	}
   else  if (text.match(/^\/mom$/)) 
     {
@@ -1279,7 +1288,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
-					' /mom, /chilly, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands', data.senderid);
+					' /mom, /chilly, /cheers, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1292,7 +1301,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @' , data.senderid);
+				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform' , data.senderid);
 		condition = false;
 	}  
  });
