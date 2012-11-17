@@ -19,19 +19,21 @@ var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only the part that comes after turntable.fm/
-var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no limit
+var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
 var spamLimit = 5; //number of times a user can spam being kicked off the stage within 10 secs
 
+//note that anything added to the script manually will have to be removed from the script manually
+//all the values currently in these arrays are examples and can be removed.
 global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain' , 'katy perry', 'eminem', 'porter robinson', //banned artist/ song list (MUST BE LOWERCASE)
- 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia', 'infected mushroom']; 
-global.blackList = ['13131313131', '1313131313131']; //banned users list, put userids in string form here for permanent banning.
-global.stageList = []; //put userids in here to ban from djing permanently
-
-global.vipList = []; /* this is the vip list, it accepts userids in string form as input, this is for when you have a special guest or guests in your room and you only
-                        want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
+ 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia', 'infected mushroom','never gonna give you up', 'rick astley', 'spongebob squarepants']; 
+global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe'];	//banned users list, put userids in string form here for permanent banning(put their name after their userid to tell who is banned).
+global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe'];//put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
+					
+global.vipList = []; /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
+						want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
 						if there is only one vip, add the bots userid as well so that the vip can hear their own music.
 					 */
 
@@ -79,6 +81,8 @@ var sayOnce = true;
 var timer = null;
 var artist = null;
 
+global.blackList = []; 
+global.stageList = [];
 global.userIds = [];
 global.checkVotes = [];
 global.theUsersList = [];
@@ -1161,7 +1165,28 @@ if(queue == true)
 				break;
 			}
 	}
+
 	
+//checks to see if user is on the manually added banned from stage list, if they are they are removed from stage
+   for (var z=0; z<bannedFromStage.length; z++) 
+	{
+		if (bannedFromStage[z].match(data.user[0].userid)) //== bannedFromStage[z])
+			{
+				bot.remDj(data.user[0].userid);
+				bot.speak('@' +data.user[0].name+ ' you are banned from djing');
+				++people[data.user[0].userid].spamCount;
+				if(timer != null)
+					{						
+						clearTimeout(timer);
+						timer = null;
+					}
+				timer = setTimeout(function()
+					{
+						people[data.user[0].userid] = { spamCount: 0 };
+					}, 10 * 1000);	
+				break;
+			}
+	}	
 	
 	
 //if person exceeds spam count within 10 seconds they are kicked
@@ -1414,7 +1439,20 @@ for (var i=0; i<blackList.length; i++)
 				bot.bootUser(roomjoin.userid, 'You are on the banlist.');
 				break;
 			}
-	}  
+	} 
+
+	
+	
+//checks manually added users
+for (var z=0; z<bannedUsers.length; z++)
+	{
+		if (bannedUsers[z].match(roomjoin.userid))
+			{				
+				bot.bootUser(roomjoin.userid, 'You are on the banlist.');
+				break;
+			}
+	} 
+	
 
 	
 //sets new persons spam count to zero
@@ -1488,9 +1526,9 @@ bot.on('endsong', function(data) {
 		{
 			var checklist33 = theUsersList.indexOf(djId) + 1;
 			var checklist34 = modList.indexOf(djId);
-			if(checklist34 == -1 && queue == true) //only enforces when queue is turned on, does not remove moderators
+			if(checklist34 == -1 && queue == true)
 				{
-					if(djId != USERID && playLimit != 0) //&& queueList.length != 0) //uncomment this to only enforce the song limit when there are people in the queue
+					if(djId != USERID && playLimit != 0)
 						{
 							bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs'); 
 							bot.remDj(djId);
