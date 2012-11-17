@@ -58,6 +58,8 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /dive --> removes you from stage
 
+/inform --> tells currently playing dj their song is not appropriate for the room
+
 
 
 COMMANDS: (public)
@@ -69,6 +71,8 @@ COMMANDS: (public)
 /admincommands --> pm's the user the commands if they are an admin.
 
 /awesome --> the bot awesomes the currently playing song if they are not already.
+
+/cheers --> user raises their glass for a toast
 
 /mom --> tells the person something about their mom...
 
