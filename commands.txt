@@ -42,6 +42,8 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /snagoff --> the bot stops adding songs to its playlist.
 
+/snag --> the bot adds the currently playing song to its queue
+
 /removesong --> the bot removes the song it is currently playing or the last song added to it's queue if it is not currently playing.
 
 /voteskipon<space><number> --> set the vote skip limit and turn it on.
