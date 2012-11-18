@@ -60,6 +60,9 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /inform --> tells currently playing dj their song is not appropriate for the room
 
+/whobanned --> gives the status of the banned from the room list, gives the persons userid then their name (only gives the status of names added during runtime, does not report on ids manually added to the script)
+
+/whostagebanned --> gives the status of the banned from djing list, gives the persons userid then their name (only gives the status of names added during runtime, does not report on ids manually added to the script)
 
 
 COMMANDS: (public)
