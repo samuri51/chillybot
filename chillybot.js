@@ -80,6 +80,7 @@ var djsOnStage = null;
 var sayOnce = true;
 var timer = null;
 var artist = null;
+var getSong = null;
 
 global.blackList = []; 
 global.stageList = [];
@@ -367,15 +368,14 @@ bot.on('newsong', function (data){
    album = data.room.metadata.current_song.metadata.album; 
    genre = data.room.metadata.current_song.metadata.genre;
    artist = data.room.metadata.current_song.metadata.artist;
- 
+   getSong = data.room.metadata.current_song._id;
  
  
  //adds a song to the end of your bots queue
 if(snagSong == true)
  {
 	bot.playlistAll(function(playlist) 
-		{
-			getSong = data.room.metadata.current_song._id;
+		{			
 			bot.playlistAdd(getSong, playlist.list.length); 
 			console.log('DEBUGGING: ', getSong);
 		}); 
@@ -657,13 +657,13 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform, /whobanned, /whostagebanned' , data.userid);
+			'/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform, /whobanned, /whostagebanned' , data.userid);
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
 	{
 		bot.speak('/tablefix');  		
-	}
+	}  	 
   else if(text.match('awesome'))
 	{
 		bot.vote('up');
@@ -825,7 +825,17 @@ bot.on('speak', function (data) {
 		snagSong = false;
 		bot.speak('snag: OFF');
 	}
-  
+  else if (text.match(/^\/snag/) && condition == true)
+	{
+		if(getSong != null)
+			{
+				bot.playlistAll(function(playlist)				
+				{			
+					bot.playlistAdd(getSong, playlist.list.length); 
+					bot.speak('song added.');
+				});	
+			}
+	}  
    else if (text.match(/^\/removesong$/) && condition == true)
 	{  
 		bot.playlistAll(function(playlist)
@@ -1354,6 +1364,17 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 				bot.pm('you will be escorted after you play your song', data.senderid);
 			}
 	}
+  else if (text.match(/^\/snag/) && condition == true)
+	{
+		if(getSong != null)
+			{
+				bot.playlistAll(function(playlist) 
+					{			
+						bot.playlistAdd(getSong, playlist.list.length); 
+						bot.pm('song added.', data.senderid);
+					});
+			}
+	}  
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
@@ -1365,12 +1386,12 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if(text.match(/^\/pmcommands/) && condition == true)
 	{
-		bot.pm('/admincommands, /queuecommands, /commands, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme', data.senderid);
+		bot.pm('/admincommands, /queuecommands, /commands, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /whobanned, /whostagebanned', data.senderid);
 	}  
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform, /whobanned, /whostagebanned' , data.senderid);
+				'/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform, /whobanned, /whostagebanned' , data.senderid);
 		condition = false;
 	}  
  });
