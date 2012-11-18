@@ -19,7 +19,7 @@ var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only the part that comes after turntable.fm/
-var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
+var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
@@ -33,9 +33,9 @@ global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe'];	//banned us
 global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe'];//put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
 					
 global.vipList = []; /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
-                        want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
-                        if there is only one vip, add the bots userid as well so that the vip can hear their own music.
-                     */
+						want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
+						if there is only one vip, add the bots userid as well so that the vip can hear their own music.
+					 */
 
 var bot = new Bot(AUTH, USERID, ROOMID); //do not touch
 bot.listen(xxxx, 'xxx.x.x.x');  //set the port and ip that you want the bot use here.
@@ -657,7 +657,7 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform' , data.userid);
+			'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform, /whobanned, /whostagebanned' , data.userid);
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
@@ -854,6 +854,28 @@ bot.on('speak', function (data) {
 		else
 			{
 				bot.speak('There is currently no queue.');
+			}	
+	}
+  else if (text.match(/^\/whobanned$/) && condition == true)
+	{  
+		if(blackList.length != 0)
+			{
+				bot.pm('ban list: ' + blackList, data.userid);
+			}
+		else
+			{
+				bot.pm('The ban list is empty.', data.userid);
+			}	
+	}
+  else if (text.match(/^\/whostagebanned$/) && condition == true)
+	{  
+		if(stageList.length != 0)
+			{
+				bot.pm('banned from stage: ' + stageList, data.userid);
+			}
+		else
+			{
+				bot.pm('The banned from stage list is currently empty.', data.userid);
 			}	
 	}
   else if (text.match('/removefromqueue') && queue == true)
@@ -1170,7 +1192,7 @@ if(queue == true)
 //checks to see if user is on the manually added banned from stage list, if they are they are removed from stage
    for (var z=0; z<bannedFromStage.length; z++) 
 	{
-		if (bannedFromStage[z].match(data.user[0].userid))
+		if (bannedFromStage[z].match(data.user[0].userid)) //== bannedFromStage[z])
 			{
 				bot.remDj(data.user[0].userid);
 				bot.speak('@' +data.user[0].name+ ' you are banned from djing');
@@ -1291,6 +1313,28 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 				index = null;
 			}
 	}    
+  else if (text.match(/^\/whobanned$/) && condition == true)
+	{  
+		if(blackList.length != 0)
+			{
+				bot.pm('ban list: ' + blackList, data.senderid);
+			}
+		else
+			{
+				bot.pm('The ban list is empty.', data.senderid);
+			}	
+	}
+  else if (text.match(/^\/whostagebanned$/) && condition == true)
+	{  
+		if(stageList.length != 0)
+			{
+				bot.pm('banned from stage: ' + stageList, data.senderid);
+			}
+		else
+			{
+				bot.pm('The banned from stage list is currently empty.', data.senderid);
+			}	
+	}
   else if(data.text == '/stopescortme')
 	{
 		bot.pm('you will no longer be escorted after you play your song', data.senderid);
@@ -1326,7 +1370,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform' , data.senderid);
+				'/snagon, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage, /unbanstage, /userid @, /inform, /whobanned, /whostagebanned' , data.senderid);
 		condition = false;
 	}  
  });
@@ -1528,7 +1572,7 @@ bot.on('endsong', function(data) {
 			var checklist34 = modList.indexOf(djId);
 			if(checklist34 == -1 && queue == true)
 				{
-					if(djId != USERID && playLimit != 0)
+					if(djId != USERID && queueList.length != 0)
 						{
 							bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs'); 
 							bot.remDj(djId);
