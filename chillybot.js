@@ -19,7 +19,7 @@ var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
 var roomName = 'straight chillin' //put your room's name here.
 var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only the part that comes after turntable.fm/
-var playLimit = 4; //set the playlimit here (default 4 songs)
+var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
@@ -33,9 +33,9 @@ global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe'];	//banned us
 global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe'];//put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
 					
 global.vipList = []; /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
-						want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
-						if there is only one vip, add the bots userid as well so that the vip can hear their own music.
-					 */
+                        want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
+                        if there is only one vip, add the bots userid as well so that the vip can hear their own music.
+                     */
 
 var bot = new Bot(AUTH, USERID, ROOMID); //do not touch
 bot.listen(xxxx, 'xxx.x.x.x');  //set the port and ip that you want the bot use here.
@@ -1572,7 +1572,7 @@ bot.on('endsong', function(data) {
 			var checklist34 = modList.indexOf(djId);
 			if(checklist34 == -1 && queue == true)
 				{
-					if(djId != USERID && queueList.length != 0)
+					if(djId != USERID && playLimit != 0)
 						{
 							bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs'); 
 							bot.remDj(djId);
