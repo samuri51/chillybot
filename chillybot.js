@@ -237,9 +237,7 @@ afkCheck = function ()
 										bot.speak('@' +theUsersList[whatIsAfkerName]+ ' you are over the afk limit of ' +afkLimit+ ' minutes.');
 										justSaw1(afker);
 										justSaw2(afker);
-										justSaw(afker);
-										
-										
+										justSaw(afker);										
 										bot.remDj(afker); //remove them	
 									}		 
 							}
