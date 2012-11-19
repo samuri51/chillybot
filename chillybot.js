@@ -235,7 +235,11 @@ afkCheck = function ()
 								if(afker != checkWhoIsDj)	
 									{			
 										bot.speak('@' +theUsersList[whatIsAfkerName]+ ' you are over the afk limit of ' +afkLimit+ ' minutes.');
+										justSaw1(afker);
+										justSaw2(afker);
 										justSaw(afker);
+										
+										
 										bot.remDj(afker); //remove them	
 									}		 
 							}
@@ -272,6 +276,7 @@ roomAfkCheck = function ()
 									{			
 										bot.pm('you are over the afk limit of ' +roomafkLimit+ ' minutes.', afker2);
 										bot.boot(afker2, 'you are over the afk limit');	
+										justSaw3(afker2);
 										justSaw4(afker2);										
 									}
 							}
