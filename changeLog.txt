@@ -41,6 +41,9 @@ date: 11/12/2012
 
 --> added alot of command to the pm.
 
+date: 11/19/2012
+
+--> added procedure for kicking an afk audience
 date: 11/13/2012
 
 --> added anti spam protection, bot now kicks if a person gets removed from stage 5 times 
