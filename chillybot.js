@@ -737,9 +737,10 @@ bot.on('speak', function (data) {
 			}    
 	}
   else if (text.match(/^\/beer$/))
-		{
-			bot.speak('@chillybot hands '+ '@'+name+' a nice cold :beer:');
-		}
+	{
+		var botname = theUsersList.indexOf(USERID) + 1;
+		bot.speak('@' +theUsersList[botname]+ ' hands '+ '@'+name+' a nice cold :beer:');
+	}
   else if (data.text == '/escortme') 
    {	
 		var djListIndex = currentDjs.indexOf(data.userid);
