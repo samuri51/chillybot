@@ -697,6 +697,12 @@ bot.on('speak', function (data) {
 	{
 		AFK = true;
 		bot.speak('the afk list is now active.');	
+		for (var z = 0; z < currentDjs.length; z++) 
+			{
+				justSaw(currentDjs[z]);
+				justSaw1(currentDjs[z]);
+				justSaw2(currentDjs[z]);
+			}
 	}  
   else if(text.match(/^\/afkoff/) && condition == true)
 	{
@@ -706,7 +712,16 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/roomafkon/) && condition == true)
 	{
 		roomAFK = true;
-		bot.speak('the audience afk list is now active.');	
+		bot.speak('the audience afk list is now active.');		
+		for (var z = 0; z < userIds.length; z++) 
+			{
+				var isDj2 = currentDjs.indexOf(userIds[z])
+				if(isDj2 == -1)
+					{
+						justSaw3(userIds[z]);
+						justSaw4(userIds[z]);
+					}
+			}
 	}  
   else if(text.match(/^\/roomafkoff/) && condition == true)
 	{
