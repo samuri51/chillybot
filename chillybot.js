@@ -22,6 +22,7 @@ var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only t
 var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
+var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
 var spamLimit = 5; //number of times a user can spam being kicked off the stage within 10 secs
 
@@ -66,6 +67,8 @@ var snagSong = null;
 var lastSeen = {};
 var lastSeen1 = {};
 var lastSeen2 = {};
+var lastSeen3 = {};
+var lastSeen4 = {};
 var people = [];
 var AFK = true;
 var MESSAGE = true;
@@ -81,6 +84,8 @@ var sayOnce = true;
 var timer = null;
 var artist = null;
 var getSong = null;
+var informTimer = null;
+var roomAFK = false;
 
 global.blackList = []; 
 global.stageList = [];
@@ -121,6 +126,17 @@ justSaw2 = function (uid)
 		return lastSeen2[uid] = Date.now();
 	};
 
+//these update the afk of everyone in the room
+justSaw3 = function (uid)
+	{
+		return lastSeen3[uid] = Date.now();
+	};
+
+//these update the afk of everyone in the room
+justSaw4 = function (uid)
+	{
+		return lastSeen4[uid] = Date.now();
+	};
 
 
 //checks if a person is afk or not
@@ -153,6 +169,32 @@ isAfk1 = function (userId, num)
 isAfk2 = function (userId, num)
 	{
 		var last = lastSeen2[userId];
+		var age_ms = Date.now() - last;
+		var age_m = Math.floor(age_ms / 1000 / 60);
+		if (age_m >= num)
+			{
+				return true;
+			};
+		return false;
+	};
+	
+//checks if a person is afk or not
+isAfk3 = function (userId, num)
+	{
+		var last = lastSeen3[userId];
+		var age_ms = Date.now() - last;
+		var age_m = Math.floor(age_ms / 1000 / 60);
+		if (age_m >= num)
+			{
+				return true;
+			};
+		return false;
+	};
+	
+//checks if a person is afk or not
+isAfk4 = function (userId, num)
+	{
+		var last = lastSeen4[userId];
 		var age_ms = Date.now() - last;
 		var age_m = Math.floor(age_ms / 1000 / 60);
 		if (age_m >= num)
@@ -204,6 +246,43 @@ setInterval(afkCheck, 5000) //This repeats the check every five seconds.
 
 
 
+//this removes people on the floor, not the djs
+roomAfkCheck = function ()
+	{   
+		for (i = 0; i < userIds.length; i++) 
+			{
+				
+				var afker2 = userIds[i]; //Pick a DJ
+				var isAfkMod = modList.indexOf(afker2);
+				var isDj = currentDjs.indexOf(afker2);
+				if ((isAfk3(afker2, (roomafkLimit - 1))) && roomAFK == true)
+					{
+						
+						if(afker2 != USERID && isDj == -1 && isAfkMod == -1)
+							{
+								bot.pm('you have 1 minute left of afk, chat or awesome please.', afker2);
+								justSaw3(afker2);
+							}
+					}	  
+				if ((isAfk4(afker2, roomafkLimit)) && roomAFK == true) 
+					{ //if person is afk then	   
+						if(afker2 != USERID && isAfkMod == -1) //checks to see if afker is a mod or a bot or a dj, if they are is does not kick them.
+							{
+								if(isDj == -1)	
+									{			
+										bot.pm('you are over the afk limit of ' +roomafkLimit+ ' minutes.', afker2);
+										bot.boot(afker2, 'you are over the afk limit');	
+										justSaw4(afker2);										
+									}
+							}
+					}
+			}
+	}
+
+setInterval(roomAfkCheck, 5000) //This repeats the check every five seconds.
+					
+					
+					
 queueCheck15 = function(){
 //if queue is turned on once someone leaves the stage the first person
 //in line has 60 seconds to get on stage before being remove from the queue
@@ -275,9 +354,18 @@ setInterval(repeatMessage, 900 * 1000)  //repeats this message every 15 mins if 
 bot.on('newsong', function (data){ 
   var length = data.room.metadata.current_song.metadata.length;
 
+      //this is for the /inform command
+ if(informTimer != null)
+	{
+		clearTimeout(informTimer);
+		informTimer = null;
+		bot.speak("@"+theUsersList[checkLast+1]+", Thanks buddy ;-)");	
+	}
   
   
-    //this is for the some length limit
+  
+  
+    //this is for the song length limit
  if(songLimitTimer != null)
 	{
 		clearTimeout(songLimitTimer);
@@ -477,11 +565,13 @@ bot.on('speak', function (data) {
 		}
 	
 	//updates the afk position of the speaker.
-	if(AFK == true);
+	if(AFK == true || roomAFK == true);
 		{
 			justSaw(data.userid);
 			justSaw1(data.userid);
 			justSaw2(data.userid);
+			justSaw3(data.userid);
+			justSaw4(data.userid);
 		}	
 	
 	
@@ -613,6 +703,16 @@ bot.on('speak', function (data) {
 		AFK = false;
 		bot.speak('the afk list is now inactive.');	
 	}  
+  else if(text.match(/^\/roomafkon/) && condition == true)
+	{
+		roomAFK = true;
+		bot.speak('the audience afk list is now active.');	
+	}  
+  else if(text.match(/^\/roomafkoff/) && condition == true)
+	{
+		roomAFK = false;
+		bot.speak('the audience afk list is now inactive.');	
+	}  
   else if(text.match(/^\/smoke/))
 	{
 		bot.speak('smoke em\' if ya got em.');	
@@ -657,7 +757,8 @@ bot.on('speak', function (data) {
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-			'/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, /whostagebanned' , data.userid);
+			'/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
+			'/whostagebanned, /roomafkon, /roomafkoff' , data.userid);
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
@@ -679,7 +780,13 @@ bot.on('speak', function (data) {
   else if (text.match(/^\/inform$/) && condition == true)
 	{
 		var checkDjsName = theUsersList.indexOf(checkWhoIsDj) + 1;
-		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or be removed');
+		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
+		informTimer = setTimeout(function()
+							{								
+								bot.pm('you took too long to skip your song', checkWhoIsDj);
+								bot.remDj(checkWhoIsDj);
+								informTimer = null;
+							}, 20 * 1000);
 	}
   else if (text.match(/^\/cheers$/))
 	{
@@ -1013,11 +1120,13 @@ bot.on('speak', function (data) {
 
 //checks who voted and updates their position on the afk list.
 bot.on('update_votes', function (data){
-	if(AFK == true);
+	if(AFK == true || roomAFK == true);
 		{
 			justSaw(data.room.metadata.votelog[0][0]);	
 			justSaw1(data.room.metadata.votelog[0][0]);		
 			justSaw2(data.room.metadata.votelog[0][0]);
+			justSaw3(data.room.metadata.votelog[0][0]);
+			justSaw4(data.room.metadata.votelog[0][0]);
 		}	
 	
  })
@@ -1025,11 +1134,13 @@ bot.on('update_votes', function (data){
 
 //checks who added a song and updates their position on the afk list. 
 bot.on('snagged', function (data) {
-	if(AFK == true);
+	if(AFK == true || roomAFK == true);
 		{
 			justSaw(data.userid);
 			justSaw1(data.userid);
 			justSaw2(data.userid);
+			justSaw3(data.userid);
+			justSaw4(data.userid);
 		}	
  })
 
@@ -1048,13 +1159,10 @@ djsOnStage -= 1;
 delete djs20[data.user[0].userid];
 
 
-//updates the current dj's list.
-if(AFK == true);
-	{
-		var check30 = currentDjs.indexOf(data.user[0].userid);
-		currentDjs.splice(check30, 1);
-	}
 
+//updates the current dj's list.
+var check30 = currentDjs.indexOf(data.user[0].userid);
+currentDjs.splice(check30, 1);
 
 
 
@@ -1110,20 +1218,20 @@ djs20[data.user[0].userid] = { nbSong: 0 };
 	
 	
 //updates the afk position of the person who joins the stage.
-if(AFK == true);
+if(AFK == true || roomAFK == true);
 	{
 		justSaw(data.user[0].userid);
 		justSaw1(data.user[0].userid);
 		justSaw2(data.user[0].userid);
+		justSaw3(data.user[0].userid);
+		justSaw4(data.user[0].userid);
 	}		
 	
 	
 	
-//adds a user to the afk list when they join the stage.
-if(AFK == true && condition == false);
-	{
-		currentDjs.push(data.user[0].userid);
-	}
+//adds a user to the current Djs list when they join the stage.
+currentDjs.push(data.user[0].userid);
+	
 
 
 
@@ -1411,7 +1519,8 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-				'/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, /whostagebanned' , data.senderid);
+				'/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
+              	'/whobanned, /whostagebanned, /roomafkon, /roomafkoff' , data.senderid);
 		condition = false;
 	}  
  });
@@ -1463,7 +1572,7 @@ detail = data.room.description;
 
 
 //used to get user names and user id's
-  var users = data.users;
+var users = data.users;
 for (var i=0; i<users.length; i++)
 	{
 		var user = users[i];
@@ -1476,9 +1585,12 @@ for (var i=0; i<users.length; i++)
 	
 	
 //sets everyones spam count to zero	
+//puts people on the global afk list when it joins the room	
 for (var z = 0; z < userIds.length; z++) 
 	{
 		people[userIds[z]] = { spamCount: 0 };
+		justSaw3(userIds[z]);
+		justSaw4(userIds[z]);
 	}
 	
 
@@ -1542,6 +1654,15 @@ for (var z=0; z<bannedUsers.length; z++)
 	
 //sets new persons spam count to zero
 people[data.user[0].userid] = { spamCount: 0 };
+
+
+
+//puts people who join the room on the global afk list
+if(roomAFK == true)
+	{
+		justSaw3(data.user[0].userid);
+		justSaw4(data.user[0].userid);
+	}
   
 });
 
@@ -1583,6 +1704,8 @@ bot.on('deregistered', function (data) {
 delete lastSeen[data.user[0].userid];
 delete lastSeen1[data.user[0].userid];
 delete lastSeen2[data.user[0].userid];
+delete lastSeen3[data.user[0].userid];
+delete lastSeen4[data.user[0].userid];
 delete people[data.user[0].userid];
 
 
