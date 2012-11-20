@@ -24,7 +24,7 @@ var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
-var spamLimit = 5; //number of times a user can spam being kicked off the stage within 10 secs
+var spamLimit = 3; //number of times a user can spam being kicked off the stage within 10 secs
 
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed.
@@ -766,8 +766,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
 	{
 		bot.speak('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
-					+ '/skip, /dive, /smoke, /surf, /cheers, /admincommands, /queuecommands');
+					' /mom, /chilly, /cheers, /smoke, /surf, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
 	{
@@ -800,12 +799,15 @@ bot.on('speak', function (data) {
 	{
 		var checkDjsName = theUsersList.indexOf(checkWhoIsDj) + 1;
 		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
-		informTimer = setTimeout(function()
+		if(informTimer == null)
+			{
+				informTimer = setTimeout(function()
 							{								
 								bot.pm('you took too long to skip your song', checkWhoIsDj);
 								bot.remDj(checkWhoIsDj);
 								informTimer = null;
 							}, 20 * 1000);
+			}
 	}
   else if (text.match(/^\/cheers$/))
 	{
@@ -1503,6 +1505,20 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 					});
 			}
 	}  
+  else if (text.match(/^\/inform$/) && condition == true)
+	{
+		var checkDjsName = theUsersList.indexOf(checkWhoIsDj) + 1;
+		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
+		if(informTimer == null)
+			{
+				informTimer = setTimeout(function()
+							{								
+								bot.pm('you took too long to skip your song', checkWhoIsDj);
+								bot.remDj(checkWhoIsDj);
+								informTimer = null;
+							}, 20 * 1000);
+			}
+	}
   else if (text.match(/^\/removesong$/) && condition == true)
 	{  
 		bot.playlistAll(function(playlist)
@@ -1525,8 +1541,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
-					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /admincommands, /queuecommands', data.senderid);
+					' /mom, /chilly, /cheers, /smoke, /surf, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1534,7 +1549,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if(text.match(/^\/pmcommands/) && condition == true)
 	{
-		bot.pm('/admincommands, /queuecommands, /commands, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned', data.senderid);
+		bot.pm('/admincommands, /queuecommands, /commands, /inform, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned', data.senderid);
 	}  
   else if(text.match('/admincommands') && condition == true)
 	{
