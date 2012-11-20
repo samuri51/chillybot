@@ -766,7 +766,8 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
 	{
 		bot.speak('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands');
+					' /mom, /chilly, /cheers, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
+					+ '/skip, /dive, /smoke, /surf, /cheers, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1524,7 +1525,8 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands', data.senderid);
+					' /mom, /chilly, /cheers, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
 	{
