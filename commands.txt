@@ -79,6 +79,10 @@ COMMANDS: (public)
 
 /cheers --> user raises their glass for a toast
 
+/smoke --> bot says smoke
+
+/coinflip --> bot flips a coin
+
 /mom --> tells the person something about their mom...
 
 /chilly --> tells the person that used the command that they are chilled.
