@@ -766,7 +766,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
 	{
 		bot.speak('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /smoke, /surf, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands');
+					' /mom, /chilly, /cheers, /coinflip, /smoke, /surf, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
 	{
@@ -830,6 +830,19 @@ bot.on('speak', function (data) {
 			case 3:
 			bot.speak('@' + name + ' your mother is an outstanding member of the community ' +
 						'and well liked by all.');
+			break;
+		}
+    }
+  else  if (text.match(/^\/coinflip$/)) 
+    {
+		var z = Math.floor(Math.random() * 2 + 1);
+		switch(z)
+		{
+			case 1: 
+			bot.speak('@' + name + ' i am flipping a coin... you got... heads');
+			break;
+			case 2:
+			bot.speak('@' + name + ' i am flipping a coin... you got... tails');
 			break;
 		}
     }
@@ -1541,7 +1554,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /smoke, /surf, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands', data.senderid);
+					' /mom, /chilly, /cheers, /coinflip, /smoke, /surf, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
 	{
