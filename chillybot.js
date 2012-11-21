@@ -829,10 +829,10 @@ bot.on('speak', function (data) {
 	}
   else if (text.match(/^\/inform$/) && condition == true)
 	{
-		var checkDjsName = theUsersList.indexOf(lastdj) + 1;
-		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
 		if(informTimer == null)
 			{
+				var checkDjsName = theUsersList.indexOf(lastdj) + 1;
+				bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');		
 				informTimer = setTimeout(function()
 								{								
 									bot.pm('you took too long to skip your song', lastdj);
@@ -1585,10 +1585,10 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if (text.match(/^\/inform$/) && condition == true)
 	{
-		var checkDjsName = theUsersList.indexOf(lastdj) + 1;
-		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
 		if(informTimer == null)
 			{
+				var checkDjsName = theUsersList.indexOf(lastdj) + 1;
+				bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');		
 				informTimer = setTimeout(function()
 								{								
 									bot.pm('you took too long to skip your song', lastdj);
