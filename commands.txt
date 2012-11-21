@@ -66,7 +66,7 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /whostagebanned --> gives the status of the banned from djing list, gives the persons userid then their name (only gives the status of names added during runtime, does not report on ids manually added to the script)
 
-/username<space><userid> --> use a persons userid to get their name(works in the pm too)
+/username<space><userid> --> use a persons userid to get their name(works in the pm too, only works if user is in the room)
 
 /songstatson --> turns song stats on for after a song ends
 
