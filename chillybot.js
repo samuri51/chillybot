@@ -831,12 +831,15 @@ bot.on('speak', function (data) {
 	{
 		var checkDjsName = theUsersList.indexOf(lastdj) + 1;
 		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
-		informTimer = setTimeout(function()
-						{								
-							bot.pm('you took too long to skip your song', lastdj);
-							bot.remDj(lastdj);
-							informTimer = null;
-						}, 20 * 1000);
+		if(informTimer == null)
+			{
+				informTimer = setTimeout(function()
+								{								
+									bot.pm('you took too long to skip your song', lastdj);
+									bot.remDj(lastdj);
+									informTimer = null;
+								}, 20 * 1000);
+			}
 	}
   else if (text.match(/^\/cheers$/))
 	{
