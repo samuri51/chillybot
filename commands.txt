@@ -89,6 +89,10 @@ COMMANDS: (public)
 
 /cheers --> user raises their glass for a toast
 
+/uptime --> get the amount of time the bot has been running for.
+
+/djplays --> get the current song count for each dj.
+
 /dance --> dancing
 
 /smoke --> bot says smoke
