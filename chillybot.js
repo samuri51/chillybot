@@ -86,7 +86,6 @@ var artist = null;
 var getSong = null;
 var informTimer = null;
 var roomAFK = false;
-var botRunTime = {};
 var upVotes = null;
 var downVotes = null;
 var whoSnagged = 0;
@@ -1461,16 +1460,6 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	{
 		bot.speak(text.substring(3));	
 	}  
- else if (text.match('/runtime'))
-	{  
-		var minute = 1000 * 60;
-		var hour = minute * 60;
-		var day = hour * 24;
-		bot.speak('hello');
-		var time = botRunTime[USERID].getTime();
-		
-		bot.speak('bot uptime, days ' +Math.round(time/day)+ ', hours ' +Math.round(time/hour)+ ', minutes ' +Math.round(time/minute));
-	}
   else if(text.match('/stage') && condition == true)
 	{  
 		var ban = data.text.slice(8);
@@ -1661,10 +1650,6 @@ currentDjs = data.room.metadata.djs;
 
 //counts how many djs there are on stage
 djsOnStage = currentDjs.length;
-
-
-//sets bots runtime start date
-botRunTime[USERID] = Date.now();
 
 
 
