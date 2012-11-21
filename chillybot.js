@@ -86,6 +86,11 @@ var artist = null;
 var getSong = null;
 var informTimer = null;
 var roomAFK = false;
+var botRunTime = {};
+var upVotes = null;
+var downVotes = null;
+var whoSnagged = 0;
+var SONGSTATS = true;
 
 global.blackList = []; 
 global.stageList = [];
@@ -451,6 +456,7 @@ bot.on('newsong', function (data){
  checkVotes = [];
  voteCountSkip = 0;
  votesLeft = HowManyVotesToSkip;
+ whoSnagged = 0;
  
  
  
@@ -589,6 +595,19 @@ bot.on('speak', function (data) {
 				current = null;
 			}
 	}  
+ else if (text.match(/^\/modpm/) && condition == true) 
+	{
+		var speak = text.substring(7);
+		for(var g = 0; g < modList.length; g++)
+			{
+				var isModInRoom = theUsersList.indexOf(modList[g]);
+					if(isModInRoom != -1)
+						{
+							bot.pm(name + ' said: '+speak, modList[g]);
+						}
+				
+			}		
+	}	
   else if (text.match(/^\/randomSong$/) && condition == true)
 	{
             if(randomOnce != 1)
@@ -622,7 +641,7 @@ bot.on('speak', function (data) {
   else if(text.match('turntable.fm/') && !text.match('turntable.fm/' + ttRoomName) && modIndex == -1)
 	{
 		bot.boot(data.userid, 'do not advertise other rooms here'); 
-	}
+	} 
   else if(text.match('/bumptop') && condition == true)
 	{
 		if(queue == true)
@@ -739,6 +758,19 @@ bot.on('speak', function (data) {
 	{
 		bot.skip();
 	}  
+  else if(text.match(/^\/songstats/) && condition == true)
+	{
+		if(SONGSTATS == true)
+			{
+				SONGSTATS = false;
+				bot.speak('song stats is now inactive');
+			}
+		else if(SONGSTATS == false)
+			{
+				SONGSTATS = true;
+				bot.speak('song stats is now active');
+			}
+	} 
   else if(text.match(/^\/props/))
 	{
 		bot.speak('@'+name+ ' gives ' + '@' +dj+ ' an epic high :hand:');
@@ -766,7 +798,8 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
 	{
 		bot.speak('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /coinflip, /smoke, /surf, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands');
+					' /mom, /chilly, /cheers, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
+					+ '/skip, /dive, /smoke, /surf, /cheers, /dance, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
 	{
@@ -776,7 +809,7 @@ bot.on('speak', function (data) {
 	{
 		bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
 			'/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
-			'/whostagebanned, /roomafkon, /roomafkoff' , data.userid);
+			'/whostagebanned, /roomafkon, /roomafkoff /songstats, /username, /modpm' , data.userid);
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
@@ -799,15 +832,12 @@ bot.on('speak', function (data) {
 	{
 		var checkDjsName = theUsersList.indexOf(checkWhoIsDj) + 1;
 		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
-		if(informTimer == null)
-			{
-				informTimer = setTimeout(function()
+		informTimer = setTimeout(function()
 							{								
 								bot.pm('you took too long to skip your song', checkWhoIsDj);
 								bot.remDj(checkWhoIsDj);
 								informTimer = null;
 							}, 20 * 1000);
-			}
 	}
   else if (text.match(/^\/cheers$/))
 	{
@@ -832,19 +862,19 @@ bot.on('speak', function (data) {
 						'and well liked by all.');
 			break;
 		}
-    }
-  else  if (text.match(/^\/coinflip$/)) 
-    {
-		var z = Math.floor(Math.random() * 2 + 1);
-		switch(z)
+    }	
+  else if(text.match('/coinflip'))
+	{
+		var y = Math.floor(Math.random() * 2 + 1);
+		switch(y)
 		{
-			case 1: 
+			case 1:
 			bot.speak('@' + name + ' i am flipping a coin... you got... heads');
 			break;
 			case 2:
 			bot.speak('@' + name + ' i am flipping a coin... you got... tails');
 			break;
-		}
+		}			
     }
   else if (text.match(/^\/dance$/)) 
 	{
@@ -1148,7 +1178,21 @@ bot.on('speak', function (data) {
 				bot.pm(theUsersList[checkUser-1], data.userid);		  
 				condition = false;
 			}
-	}  
+	}
+  else if(text.match('/username') && condition == true)
+	{ 
+		var ban7 = data.text.slice(10);
+		var checkUser = theUsersList.indexOf(String(ban7));
+		if (checkUser != -1)
+			{
+				bot.speak(theUsersList[checkUser+1]);	  
+				condition = false;
+			}
+		else if(checkUser == -1)
+			{
+				bot.speak('I\'m sorry i don\'t know that one');
+			}
+	} 	
 });
 
 
@@ -1163,6 +1207,10 @@ bot.on('update_votes', function (data){
 			justSaw4(data.room.metadata.votelog[0][0]);
 		}	
 	
+	
+	//this is for keeping track of the upvotes and downvotes on the bot
+	upVotes = data.room.metadata.upvotes;
+	downVotes = data.room.metadata.downvotes;	
  })
 
 
@@ -1176,6 +1224,8 @@ bot.on('snagged', function (data) {
 			justSaw3(data.userid);
 			justSaw4(data.userid);
 		}	
+	
+	whoSnagged += 1;
  })
 
 
@@ -1394,10 +1444,33 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	{
 		bot.speak('@'+theUsersList[name1]+' is pleasantly chilled.');
 	}
+ else if (text.match(/^\/modpm/) && condition == true) 
+	{
+		var speak = text.substring(7);
+		for(var g = 0; g < modList.length; g++)
+			{
+				var isModInRoom = theUsersList.indexOf(modList[g]);
+					if(isModInRoom != -1)
+						{
+							bot.pm(theUsersList[name1] + ' said: '+speak, modList[g]);
+						}
+				
+			}		
+	}	
  else if (text.match(/^\/m/) && condition == true)
 	{
 		bot.speak(text.substring(3));	
 	}  
+ else if (text.match('/runtime'))
+	{  
+		var minute = 1000 * 60;
+		var hour = minute * 60;
+		var day = hour * 24;
+		bot.speak('hello');
+		var time = botRunTime[USERID].getTime();
+		
+		bot.speak('bot uptime, days ' +Math.round(time/day)+ ', hours ' +Math.round(time/hour)+ ', minutes ' +Math.round(time/minute));
+	}
   else if(text.match('/stage') && condition == true)
 	{  
 		var ban = data.text.slice(8);
@@ -1518,20 +1591,6 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 					});
 			}
 	}  
-  else if (text.match(/^\/inform$/) && condition == true)
-	{
-		var checkDjsName = theUsersList.indexOf(lastdj) + 1;
-		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
-		if(informTimer == null)
-			{
-				informTimer = setTimeout(function()
-							{								
-								bot.pm('you took too long to skip your song', lastdj);
-								bot.remDj(lastdj);
-								informTimer = null;
-							}, 20 * 1000);
-			}
-	}
   else if (text.match(/^\/removesong$/) && condition == true)
 	{  
 		bot.playlistAll(function(playlist)
@@ -1551,10 +1610,25 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 					}
 			})
 	}
+   else if(text.match('/username') && condition == true)
+	{ 
+		var ban7 = data.text.slice(10);
+		var checkUser = theUsersList.indexOf(String(ban7));
+		if (checkUser != -1)
+			{
+				bot.pm(theUsersList[checkUser+1], data.senderid);	  
+				condition = false;
+			}
+		else if(checkUser == -1)
+			{
+				bot.pm('I\'m sorry i don\'t know that one', data.senderid);
+			}
+	} 	
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /coinflip, /smoke, /surf, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, /skip, /dive, /admincommands, /queuecommands', data.senderid);
+					' /mom, /chilly, /cheers, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /dance, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1562,13 +1636,13 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if(text.match(/^\/pmcommands/) && condition == true)
 	{
-		bot.pm('/admincommands, /queuecommands, /commands, /inform, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned', data.senderid);
+		bot.pm('/admincommands, /queuecommands, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
 	}  
   else if(text.match('/admincommands') && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
 				'/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
-              	'/whobanned, /whostagebanned, /roomafkon, /roomafkoff' , data.senderid);
+              	'/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm' , data.senderid);
 		condition = false;
 	}  
  });
@@ -1588,6 +1662,9 @@ currentDjs = data.room.metadata.djs;
 //counts how many djs there are on stage
 djsOnStage = currentDjs.length;
 
+
+//sets bots runtime start date
+botRunTime[USERID] = Date.now();
 
 
 
@@ -1773,6 +1850,13 @@ if (checkLeave != -1)
 
 //activates at the end of a song.
 bot.on('endsong', function(data) {         
+		
+	//bot says song stats for each song
+	if(SONGSTATS == true)
+		{
+			bot.speak('stats for ' +song+ ' by ' +artist+ ': ' +':arrow_down:' +downVotes+ ':arrow_up:'+upVotes+ '<3' +whoSnagged);
+		}
+	
 	
 	//iterates through the dj list incrementing dj song counts and
 	//removing them if they are over the limit.
