@@ -90,6 +90,8 @@ var upVotes = null;
 var downVotes = null;
 var whoSnagged = 0;
 var SONGSTATS = true;
+var beginTime = null;
+var endTime = null;
 
 global.blackList = []; 
 global.stageList = [];
@@ -753,9 +755,59 @@ bot.on('speak', function (data) {
 	{
 		bot.speak('smoke em\' if ya got em.');	
 	}  
+  else if(text.match(/^\/djplays/))
+	{		
+		if(queue == true && playLimit != 0 && currentDjs.length != 0)
+			{
+				var djsnames = [];
+				var djplays = 'dj plays: ';
+				for(var i = 0; i < currentDjs.length; i++)
+					{
+						var djname = theUsersList.indexOf(currentDjs[i]) + 1;
+						djsnames.push(theUsersList[djname]);
+						if(currentDjs[i] != currentDjs[(currentDjs.length - 1)])
+							{
+								djplays = djplays +djsnames[i]+': '+djs20[currentDjs[i]].nbSong+', ';
+							}
+						else
+							{
+								djplays = djplays +djsnames[i]+': '+djs20[currentDjs[i]].nbSong;
+							}
+					}				
+				bot.speak(djplays);					
+			}
+		else if(queue == true && playLimit != 0 && currentDjs.length == 0)
+			{
+				bot.speak('There are no dj\'s on stage.');
+			}
+		else
+			{
+				bot.speak('The song play limit is currently inactive.');
+			}		
+				
+	}  
   else if(text.match(/^\/skipsong/) && condition == true)
 	{
 		bot.skip();
+	}  
+  else if(text.match(/^\/uptime/))
+	{
+		var msecPerMinute = 1000 * 60;
+		var msecPerHour = msecPerMinute * 60;
+		var msecPerDay = msecPerHour * 24;
+		endTime = Date.now();
+		var currentTime = endTime - beginTime;
+		
+		var days = Math.floor(currentTime / msecPerDay);
+		currentTime = currentTime - (days * msecPerDay);
+		
+		var hours = Math.floor(currentTime / msecPerHour);
+		currentTime = currentTime - (hours * msecPerHour);
+		
+		var minutes = Math.floor(currentTime / msecPerMinute);
+		currentTime = currentTime - (minutes * msecPerMinute);
+		
+		bot.speak('bot uptime: ' +days+ ' days, ' +hours+ ' hours, ' +minutes+ ' minutes');		
 	}  
   else if(text.match(/^\/songstats/) && condition == true)
 	{
@@ -798,7 +850,7 @@ bot.on('speak', function (data) {
 	{
 		bot.speak('the commands are  /awesome, ' +
 					' /mom, /chilly, /cheers, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
-					+ '/skip, /dive, /dance, /smoke, /surf, /cheers, /admincommands, /queuecommands');
+					+ '/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1031,9 +1083,13 @@ bot.on('speak', function (data) {
   }
   else if (text.match(/^\/queue$/))
 	{  
-		if(queue == true)
+		if(queue == true && queueName.length != 0)
 			{
 				bot.speak('The queue is now: ' + queueName);
+			}
+		else if(queue == true)
+			{
+				bot.speak('The queue is currently empty.');
 			}
 		else
 			{
@@ -1073,7 +1129,14 @@ bot.on('speak', function (data) {
 				{
 					queueList.splice(index5, 2);
 					queueName.splice(index6, 1);
-					bot.speak('The queue is now: ' + queueName);
+					if(queueName.length != 0)
+						{
+							bot.speak('The queue is now: ' + queueName);
+						}
+					else
+						{
+							bot.speak('The queue is now empty.');
+						}
 				}	
 			}
 	}
@@ -1088,7 +1151,14 @@ bot.on('speak', function (data) {
 		if(list2 != -1)
 			{
 				queueName.splice(list2, 1);
-				bot.speak('The queue is now: ' + queueName);
+				if(queueName.length != 0)
+					{
+						bot.speak('The queue is now: ' + queueName);
+					}
+				else
+					{
+						bot.speak('The queue is now empty.');
+					}
 			}	
 	}
   else if (text.match(/^\/addme$/) && queue == true)
@@ -1458,7 +1528,26 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 				
 			}		
 	}	
- else if (text.match(/^\/m/) && condition == true)
+  else if(text.match(/^\/uptime/))
+	{
+		var msecPerMinute = 1000 * 60;
+		var msecPerHour = msecPerMinute * 60;
+		var msecPerDay = msecPerHour * 24;
+		endTime = Date.now();
+		var currentTime = endTime - beginTime;
+		
+		var days = Math.floor(currentTime / msecPerDay);
+		currentTime = currentTime - (days * msecPerDay);
+		
+		var hours = Math.floor(currentTime / msecPerHour);
+		currentTime = currentTime - (hours * msecPerHour);
+		
+		var minutes = Math.floor(currentTime / msecPerMinute);
+		currentTime = currentTime - (minutes * msecPerMinute);
+		
+		bot.pm('bot uptime: ' +days+ ' days, ' +hours+ ' hours, ' +minutes+ ' minutes', data.senderid);		
+	}  
+  else if (text.match(/^\/m/) && condition == true)
 	{
 		bot.speak(text.substring(3));	
 	}  
@@ -1471,7 +1560,38 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 				bot.remDj(theUsersList[checkUser]);
 				condition = false;
 			}
-	} 
+	}	
+  else if(text.match(/^\/djplays/))
+	{		
+		if(queue == true && playLimit != 0 && currentDjs.length != 0)
+			{
+				var djsnames = [];
+				var djplays = 'dj plays: ';
+				for(var i = 0; i < currentDjs.length; i++)
+					{
+						var djname = theUsersList.indexOf(currentDjs[i]) + 1;
+						djsnames.push(theUsersList[djname]);
+						if(currentDjs[i] != currentDjs[(currentDjs.length - 1)])
+							{
+								djplays = djplays +djsnames[i]+': '+djs20[currentDjs[i]].nbSong+', ';
+							}
+						else
+							{
+								djplays = djplays +djsnames[i]+': '+djs20[currentDjs[i]].nbSong;
+							}
+					}				
+				bot.pm(djplays, data.senderid);					
+			}
+		else if(queue == true && playLimit != 0 && currentDjs.length == 0)
+			{
+				bot.pm('There are no dj\'s on stage.', data.senderid);
+			}
+		else
+			{
+				bot.pm('The song play limit is currently inactive.', data.senderid);
+			}
+				
+	}  
   else if(text.match('/banstage') && condition == true)
 	{  
 		var ban = data.text.slice(11);
@@ -1633,7 +1753,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	{
 		bot.pm('the commands are  /awesome, ' +
 					' /mom, /chilly, /cheers, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
-					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /admincommands, /queuecommands', data.senderid);
+					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /uptime, /djplays, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1658,6 +1778,10 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 
 //starts up when bot first enters the room
 bot.on('roomChanged', function (data) {
+
+//start the uptime
+beginTime = Date.now();
+
 
 
 //finds out who the currently playing dj's are.
