@@ -1761,7 +1761,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if(text.match(/^\/pmcommands/) && condition == true)
 	{
-		bot.pm('/admincommands, /queuecommands, /inform, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
+		bot.pm('/admincommands, /queuecommands, /uptime, /djplays, /inform, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
 	}  
   else if(text.match(/^\/admincommands/) && condition == true)
 	{
