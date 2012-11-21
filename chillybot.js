@@ -815,11 +815,11 @@ bot.on('speak', function (data) {
 	{
 		bot.speak('/tablefix');  		
 	}  	 
-  else if(text.match('awesome'))
+  else if(text.match('/awesome'))
 	{
 		bot.vote('up');
 	}  
-  else if(text.match('lame') && condition == true)
+  else if(text.match('/lame') && condition == true)
 	{
 		bot.vote('down');
 	}
@@ -841,7 +841,7 @@ bot.on('speak', function (data) {
 								}, 20 * 1000);
 			}
 	}
-  else if (text.match(/^\/cheers$/))
+  else if (text.match('/cheers'))
 	{
 		bot.speak('@' +name+ ' raises their glass for a toast');
 	}
@@ -882,7 +882,7 @@ bot.on('speak', function (data) {
 	{
 		bot.speak('http://www.gifbin.com/f/986269');
 	}
-  else if (text.match(/^\/chilly$/)) 
+  else if (text.match('/chilly')) 
 	{
 		bot.speak('@'+name+' is pleasantly chilled.');
 	}
@@ -909,7 +909,7 @@ bot.on('speak', function (data) {
 				getonstage = false;
 			}    
 	}
-  else if (text.match(/^\/beer$/))
+  else if (text.match('/beer'))
 	{
 		var botname = theUsersList.indexOf(USERID) + 1;
 		bot.speak('@' +theUsersList[botname]+ ' hands '+ '@'+name+' a nice cold :beer:');
