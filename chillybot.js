@@ -804,11 +804,11 @@ bot.on('speak', function (data) {
 	{
 		bot.speak('the commands are /queue, /removefromqueue, /removeme, /addme, /queueOn, /queueOff, /bumptop');
 	}  
-  else if(text.match('/admincommands') && condition == true)
+  else if(text.match(/^\/admincommands/) && condition == true)
 	{
-		bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+		bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
 			'/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
-			'/whostagebanned, /roomafkon, /roomafkoff /songstats, /username, /modpm' , data.userid);
+			'/whostagebanned, /roomafkon, /roomafkoff /songstats, /username, /modpm');
 		condition = false;
 	}  
   else if (text.match(/^\/tableflip/))
@@ -882,7 +882,7 @@ bot.on('speak', function (data) {
 	{
 		bot.speak('http://www.gifbin.com/f/986269');
 	}
-  else if (text.match('/chilly')) 
+  else if (text.match(/^\/chilly$/)) 
 	{
 		bot.speak('@'+name+' is pleasantly chilled.');
 	}
@@ -1044,22 +1044,22 @@ bot.on('speak', function (data) {
 	{  
 		if(blackList.length != 0)
 			{
-				bot.pm('ban list: ' + blackList, data.userid);
+				bot.speak('ban list: ' + blackList);
 			}
 		else
 			{
-				bot.pm('The ban list is empty.', data.userid);
+				bot.speak('The ban list is empty.');
 			}	
 	}
   else if (text.match(/^\/whostagebanned$/) && condition == true)
 	{  
 		if(stageList.length != 0)
 			{
-				bot.pm('banned from stage: ' + stageList, data.userid);
+				bot.speak('banned from stage: ' + stageList);
 			}
 		else
 			{
-				bot.pm('The banned from stage list is currently empty.', data.userid);
+				bot.speak('The banned from stage list is currently empty.');
 			}	
 	}
   else if (text.match('/removefromqueue') && queue == true)
@@ -1177,7 +1177,7 @@ bot.on('speak', function (data) {
 		var checkUser = theUsersList.indexOf(ban);
 		if (checkUser != -1)
 			{
-				bot.pm(theUsersList[checkUser-1], data.userid);		  
+				bot.speak(theUsersList[checkUser-1]);		  
 				condition = false;
 			}
 	}
@@ -1441,7 +1441,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	{
 		condition = false;
 	}	
- if (text.match(/^\/chilly$/)) 
+ if (text.match('/chilly')) 
 	{
 		bot.speak('@'+theUsersList[name1]+' is pleasantly chilled.');
 	}
@@ -1643,7 +1643,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	{
 		bot.pm('/admincommands, /queuecommands, /inform, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
 	}  
-  else if(text.match('/admincommands') && condition == true)
+  else if(text.match(/^\/admincommands/) && condition == true)
 	{
 		bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
 				'/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
