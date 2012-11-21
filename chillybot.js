@@ -798,7 +798,7 @@ bot.on('speak', function (data) {
 	{
 		bot.speak('the commands are  /awesome, ' +
 					' /mom, /chilly, /cheers, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
-					+ '/skip, /dive, /smoke, /surf, /cheers, /dance, /admincommands, /queuecommands');
+					+ '/skip, /dive, /dance, /smoke, /surf, /cheers, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1580,6 +1580,20 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 					});
 			}
 	}  
+  else if (text.match(/^\/inform$/) && condition == true)
+	{
+		var checkDjsName = theUsersList.indexOf(lastdj) + 1;
+		bot.speak('@' +theUsersList[checkDjsName]+ ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
+		if(informTimer == null)
+			{
+				informTimer = setTimeout(function()
+									{								
+										bot.pm('you took too long to skip your song', lastdj);
+										bot.remDj(lastdj);
+										informTimer = null;
+									}, 20 * 1000);
+			}
+	}
   else if (text.match(/^\/removesong$/) && condition == true)
 	{  
 		bot.playlistAll(function(playlist)
@@ -1616,8 +1630,8 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
-					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /dance, /admincommands, /queuecommands', data.senderid);
+					' /mom, /chilly, /cheers, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1625,7 +1639,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if(text.match(/^\/pmcommands/) && condition == true)
 	{
-		bot.pm('/admincommands, /queuecommands, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
+		bot.pm('/admincommands, /queuecommands, /inform, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
 	}  
   else if(text.match('/admincommands') && condition == true)
 	{
@@ -1650,6 +1664,7 @@ currentDjs = data.room.metadata.djs;
 
 //counts how many djs there are on stage
 djsOnStage = currentDjs.length;
+
 
 
 
