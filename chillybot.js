@@ -81,7 +81,7 @@ var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
 var djsOnStage = null;
 var sayOnce = true;
-var timer = null;
+var timer = [];
 var artist = null;
 var getSong = null;
 var informTimer = null;
@@ -1346,13 +1346,12 @@ if(queue == true)
 			console.log("removed");
 			bot.remDj(data.user[0].userid);
 			++people[data.user[0].userid].spamCount;
-			clearTimeout(timer);
-			if(timer != null)
+			if(timer[data.user[0].userid] != null)
 				{						
-					clearTimeout(timer);
-					timer = null;
+					clearTimeout(timer[data.user[0].userid]);
+					timer[data.user[0].userid] = null;
 				}
-			timer = setTimeout(function()
+			timer[data.user[0].userid] = setTimeout(function()
 				{
 					people[data.user[0].userid] = { spamCount: 0 };
 				}, 10 * 1000);	
@@ -1380,12 +1379,12 @@ if(queue == true)
 				bot.remDj(data.user[0].userid);
 				bot.speak('@' +data.user[0].name+ ' you are banned from djing');
 				++people[data.user[0].userid].spamCount;
-				if(timer != null)
+				if(timer[data.user[0].userid] != null)
 					{						
-						clearTimeout(timer);
-						timer = null;
+						clearTimeout(timer[data.user[0].userid]);
+						timer[data.user[0].userid] = null;
 					}
-				timer = setTimeout(function()
+				timer[data.user[0].userid] = setTimeout(function()
 					{
 						people[data.user[0].userid] = { spamCount: 0 };
 					}, 10 * 1000);	
@@ -1402,12 +1401,12 @@ if(queue == true)
 				bot.remDj(data.user[0].userid);
 				bot.speak('@' +data.user[0].name+ ' you are banned from djing');
 				++people[data.user[0].userid].spamCount;
-				if(timer != null)
+				if(timer[data.user[0].userid] != null)
 					{						
-						clearTimeout(timer);
-						timer = null;
+						clearTimeout(timer[data.user[0].userid]);
+						timer[data.user[0].userid] = null;
 					}
-				timer = setTimeout(function()
+				timer[data.user[0].userid] = setTimeout(function()
 					{
 						people[data.user[0].userid] = { spamCount: 0 };
 					}, 10 * 1000);	
@@ -1835,6 +1834,7 @@ delete lastSeen2[data.user[0].userid];
 delete lastSeen3[data.user[0].userid];
 delete lastSeen4[data.user[0].userid];
 delete people[data.user[0].userid];
+delete timer[data.user[0].userid];
 
 
 //updates the users list when a user leaves the room.
