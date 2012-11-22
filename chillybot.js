@@ -22,7 +22,6 @@ var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
 var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
-var spamLimit = 3; //number of times a user can spam being kicked off the stage within 10 secs
 
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed.
@@ -46,7 +45,7 @@ bot.debug = false; //prints all debugging information to the console in real tim
 
 
 
-
+var spamLimit = 3; //number of times a user can spam being kicked off the stage within 10 secs
 var getonstage = true;
 var myId = null;
 var detail = null;
