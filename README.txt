@@ -50,6 +50,8 @@ instructions to install:
 6. finally in order to run the bot after you have changed directory appropriately type (node chillybot.js) without the parenthesis into command prompt and hit enter, if it does not immediately give
    you some kind of a runtime error it is working, login to your main turntable account and go to the room that you are running the bot in and see if it is there.
 
+7. If everything has gone well, make your bot a moderator in the room so that it can effectively enforce its commands.
+
   *A last note, the auto djing in this script is meant for a 5 seater room, if you have less than five seats i highly recommend you turn this feature off when you start the bot up with the /getonstage command
    If you cannot get this bot to run for some reason feel free to open an issue on github.
 
