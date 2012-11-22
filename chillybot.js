@@ -17,8 +17,6 @@ var Bot    = require('ttapi');
 var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
-var roomName = 'straight chillin' //put your room's name here.
-var ttRoomName = 'straight_chillin11' //your turntable.fm room name here, only the part that comes after turntable.fm/
 var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
@@ -92,6 +90,8 @@ var whoSnagged = 0;
 var SONGSTATS = true;
 var beginTime = null;
 var endTime = null;
+var roomName = null;
+var ttRoomName = null;
 
 global.blackList = []; 
 global.stageList = [];
@@ -1761,7 +1761,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if(text.match(/^\/pmcommands/) && condition == true)
 	{
-		bot.pm('/admincommands, /queuecommands, /uptime, /djplays, /inform, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
+		bot.pm('/admincommands, /queuecommands, /inform, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
 	}  
   else if(text.match(/^\/admincommands/) && condition == true)
 	{
@@ -1782,6 +1782,9 @@ bot.on('roomChanged', function (data) {
 //start the uptime
 beginTime = Date.now();
 
+//gets your rooms name and shortcut
+roomName = data.room.name;
+ttRoomName = data.room.shortcut;
 
 
 //finds out who the currently playing dj's are.
@@ -1863,7 +1866,7 @@ if(queue == true && djsOnStage == 5)
 
 //gets newest user and prints greeting
 var roomjoin = data.user[0];
-if (GREET == true)
+if (GREET == true && data.user[0].userid != USERID)
 	{
 		bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
 	}
