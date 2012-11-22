@@ -995,17 +995,10 @@ bot.on('speak', function (data) {
 	{
 		bot.speak('artist name: '+artist+ ', song name: ' + song + ', album: ' + album + ', genre: ' + genre);
 	}
-  else if(data.text == '/dice')
-	{
-		var num = 0;
+ else if(data.text == '/dice')
+	{		
 		var random = Math.floor(Math.random() * 6 + 1);
-		bot.speak('@' + name + ' i am rolling the dice...');
-		num = 1;
-			if(num =1)
-				{
-					bot.speak('your number is... ' +random);
-					num = 0;
-				}
+		bot.speak('@' + name + ' i am rolling the dice... your number is... ' +random);
 	}  
   else if(text.match(/^\/dive/))
 	{
