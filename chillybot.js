@@ -106,9 +106,7 @@ global.checkLast = null;
 global.songLimitTimer = null;
 global.beginTimer = null;
 
-var randomPort = Math.ceil(Math.random() * 10000 + 6000);
 var bot = new Bot(AUTH, USERID, ROOMID);
-bot.listen(randomPort, '127.0.0.1');
 
 //updates the afk list
 justSaw = function (uid)
