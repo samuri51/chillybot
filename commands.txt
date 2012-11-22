@@ -1,6 +1,7 @@
 the following is a list of commands and how to use them:
 *note all commands are case sensitive*
 *note < > are parameters not literals, do not include the < > in your command usage.*
+*note when you see @name type an @ symbol before the persons name, this is because the @symbol gives an autofill option in turntable*
 
 ADMIN ONLY COMMANDS: (moderator only)
 
