@@ -997,7 +997,7 @@ bot.on('speak', function (data) {
 	}
  else if(data.text == '/dice')
 	{		
-		var random = Math.floor(Math.random() * 6 + 1);
+		var random = Math.floor(Math.random() * 12 + 1);
 		bot.speak('@' + name + ' i am rolling the dice... your number is... ' +random);
 	}  
   else if(text.match(/^\/dive/))
