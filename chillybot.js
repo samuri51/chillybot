@@ -35,12 +35,7 @@ global.vipList = []; /* this is the vip list, it accepts userids as input, this 
                         if there is only one vip, add the bots userid as well so that the vip can hear their own music.
                      */
 
-var bot = new Bot(AUTH, USERID, ROOMID); //do not touch
-bot.listen(xxxx, 'xxx.x.x.x');  //set the port and ip that you want the bot use here.
-
-bot.debug = false; //prints all debugging information to the console in real time (alot of data)
-
-
+					 
 /************************************EndSetUp**********************************************************************/
 
 
@@ -111,6 +106,9 @@ global.checkLast = null;
 global.songLimitTimer = null;
 global.beginTimer = null;
 
+var randomPort = Math.ceil(Math.random() * 10000 + 6000);
+var bot = new Bot(AUTH, USERID, ROOMID);
+bot.listen(randomPort, '127.0.0.1');
 
 //updates the afk list
 justSaw = function (uid)
