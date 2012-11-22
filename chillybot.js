@@ -21,7 +21,6 @@ var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no p
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
 var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
-var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
 
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed.
@@ -39,7 +38,7 @@ global.vipList = []; /* this is the vip list, it accepts userids as input, this 
 /************************************EndSetUp**********************************************************************/
 
 
-
+var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
 var spamLimit = 3; //number of times a user can spam being kicked off the stage within 10 secs
 var getonstage = true;
 var myId = null;
@@ -68,7 +67,7 @@ var checkWhoIsDj;
 var GREET = true;
 var djs20 = [];
 var randomOnce = 0;
-var voteSkip = true;
+var voteSkip = false;
 var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
 var djsOnStage = null;
