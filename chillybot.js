@@ -506,16 +506,20 @@ if(snagSong == true)
  {
    if(getonstage == true && vipList.length == 0)
      {
-		bot.addDj();
-		current = null;
+		bot.addDj();		
      }
- }
- 
+ } 
  if(current == 5 && getonstage == true)
 	{
-		bot.remDj();
-		current = null;
-	} 
+		bot.remDj();		
+	}	
+ //if the bot is the only one on stage and they are skipping their songs
+ //they will stop skipping
+ if(current == 1 && checkWhoIsDj == USERID && skipOn == true)
+	{
+		skipOn = false;
+	}
+		
 	
 	
  var checkIfAdmin = modList.indexOf(checkWhoIsDj);
