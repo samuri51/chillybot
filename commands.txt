@@ -88,6 +88,8 @@ COMMANDS: (public)
 
 /awesome --> the bot awesomes the currently playing song if they are not already.
 
+/playlist --> bot says the total amount of songs in its playlist.
+
 /cheers --> user raises their glass for a toast
 
 /uptime --> get the amount of time the bot has been running for.
