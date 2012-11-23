@@ -605,6 +605,13 @@ bot.on('speak', function (data) {
 				
 			}		
 	}	
+  else if (text.match(/^\/playlist/))
+	{		
+		bot.playlistAll(function(playlist)				
+			{			
+				bot.speak('There are currently ' +playlist.list.length+ ' songs in my playlist.');
+			});			
+	}
   else if (text.match(/^\/randomSong$/) && condition == true)
 	{
             if(randomOnce != 1)
@@ -845,7 +852,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
 	{
 		bot.speak('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
+					' /mom, /chilly, /cheers, /playlist, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
 					+ '/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
@@ -1517,6 +1524,13 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 				
 			}		
 	}	
+  else if (text.match(/^\/playlist/) && condition == true)
+	{		
+		bot.playlistAll(function(playlist)				
+			{			
+				bot.pm('There are currently ' +playlist.list.length+ ' songs in my playlist.', data.senderid);
+			});			
+	}
   else if(text.match(/^\/uptime/))
 	{
 		var msecPerMinute = 1000 * 60;
@@ -1741,7 +1755,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+					' /mom, /chilly, /cheers, /playlist, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
 					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /uptime, /djplays, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
