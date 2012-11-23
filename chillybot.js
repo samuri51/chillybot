@@ -31,7 +31,6 @@ global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe'];//put us
 					
 global.vipList = []; /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
-                        if there is only one vip, add the bots userid as well so that the vip can hear their own music.
                      */
 
 					 
@@ -318,7 +317,7 @@ if (vipList.length != 0 && djsOnStage.length != vipList.length)
 		for(var p = 0; p < currentDjs.length; p++)
 			{
 				var checkIfVip = vipList.indexOf(currentDjs[p]);
-				if(checkIfVip == -1)
+				if(checkIfVip == -1 && currentDjs[p] != USERID)
 					{
 						bot.remDj(currentDjs[p]);
 					}
@@ -454,6 +453,8 @@ bot.on('newsong', function (data){
  voteCountSkip = 0;
  votesLeft = HowManyVotesToSkip;
  whoSnagged = 0;
+ upVotes = 0;
+ downVotes = 0;
  
  
  
@@ -1344,11 +1345,22 @@ if (checkDj != -1)
 bot.on('add_dj', function (data) {
 
 //removes dj when they try to join the stage if the vip list has members in it.
+//does not remove the bot
 var checkVip = vipList.indexOf(data.user[0].userid);
-if(vipList.length != 0 && checkVip == -1)
+if(vipList.length != 0 && checkVip == -1 && data.user[0].userid != USERID)
 	{
 		bot.remDj(data.user[0].userid);
 		bot.pm('The vip list is currently active, only the vips may dj at this time', data.user[0].userid);
+		++people[data.user[0].userid].spamCount;
+		if(timer[data.user[0].userid] != null)
+			{						
+				clearTimeout(timer[data.user[0].userid]);
+				timer[data.user[0].userid] = null;
+			}
+		timer[data.user[0].userid] = setTimeout(function()
+			{
+				people[data.user[0].userid] = { spamCount: 0 };
+			}, 10 * 1000);	
 	}
 
 
