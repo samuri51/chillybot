@@ -86,6 +86,10 @@ COMMANDS: (public)
 
 /admincommands --> pm's the user the commands if they are an admin.
 
+/afk --> this will mark you as afk the first time you type it, and unmark you as afk the second time
+
+/whosafk --> the bot says the names of everyone whos currently using the /afk command
+
 /awesome --> the bot awesomes the currently playing song if they are not already.
 
 /playlist --> bot says the total amount of songs in its playlist.
