@@ -1976,7 +1976,9 @@ if(queue == true && djsOnStage == 5)
 var roomjoin = data.user[0];
 if (GREET == true && data.user[0].userid != USERID)
 	{
+	  setTimeout(function(){
 		bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
+	  }, 3 * 1000);
 	}
      
    
