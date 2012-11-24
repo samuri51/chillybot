@@ -33,7 +33,6 @@ global.vipList = []; /* this is the vip list, it accepts userids as input, this 
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
                      */
 
-
 					 
 /************************************EndSetUp**********************************************************************/
 
@@ -85,6 +84,7 @@ var beginTime = null;
 var endTime = null;
 var roomName = null;
 var ttRoomName = null;
+var greetingTimer = [];
 
 global.afkPeople = [];
 global.blackList = []; 
@@ -1621,10 +1621,11 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	{
 		bot.speak(text.substring(3));	
 	}  
-  else if(text.match('/stage') && condition == true)
+  else if(text.match(/^\/stage/) && condition == true)
 	{  
 		var ban = data.text.slice(8);
 		var checkUser = theUsersList.indexOf(ban) -1;
+		console.log(theUsersList, checkUser);
 		if (checkUser != -1)
 			{
 				bot.remDj(theUsersList[checkUser]);
@@ -1975,11 +1976,20 @@ if(queue == true && djsOnStage == 5)
 //gets newest user and prints greeting
 var roomjoin = data.user[0];
 if (GREET == true && data.user[0].userid != USERID)
-	{
-	  setTimeout(function(){
+	{	
+	  if(greetingTimer[data.user[0].userid] != null)
+		{
+			clearTimeout(greetingTimer[data.user[0].userid]);
+			greetingTimer[data.user[0].userid] = null;
+		}		
+	  greetingTimer[data.user[0].userid] = setTimeout(function(){	
+        greetingTimer[data.user[0].userid] = null;	  
 		bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
-	  }, 3 * 1000);
+        delete greetingTimer[data.user[0].userid];		
+	 }, 3 * 1000);
 	}
+	
+	
      
    
    
