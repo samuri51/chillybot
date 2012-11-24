@@ -33,6 +33,7 @@ global.vipList = []; /* this is the vip list, it accepts userids as input, this 
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
                      */
 
+
 					 
 /************************************EndSetUp**********************************************************************/
 
@@ -85,6 +86,7 @@ var endTime = null;
 var roomName = null;
 var ttRoomName = null;
 
+global.afkPeople = [];
 global.blackList = []; 
 global.stageList = [];
 global.userIds = [];
@@ -857,7 +859,7 @@ bot.on('speak', function (data) {
   else if(text.match(/^\/commands/))
 	{
 		bot.speak('the commands are  /awesome, ' +
-					' /mom, /chilly, /cheers, /playlist, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
+					' /mom, /chilly, /cheers, /playlist, /afk, /whosafk, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' 
 					+ '/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
 	}  
   else if(text.match(/^\/queuecommands/))
@@ -1265,7 +1267,56 @@ bot.on('speak', function (data) {
 			{
 				bot.speak('I\'m sorry i don\'t know that one');
 			}
-	} 	
+	}
+  else if (text.match(/^\/afk/))
+	{
+		var isAlreadyAfk = afkPeople.indexOf(data.name);
+		if(isAlreadyAfk == -1)
+			{
+				bot.speak('@'+name+ ' you are marked as afk');
+				afkPeople.push(data.name);
+			}
+		else if(isAlreadyAfk != -1)
+			{
+				bot.speak('@'+name+ ' you are no longer afk');
+				afkPeople.splice(isAlreadyAfk, 1);
+			}
+	}
+  else if (text.match(/^\/whosafk/))
+	{
+		if(afkPeople.length != 0)
+			{
+				var whosAfk = 'marked as afk: ';
+				for(var f = 0; f < afkPeople.length; f++)
+					{
+						if(f != (afkPeople.length - 1))
+							{
+								whosAfk = whosAfk + afkPeople[f] +', ';
+							}
+						else
+							{
+								whosAfk = whosAfk + afkPeople[f];
+							}
+					}
+				bot.speak(whosAfk);
+			}
+		else
+			{
+				bot.speak('No one is currently marked as afk');
+			}		
+	}
+
+  //checks to see if someone is trying to speak to an afk person or not.	
+  if(afkPeople.length != 0 && data.userid != USERID)
+	{
+		for(var j = 0; j < afkPeople.length; j++)
+			{
+				if(data.text.match(afkPeople[j]))
+					{
+						bot.speak(afkPeople[j]+ ' is afk');
+					}
+			}
+	}		 	
 });
 
 
@@ -1734,7 +1785,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 									informTimer = null;
 								}, 20 * 1000);
 			}
-	}
+	} 
   else if (text.match(/^\/removesong$/) && condition == true)
 	{  
 		bot.playlistAll(function(playlist)
@@ -1767,12 +1818,50 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 			{
 				bot.pm('I\'m sorry i don\'t know that one', data.senderid);
 			}
-	} 	
+	}  
+  else if (text.match(/^\/afk/))
+	{
+		var isUserAfk = theUsersList.indexOf(data.senderid) + 1;
+		var isAlreadyAfk = afkPeople.indexOf(theUsersList[isUserAfk]);
+		if(isAlreadyAfk == -1)
+			{
+				bot.pm('you are marked as afk', data.senderid);
+				afkPeople.push(theUsersList[isUserAfk]);
+			}
+		else if(isAlreadyAfk != -1)
+			{
+				bot.pm('you are no longer afk', data.senderid);
+				afkPeople.splice(isAlreadyAfk, 1);
+			}
+	}
+  else if (text.match(/^\/whosafk/))
+	{
+		if(afkPeople.length != 0)
+			{
+				var whosAfk = 'marked as afk: ';
+				for(var f = 0; f < afkPeople.length; f++)
+					{
+						if(f != (afkPeople.length - 1))
+							{
+								whosAfk = whosAfk + afkPeople[f] +', ';
+							}
+						else
+							{
+								whosAfk = whosAfk + afkPeople[f];
+							}
+					}
+				bot.pm(whosAfk, data.senderid);
+			}
+		else
+			{
+				bot.pm('No one is currently marked as afk', data.senderid);
+			}		
+	}
   else if(text.match(/^\/commands/))
 	{
 		bot.pm('the commands are  /awesome, ' +
 					' /mom, /chilly, /cheers, /playlist, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
-					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /uptime, /djplays, /admincommands, /queuecommands', data.senderid);
+					'/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands', data.senderid);
 	}   
   else if(text.match(/^\/queuecommands/))
 	{
@@ -1780,7 +1869,7 @@ if(people[data.user[0].userid].spamCount >= spamLimit)
 	}  
   else if(text.match(/^\/pmcommands/) && condition == true)
 	{
-		bot.pm('/admincommands, /queuecommands, /inform, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
+		bot.pm('/admincommands, /queuecommands, /inform, /whosafk, /afk, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
 	}  
   else if(text.match(/^\/admincommands/) && condition == true)
 	{
@@ -1981,6 +2070,18 @@ delete lastSeen3[data.user[0].userid];
 delete lastSeen4[data.user[0].userid];
 delete people[data.user[0].userid];
 delete timer[data.user[0].userid];
+
+
+//removes people who leave the room from the afk list
+if(afkPeople.length != 0)
+	{
+		var userName = data.user[0].name;
+		var checkUserName = afkPeople.indexOf(data.user[0].name);
+		if(checkUserName != -1)
+			{
+				afkPeople.splice(checkUserName, 1);
+			}
+	}
 
 
 //updates the users list when a user leaves the room.
