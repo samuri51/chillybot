@@ -578,7 +578,7 @@ bot.on('speak', function (data) {
 		}
 	
 	//updates the afk position of the speaker.
-	if(AFK == true || roomAFK == true);
+	if(AFK == true || roomAFK == true)
 		{
 			justSaw(data.userid);
 			justSaw1(data.userid);
