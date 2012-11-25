@@ -209,7 +209,7 @@ isAfk4 = function (userId, num)
 //removes afk dj's after afklimit is up.
 afkCheck = function ()
 {
-    for (i = 0; i < currentDjs.length; i++)
+    for (var i = 0; i < currentDjs.length; i++)
     {
         afker = currentDjs[i]; //Pick a DJ
         var isAfkMod = modList.indexOf(afker);
