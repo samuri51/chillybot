@@ -1322,7 +1322,7 @@ bot.on('speak', function (data) {
 
 //checks who voted and updates their position on the afk list.
 bot.on('update_votes', function (data){
-	if(AFK == true || roomAFK == true);
+	if(AFK == true || roomAFK == true)
 		{
 			justSaw(data.room.metadata.votelog[0][0]);	
 			justSaw1(data.room.metadata.votelog[0][0]);		
@@ -1340,7 +1340,7 @@ bot.on('update_votes', function (data){
 
 //checks who added a song and updates their position on the afk list. 
 bot.on('snagged', function (data) {
-	if(AFK == true || roomAFK == true);
+	if(AFK == true || roomAFK == true)
 		{
 			justSaw(data.userid);
 			justSaw1(data.userid);
@@ -1437,7 +1437,7 @@ djs20[data.user[0].userid] = { nbSong: 0 };
 	
 	
 //updates the afk position of the person who joins the stage.
-if(AFK == true || roomAFK == true);
+if(AFK == true || roomAFK == true)
 	{
 		justSaw(data.user[0].userid);
 		justSaw1(data.user[0].userid);
