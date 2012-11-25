@@ -12,10 +12,10 @@
 /*******************************BeginSetUp*****************************************************************************/
 
 
-var Bot    = require('ttapi');
-var AUTH   = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the auth of your bot here.
-var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx';   //set the roomid of the room you want the bot to go to here.
+var Bot = require('ttapi');
+var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
+var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
 var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
@@ -23,12 +23,13 @@ var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), th
 
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed.
-global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain' , 'tpain' , 'katy perry', 'eminem', 'porter robinson', //banned artist/ song list (MUST BE LOWERCASE)
- 'gorgoroth', 'justin bieber', 'deadmau5','rick roll', 'nosia', 'infected mushroom','never gonna give you up', 'rick astley', 'spongebob squarepants']; 
-global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe'];	//banned users list, put userids in string form here for permanent banning(put their name after their userid to tell who is banned).
-global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe'];//put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
-					
-global.vipList = []; /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
+global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain', 'tpain', 'katy perry', 'eminem', 'porter robinson', //banned artist/ song list (MUST BE LOWERCASE)
+'gorgoroth', 'justin bieber', 'deadmau5', 'rick roll', 'nosia', 'infected mushroom', 'never gonna give you up', 'rick astley', 'spongebob squarepants'];
+global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe']; //banned users list, put userids in string form here for permanent banning(put their name after their userid to tell who is banned).
+global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe']; //put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
+
+global.vipList = [];
+/* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
                      */
 
@@ -346,7 +347,7 @@ setInterval(repeatAfkMessage, 600 * 1000) //repeats every 10 minutes if afk is s
 
 repeatMessage = function ()
 {
-    if (MESSAGE === true)
+    if (MESSAGE === true && detail !== undefined)
     {
         bot.speak('Welcome to ' + roomName + ', the rules are simple, ' + detail); //set the message you wish the bot to repeat here i.e rules and such.
     }
@@ -818,7 +819,7 @@ bot.on('speak', function (data)
         var hours = Math.floor(currentTime / msecPerHour);
         currentTime = currentTime - (hours * msecPerHour);
 
-        var minutes = Math.floor(currentTime / msecPerMinute);        
+        var minutes = Math.floor(currentTime / msecPerMinute);
 
         bot.speak('bot uptime: ' + days + ' days, ' + hours + ' hours, ' + minutes + ' minutes');
     }
@@ -999,7 +1000,10 @@ bot.on('speak', function (data)
     }
     else if (data.text == '/roominfo')
     {
-        bot.speak(detail);
+        if (detail !== undefined)
+        {
+            bot.speak(detail);
+        }
     }
     else if (data.text == '/fanme')
     {
