@@ -253,7 +253,7 @@ setInterval(afkCheck, 5000) //This repeats the check every five seconds.
 //this removes people on the floor, not the djs
 roomAfkCheck = function ()
 {
-    for (i = 0; i < userIds.length; i++)
+    for (var i = 0; i < userIds.length; i++)
     {
 
         var afker2 = userIds[i]; //Pick a DJ
@@ -282,7 +282,7 @@ roomAfkCheck = function ()
             }
         }
     }
-}
+};
 
 setInterval(roomAfkCheck, 5000) //This repeats the check every five seconds.
 
