@@ -631,7 +631,7 @@ bot.on('speak', function (data)
         {
             bot.playlistAll(function (playlist)
             {
-                var i = 0;
+                var ez = 0;
                 bot.speak("Reorder initiated.");
                 ++randomOnce;
                 var reorder = setInterval(function ()
@@ -639,9 +639,9 @@ bot.on('speak', function (data)
                     if (i <= playlist.list.length)
                     {
                         var nextId = Math.ceil(Math.random() * playlist.list.length);
-                        bot.playlistReorder(i, nextId);
-                        console.log("Song " + i + " changed.");
-                        i++;
+                        bot.playlistReorder(ez, nextId);
+                        console.log("Song " + ez + " changed.");
+                        ez++;
                     }
                     else
                     {
