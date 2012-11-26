@@ -636,7 +636,7 @@ bot.on('speak', function (data)
                 ++randomOnce;
                 var reorder = setInterval(function ()
                 {
-                    if (i <= playlist.list.length)
+                    if (ez <= playlist.list.length)
                     {
                         var nextId = Math.ceil(Math.random() * playlist.list.length);
                         bot.playlistReorder(ez, nextId);
