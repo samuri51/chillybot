@@ -749,7 +749,7 @@ bot.on('speak', function (data)
     {
         roomAFK = true;
         bot.speak('the audience afk list is now active.');
-        for (var zh = 0; z < userIds.length; z++)
+        for (var zh = 0; zh < userIds.length; zh++)
         {
             var isDj2 = currentDjs.indexOf(userIds[zh])
             if (isDj2 == -1)
@@ -1929,7 +1929,7 @@ bot.on('roomChanged', function (data)
 
     //initializes currently playing dj's song count to zero.
     var currentPlayers = data.room.metadata.djs;
-    for (var iz = 0; i < currentPlayers.length; iz++)
+    for (var iz = 0; iz < currentPlayers.length; iz++)
     {
         djs20[currentPlayers[iz]] = {
             nbSong: 0
