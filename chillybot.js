@@ -1186,7 +1186,7 @@ bot.on('speak', function (data)
         queueName = [];
         bot.speak('the queue is now active.');
         queue = true;
-        for (var ig = 0; i < currentDjs.length; ig++)
+        for (var ig = 0; ig < currentDjs.length; ig++)
         {
             djs20[currentDjs[ig]] = {
                 nbSong: 0
