@@ -768,9 +768,9 @@ bot.on('speak', function (data)
     {
         bot.speak('smoke em\' if ya got em.');
     }
-	else if (text.match(/^\/moon/))
+    else if (text.match(/^\/moon/))
     {
-        bot.speak('@'+name+ ' is going to the moon!');
+        bot.speak('@' + name + ' is going to the moon!');
     }
     else if (text.match(/^\/djplays/))
     {
@@ -866,7 +866,7 @@ bot.on('speak', function (data)
     {
         bot.speak('the commands are  /awesome, ' +
             ' /mom, /chilly, /cheers, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
-			'/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
+            '/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
     }
     else if (text.match(/^\/queuecommands/))
     {
@@ -1604,9 +1604,9 @@ bot.on('pmmed', function (data)
     {
         bot.speak('@' + theUsersList[name1] + ' is pleasantly chilled.');
     }
-	else if (text.match(/^\/moon/))
+    else if (text.match(/^\/moon/))
     {
-        bot.speak('@'+theUsersList[name1]+ ' is going to the moon!');
+        bot.speak('@' + theUsersList[name1] + ' is going to the moon!');
     }
     else if (text.match(/^\/modpm/) && condition === true)
     {
