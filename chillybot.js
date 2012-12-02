@@ -768,6 +768,10 @@ bot.on('speak', function (data)
     {
         bot.speak('smoke em\' if ya got em.');
     }
+	else if (text.match(/^\/moon/))
+    {
+        bot.speak('@'+name+ ' is going to the moon!');
+    }
     else if (text.match(/^\/djplays/))
     {
         if (queue === true && playLimit !== 0 && currentDjs.length !== 0)
@@ -861,7 +865,8 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /playlist, /afk, /whosafk, /coinflip, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' + '/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
+            ' /mom, /chilly, /cheers, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+			'/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
     }
     else if (text.match(/^\/queuecommands/))
     {
@@ -1599,6 +1604,10 @@ bot.on('pmmed', function (data)
     {
         bot.speak('@' + theUsersList[name1] + ' is pleasantly chilled.');
     }
+	else if (text.match(/^\/moon/))
+    {
+        bot.speak('@'+theUsersList[name1]+ ' is going to the moon!');
+    }
     else if (text.match(/^\/modpm/) && condition === true)
     {
         var speak = text.substring(7);
@@ -1881,7 +1890,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /playlist, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+            ' /mom, /chilly, /cheers, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
             '/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/))
