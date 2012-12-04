@@ -669,11 +669,26 @@ bot.on('speak', function (data)
             var index82 = theUsersList[index80 - 1];
             if (index35 != -1 && index80 != -1)
             {
+                clearTimeout(beginTimer);
+                sayOnce = true;
                 queueList.splice(index35, 2);
                 queueList.unshift(index81, index82);
                 queueName.splice(index46, 1);
                 queueName.unshift(index81);
-                bot.speak('The queue is now: ' + queueName);
+                var temp92 = 'The queue is now: ';
+                for (var po = 0; po < queueName.length; po++)
+                {
+                    if (po != (queueName.length - 1))
+                    {
+                        temp92 += queueName[po] + ', ';
+                    }
+                    else if (po == (queueName.length - 1))
+                    {
+                        temp92 += queueName[po];
+                    }
+                }
+                bot.speak(temp92);
+
             }
         }
     }
@@ -1097,7 +1112,20 @@ bot.on('speak', function (data)
     {
         if (queue === true && queueName.length !== 0)
         {
-            bot.speak('The queue is now: ' + queueName);
+            var temp95 = 'The queue is now: ';
+            for (var kl = 0; kl < queueName.length; kl++)
+            {
+                if (kl != (queueName.length - 1))
+                {
+                    temp95 += queueName[kl] + ', ';
+                }
+                else if (kl == (queueName.length - 1))
+                {
+                    temp95 += queueName[kl];
+                }
+            }
+            bot.speak(temp95);
+
         }
         else if (queue === true)
         {
@@ -1139,11 +1167,29 @@ bot.on('speak', function (data)
             var index6 = queueName.indexOf(removeFromQueue);
             if (index5 != -1)
             {
+                if (queueName[index6] == queueName[0])
+                {
+                    clearTimeout(beginTimer);
+                    sayOnce = true;
+                }
                 queueList.splice(index5, 2);
                 queueName.splice(index6, 1);
+
                 if (queueName.length !== 0)
                 {
-                    bot.speak('The queue is now: ' + queueName);
+                    var temp89 = 'The queue is now: ';
+                    for (var jk = 0; jk < queueName.length; jk++)
+                    {
+                        if (jk != (queueName.length - 1))
+                        {
+                            temp89 += queueName[jk] + ', ';
+                        }
+                        else if (jk == (queueName.length - 1))
+                        {
+                            temp89 += queueName[jk];
+                        }
+                    }
+                    bot.speak(temp89);
                 }
                 else
                 {
@@ -1162,10 +1208,27 @@ bot.on('speak', function (data)
         var list2 = queueName.indexOf(data.name);
         if (list2 != -1)
         {
+            if (data.name == queueName[0])
+            {
+                clearTimeout(beginTimer);
+                sayOnce = true;
+            }
             queueName.splice(list2, 1);
             if (queueName.length !== 0)
             {
-                bot.speak('The queue is now: ' + queueName);
+                var temp90 = 'The queue is now: ';
+                for (var kj = 0; kj < queueName.length; kj++)
+                {
+                    if (kj != (queueName.length - 1))
+                    {
+                        temp90 += queueName[kj] + ', ';
+                    }
+                    else if (kj == (queueName.length - 1))
+                    {
+                        temp90 += queueName[kj];
+                    }
+                }
+                bot.speak(temp90);
             }
             else
             {
@@ -1182,7 +1245,20 @@ bot.on('speak', function (data)
         {
             queueList.push(data.name, data.userid);
             queueName.push(data.name);
-            bot.speak('The queue is now: ' + queueName);
+            var temp91 = 'The queue is now: ';
+            for (var hj = 0; hj < queueName.length; hj++)
+            {
+                if (hj != (queueName.length - 1))
+                {
+                    temp91 += queueName[hj] + ', ';
+                }
+                else if (hj == (queueName.length - 1))
+                {
+                    temp91 += queueName[hj];
+                }
+            }
+            bot.speak(temp91);
+
         }
     }
     else if (text.match(/^\/queueOn$/) && condition === true)
