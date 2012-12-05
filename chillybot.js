@@ -45,6 +45,7 @@ var GREET = true; //room greeting when someone joins the room(on by default)
 var voteSkip = false; //voteskipping(off by default)
 var roomAFK = false; //audience afk limit(off by default)
 var SONGSTATS = true; //song stats after each song(on by default)
+var kickTTSTAT = false; //kicks the ttstats bot when it tries to join the room(off by default)
 
 
 /************************************EndSetUp**********************************************************************/
@@ -2088,9 +2089,9 @@ bot.on('registered', function (data)
     }
 
 
-    //gets newest user and prints greeting
+    //gets newest user and prints greeting, does not greet the bot or the ttstats bot
     var roomjoin = data.user[0];
-    if (GREET === true && data.user[0].userid != USERID)
+    if (GREET === true && data.user[0].userid != USERID && !data.user[0].name.match('ttstat'))
     {
         if (greetingTimer[data.user[0].userid] !== null)
         {
@@ -2154,6 +2155,17 @@ bot.on('registered', function (data)
     {
         justSaw3(data.user[0].userid);
         justSaw4(data.user[0].userid);
+    }
+
+	
+	
+	//this kicks the ttstats bot
+    if (kickTTSTAT === true)
+    {
+        if (data.user[0].name.match('ttstat'))
+        {
+            bot.boot(data.user[0].userid);
+        }
     }
 
 });
