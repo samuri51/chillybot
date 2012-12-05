@@ -57,3 +57,8 @@ date: 11/17/2012
 
 --> added vip list, this will kick everyone on stage other than the vip whos userid is in this array, do not add userids to this
 array unless you want everyone else to be kicked.
+
+date: 12/04/2012
+
+--> added ttstat bot kicking(optional)
+--> the bot no longer greets banned users after kicking them
