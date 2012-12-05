@@ -2091,7 +2091,7 @@ bot.on('registered', function (data)
 
     //gets newest user and prints greeting, does not greet the bot or the ttstats bot
     var roomjoin = data.user[0];
-    if (GREET === true && data.user[0].userid != USERID && !data.user[0].name.match('ttstat'))
+    if (GREET === true && data.user[0].userid != USERID && !data.user[0].name.match('@ttstat'))
     {
         if (greetingTimer[data.user[0].userid] !== null)
         {
@@ -2162,7 +2162,7 @@ bot.on('registered', function (data)
 	//this kicks the ttstats bot
     if (kickTTSTAT === true)
     {
-        if (data.user[0].name.match('ttstat'))
+        if (data.user[0].name.match('@ttstat'))
         {
             bot.boot(data.user[0].userid);
         }
