@@ -2089,21 +2089,26 @@ bot.on('registered', function (data)
     }
 
 
-    //gets newest user and prints greeting, does not greet the bot or the ttstats bot
+    //gets newest user and prints greeting, does not greet the bot or the ttstats bot, or banned users
     var roomjoin = data.user[0];
+    var areTheyBanned = blackList.indexOf(data.user[0].userid);
+    var areTheyBanned2 = bannedUsers.indexOf(data.user[0].userid);
     if (GREET === true && data.user[0].userid != USERID && !data.user[0].name.match('@ttstat'))
     {
-        if (greetingTimer[data.user[0].userid] !== null)
+        if (areTheyBanned == -1 && areTheyBanned2 == -1)
         {
-            clearTimeout(greetingTimer[data.user[0].userid]);
-            greetingTimer[data.user[0].userid] = null;
+            if (greetingTimer[data.user[0].userid] !== null)
+            {
+                clearTimeout(greetingTimer[data.user[0].userid]);
+                greetingTimer[data.user[0].userid] = null;
+            }
+            greetingTimer[data.user[0].userid] = setTimeout(function ()
+            {
+                greetingTimer[data.user[0].userid] = null;
+                bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
+                delete greetingTimer[data.user[0].userid];
+            }, 3 * 1000);
         }
-        greetingTimer[data.user[0].userid] = setTimeout(function ()
-        {
-            greetingTimer[data.user[0].userid] = null;
-            bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
-            delete greetingTimer[data.user[0].userid];
-        }, 3 * 1000);
     }
 
 
@@ -2157,9 +2162,9 @@ bot.on('registered', function (data)
         justSaw4(data.user[0].userid);
     }
 
-	
-	
-	//this kicks the ttstats bot
+
+
+    //this kicks the ttstats bot
     if (kickTTSTAT === true)
     {
         if (data.user[0].name.match('@ttstat'))
