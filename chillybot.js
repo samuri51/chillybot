@@ -33,13 +33,24 @@ global.vipList = [];
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
                      */
 
+//these variables set features to on or off as the default when the bot starts up,
+//most of them can be changed with commands while the bot is running
+// true = on, false = off
+var HowManyVotesToSkip = 2; //how many votes for a song to get skipped(default value, only works if voteSkip = true)
+var getonstage = true; //autodjing(on by default)
+var queue = true; //queue(on by default)
+var AFK = true; //afk limit(on by default), this is for the dj's on stage
+var MESSAGE = true; //room message(on by default), the bot says your room info every 15 mins
+var GREET = true; //room greeting when someone joins the room(on by default)
+var voteSkip = false; //voteskipping(off by default)
+var roomAFK = false; //audience afk limit(off by default)
+var SONGSTATS = true; //song stats after each song(on by default)
+
 
 /************************************EndSetUp**********************************************************************/
 
 
-var HowManyVotesToSkip = 2; //how many votes for a song to get skipped
 var spamLimit = 3; //number of times a user can spam being kicked off the stage within 10 secs
-var getonstage = true; //autodjing(on by default)
 var myId = null;
 var detail = null;
 var current = null;
@@ -52,7 +63,6 @@ var song = null;
 var album = null;
 var genre = null;
 var skipOn = null;
-var queue = true; //queue(on by default)
 var snagSong = null;
 var lastSeen = {};
 var lastSeen1 = {};
@@ -60,13 +70,9 @@ var lastSeen2 = {};
 var lastSeen3 = {};
 var lastSeen4 = {};
 var people = [];
-var AFK = true; //afk limit(on by default)
-var MESSAGE = true; //room message(on by default)
 var checkWhoIsDj;
-var GREET = true; //room greeting when someone joins the room(on by default)
 var djs20 = [];
 var randomOnce = 0;
-var voteSkip = false; //voteskipping(off by default)
 var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
 var djsOnStage = null;
@@ -75,11 +81,9 @@ var timer = [];
 var artist = null;
 var getSong = null;
 var informTimer = null;
-var roomAFK = false; //audience afk limit(off by default)
 var upVotes = null;
 var downVotes = null;
 var whoSnagged = 0;
-var SONGSTATS = true; //song stats after each song(on by default)
 var beginTime = null;
 var endTime = null;
 var roomName = null;
