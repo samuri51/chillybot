@@ -1065,7 +1065,7 @@ bot.on('speak', function (data)
         myId = data.userid;
         bot.removeFan(myId);
     }
-    else if (text.match(/^\/m/) && !text.match(/^\/me/))
+    else if (text.match(/^\/m/) && !text.match(/^\/me/) && condition === true)
     {
         bot.speak(text.substring(3));
     }
