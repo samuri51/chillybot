@@ -730,7 +730,7 @@ bot.on('speak', function (data)
         {
             modList.splice(takeBotOff, 1);
         }
-        if (checkIfOnList == -1)
+        if (checkIfOnList == -1 && data.userid != USERID)
         {
             voteCountSkip += 1;
             votesLeft -= 1;
