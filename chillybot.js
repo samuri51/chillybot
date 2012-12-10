@@ -885,7 +885,7 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
     }
     else if (text.match(/^\/queuecommands/))
@@ -983,6 +983,26 @@ bot.on('speak', function (data)
     {
         bot.speak('i am no longer skipping my songs');
         skipOn = false;
+    }
+    else if (text.match(/^\/fanratio/)) //this one courtesy of JenTheInstigator of turntable.fm
+    {
+        var tmpuser = data.text.substring(11);
+        bot.getUserId(tmpuser, function (data1)
+        {
+            var tmpid = data1.userid;
+            bot.getProfile(tmpid, function (data2)
+            {
+                if (typeof (data1.userid) !== 'undefined')
+                {
+                    var tmp = tmpuser + " has " + data2.points + " points and " + data2.fans + " fans, for a ratio of " + Math.round(data2.points / data2.fans) + ".";
+                    bot.speak(tmp);
+                }
+                else
+                {
+                    bot.speak('I\m sorry I don\'t know that one');
+                }
+            });
+        });
     }
     else if (text.match(/^\/getonstage$/) && condition === true)
     {
@@ -1339,26 +1359,27 @@ bot.on('speak', function (data)
     else if (text.match('/userid') && condition === true)
     {
         var ban8 = data.text.slice(9);
-        var checkUser8 = theUsersList.indexOf(ban8);
-        if (checkUser8 != -1)
+        var checkUser8 = bot.getUserId(ban8, function (data)
         {
-            bot.speak(theUsersList[checkUser8 - 1]);
-            condition = false;
-        }
+            var userid56 = data.userid;
+            if (typeof (userid56) !== 'undefined')
+            {
+                bot.speak(userid56);
+                condition = false;
+            }
+            else
+            {
+                bot.speak('I\'m sorry that userid is undefined');
+            }
+        });
     }
     else if (text.match('/username') && condition === true)
     {
-        var ban7 = data.text.slice(10);
-        var checkUser9 = theUsersList.indexOf(String(ban7));
-        if (checkUser9 != -1)
+        var ban50 = data.text.slice(10);
+        var tmp94 = bot.getProfile(ban50, function (data)
         {
-            bot.speak(theUsersList[checkUser9 + 1]);
-            condition = false;
-        }
-        else if (checkUser9 == -1)
-        {
-            bot.speak('I\'m sorry i don\'t know that one');
-        }
+            bot.speak(data.name);
+        });
     }
     else if (text.match(/^\/afk/))
     {
@@ -1669,6 +1690,7 @@ bot.on('add_dj', function (data)
 //checks when the bot recieves a pm
 bot.on('pmmed', function (data)
 {
+    var senderid = data.senderid;
     var text = data.text;
     var name1 = theUsersList.indexOf(data.senderid) + 1;
     //checks to see if the speaker is a moderator or not.
@@ -1799,13 +1821,20 @@ bot.on('pmmed', function (data)
     }
     else if (text.match('/userid') && condition === true)
     {
-        var ban15 = data.text.slice(9);
-        var checkUser15 = theUsersList.indexOf(ban15);
-        if (checkUser15 != -1)
+        var ban86 = data.text.slice(9);
+        var checkUser9 = bot.getUserId(ban86, function (data)
         {
-            bot.pm(theUsersList[checkUser15 - 1], data.senderid);
-            condition = false;
-        }
+            var userid59 = data.userid;
+            if (typeof (userid59) !== 'undefined')
+            {
+                bot.pm(userid59, senderid);
+                condition = false;
+            }
+            else
+            {
+                bot.pm('I\'m sorry that userid is undefined', senderid);
+            }
+        });
     }
     else if (text.match('/ban') && condition === true)
     {
@@ -1919,16 +1948,10 @@ bot.on('pmmed', function (data)
     else if (text.match('/username') && condition === true)
     {
         var ban7 = data.text.slice(10);
-        var checkUser21 = theUsersList.indexOf(String(ban7));
-        if (checkUser21 != -1)
+        var tmp94 = bot.getProfile(ban7, function (data)
         {
-            bot.pm(theUsersList[checkUser21 + 1], data.senderid);
-            condition = false;
-        }
-        else if (checkUser21 == -1)
-        {
-            bot.pm('I\'m sorry i don\'t know that one', data.senderid);
-        }
+            bot.pm(data.name, senderid);
+        });
     }
     else if (text.match(/^\/afk/))
     {
@@ -1971,7 +1994,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
             '/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/))
