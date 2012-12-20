@@ -886,7 +886,7 @@ bot.on('speak', function (data)
     {
         bot.speak('the commands are  /awesome, ' +
             ' /mom, /chilly, /cheers, /fanratio @, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
-            '/skip, /dive, /dance, /smoke, /surf, /cheers, /uptime, /djplays, /admincommands, /queuecommands');
+            '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands');
     }
     else if (text.match(/^\/queuecommands/))
     {
@@ -2007,7 +2007,7 @@ bot.on('pmmed', function (data)
     {
         bot.pm('the commands are  /awesome, ' +
             ' /mom, /chilly, /cheers, /fanratio @, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
-            '/dice, /props, /m, /getTags, /skip, /dive, /surf, /cheers, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands', data.senderid);
+            '/dice, /props, /m, /getTags, /skip, /dive, /surf, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
     {
