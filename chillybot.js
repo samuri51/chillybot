@@ -13,9 +13,9 @@
 
 
 var Bot = require('ttapi');
-var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
-var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
+var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
+var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
 var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
 var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
 var afkLimit = 20; //set the afk limit in minutes here
@@ -540,7 +540,7 @@ bot.on('newsong', function (data)
         {
             if (artist.toLowerCase().match(bannedArtists[j]) || song.toLowerCase().match(bannedArtists[j]))
             {
-                if (checkIfAdmin == -1)
+                if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
                 {
                     var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
                     bot.remDj(checkWhoIsDj);
