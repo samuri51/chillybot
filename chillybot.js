@@ -2310,7 +2310,11 @@ bot.on('endsong', function (data)
                 bot.remDj(djId);
             }
         }
-        delete djs20[djId];
+		
+        if(checklist34 == -1)
+		{
+			delete djs20[djId];
+		}
     }
 
 
