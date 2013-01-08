@@ -2298,23 +2298,17 @@ bot.on('endsong', function (data)
     //removing them if they are over the limit.
 
     var djId = data.room.metadata.current_dj;
-    if (djs20[djId] && ++djs20[djId].nbSong >= playLimit)
+    if (++djs20[djId].nbSong >= playLimit)
     {
         var checklist33 = theUsersList.indexOf(djId) + 1;
-        var checklist34 = modList.indexOf(djId);
-        if (checklist34 == -1 && queue === true)
+        if (queue === true)
         {
             if (djId != USERID && playLimit !== 0)
             {
                 bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
                 bot.remDj(djId);
             }
-        }
-		
-        if(checklist34 == -1)
-		{
-			delete djs20[djId];
-		}
+        }		
     }
 
 
