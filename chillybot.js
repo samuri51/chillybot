@@ -794,7 +794,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/djplays/))
     {
-        if (queue === true && playLimit !== 0 && currentDjs.length !== 0)
+        if (currentDjs.length !== 0)
         {
             var djsnames = [];
             var djplays = 'dj plays: ';
@@ -813,15 +813,10 @@ bot.on('speak', function (data)
             }
             bot.speak(djplays);
         }
-        else if (queue === true && playLimit !== 0 && currentDjs.length === 0)
+        else if (currentDjs.length === 0)
         {
             bot.speak('There are no dj\'s on stage.');
         }
-        else
-        {
-            bot.speak('The song play limit is currently inactive.');
-        }
-
     }
     else if (text.match(/^\/skipsong/) && condition === true)
     {
@@ -1778,7 +1773,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/djplays/) && isInRoom === true)
     {
-        if (queue === true && playLimit !== 0 && currentDjs.length !== 0)
+        if (currentDjs.length !== 0)
         {
             var djsnames = [];
             var djplays = 'dj plays: ';
@@ -1797,15 +1792,10 @@ bot.on('pmmed', function (data)
             }
             bot.pm(djplays, data.senderid);
         }
-        else if (queue === true && playLimit !== 0 && currentDjs.length === 0)
+        else if (currentDjs.length === 0)
         {
             bot.pm('There are no dj\'s on stage.', data.senderid);
-        }
-        else
-        {
-            bot.pm('The song play limit is currently inactive.', data.senderid);
-        }
-
+        }        
     }
     else if (text.match('/banstage') && condition === true && isInRoom === true)
     {
