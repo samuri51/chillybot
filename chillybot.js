@@ -81,6 +81,8 @@ var beginTime = null;
 var endTime = null;
 var roomName = null;
 var ttRoomName = null;
+var THEME = false;
+var whatIsTheme = null;
 
 global.timer = [];
 global.greetingTimer = [];
@@ -714,6 +716,28 @@ bot.on('speak', function (data)
             votesLeft = HowManyVotesToSkip;
         }
     }
+	else if (text.match(/^\/noTheme/) && condition === true)
+    {        
+		THEME = false;
+		bot.speak('The theme is inactive');
+    }
+	else if (text.match(/^\/setTheme/) && condition === true)
+    {        
+        whatIsTheme = data.text.slice(10);
+		THEME = true;
+		bot.speak('The theme is now set to: ' + whatIsTheme);
+    }
+	else if (text.match(/^\/theme/))
+    {   
+		if(THEME === false)
+		{
+			bot.speak('There is currently no theme, standard rules apply');
+		}
+		else
+		{
+			bot.speak('The theme is currently set to ' + whatIsTheme);
+		}		     
+    }
     else if (text.match(/^\/voteskipoff$/) && condition === true)
     {
         bot.speak("vote skipping is now inactive");
@@ -880,7 +904,7 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /theme, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands');
     }
     else if (text.match(/^\/queuecommands/))
@@ -889,7 +913,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
-        bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /noTheme, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff /songstats, /username, /modpm');
         condition = false;
@@ -1738,6 +1762,17 @@ bot.on('pmmed', function (data)
             bot.pm('There are currently ' + playlist.list.length + ' songs in my playlist.', data.senderid);
         });
     }
+	else if (text.match(/^\/theme/))
+    {   
+		if(THEME === false)
+		{
+			bot.pm('There is currently no theme, standard rules apply', data.senderid);
+		}
+		else
+		{
+			bot.pm('The theme is currently set to ' + whatIsTheme, data.senderid);
+		}		     
+    }
     else if (text.match(/^\/uptime/) && isInRoom === true)
     {
         var msecPerMinute = 1000 * 60;
@@ -1996,7 +2031,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/commands/) && isInRoom === true)
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+            ' /mom, /chilly, /cheers, /theme, /fanratio @, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
             '/dice, /props, /m, /getTags, /skip, /dive, /surf, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
@@ -2005,11 +2040,11 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('/admincommands, /queuecommands, /inform, /whosafk, /afk, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
+        bot.pm('/admincommands, /queuecommands, /theme, /inform, /whosafk, /afk, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
@@ -2130,7 +2165,14 @@ bot.on('registered', function (data)
             greetingTimer[data.user[0].userid] = setTimeout(function ()
             {
                 greetingTimer[data.user[0].userid] = null;
-                bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
+				if(THEME === false) //if theres no theme this is the message.
+				{
+					bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
+				}
+				else
+				{
+					bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' the theme is currently set to: ' + whatIsTheme);
+				}
                 delete greetingTimer[data.user[0].userid];
             }, 3 * 1000);
         }

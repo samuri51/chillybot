@@ -75,6 +75,10 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /modpm --> pms all mods in the room
 
+/setTheme<space><your message here> --> sets theme theme to be checked by /theme, also tells to the theme to people who join the room
+
+/noTheme --> turns the theme off, stops telling theme to new people who join the room
+
 
 
 
@@ -101,6 +105,8 @@ COMMANDS: (public)
 /djplays --> get the current song count for each dj.
 
 /dance --> dancing
+
+/theme --> tells you what the theme is if there is one.
 
 /smoke --> bot says smoke
 
