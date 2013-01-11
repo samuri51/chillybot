@@ -716,27 +716,27 @@ bot.on('speak', function (data)
             votesLeft = HowManyVotesToSkip;
         }
     }
-	else if (text.match(/^\/noTheme/) && condition === true)
-    {        
-		THEME = false;
-		bot.speak('The theme is inactive');
+    else if (text.match(/^\/noTheme/) && condition === true)
+    {
+        THEME = false;
+        bot.speak('The theme is inactive');
     }
-	else if (text.match(/^\/setTheme/) && condition === true)
-    {        
+    else if (text.match(/^\/setTheme/) && condition === true)
+    {
         whatIsTheme = data.text.slice(10);
-		THEME = true;
-		bot.speak('The theme is now set to: ' + whatIsTheme);
+        THEME = true;
+        bot.speak('The theme is now set to: ' + whatIsTheme);
     }
-	else if (text.match(/^\/theme/))
-    {   
-		if(THEME === false)
-		{
-			bot.speak('There is currently no theme, standard rules apply');
-		}
-		else
-		{
-			bot.speak('The theme is currently set to ' + whatIsTheme);
-		}		     
+    else if (text.match(/^\/theme/))
+    {
+        if (THEME === false)
+        {
+            bot.speak('There is currently no theme, standard rules apply');
+        }
+        else
+        {
+            bot.speak('The theme is currently set to ' + whatIsTheme);
+        }
     }
     else if (text.match(/^\/voteskipoff$/) && condition === true)
     {
@@ -1762,16 +1762,16 @@ bot.on('pmmed', function (data)
             bot.pm('There are currently ' + playlist.list.length + ' songs in my playlist.', data.senderid);
         });
     }
-	else if (text.match(/^\/theme/))
-    {   
-		if(THEME === false)
-		{
-			bot.pm('There is currently no theme, standard rules apply', data.senderid);
-		}
-		else
-		{
-			bot.pm('The theme is currently set to ' + whatIsTheme, data.senderid);
-		}		     
+    else if (text.match(/^\/theme/))
+    {
+        if (THEME === false)
+        {
+            bot.pm('There is currently no theme, standard rules apply', data.senderid);
+        }
+        else
+        {
+            bot.pm('The theme is currently set to ' + whatIsTheme, data.senderid);
+        }
     }
     else if (text.match(/^\/uptime/) && isInRoom === true)
     {
@@ -1830,7 +1830,7 @@ bot.on('pmmed', function (data)
         else if (currentDjs.length === 0)
         {
             bot.pm('There are no dj\'s on stage.', data.senderid);
-        }        
+        }
     }
     else if (text.match('/banstage') && condition === true && isInRoom === true)
     {
@@ -2165,14 +2165,14 @@ bot.on('registered', function (data)
             greetingTimer[data.user[0].userid] = setTimeout(function ()
             {
                 greetingTimer[data.user[0].userid] = null;
-				if(THEME === false) //if theres no theme this is the message.
-				{
-					bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
-				}
-				else
-				{
-					bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' the theme is currently set to: ' + whatIsTheme);
-				}
+                if (THEME === false) //if theres no theme this is the message.
+                {
+                    bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
+                }
+                else
+                {
+                    bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' the theme is currently set to: ' + whatIsTheme);
+                }
                 delete greetingTimer[data.user[0].userid];
             }, 3 * 1000);
         }
@@ -2340,7 +2340,7 @@ bot.on('endsong', function (data)
                 bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
                 bot.remDj(djId);
             }
-        }		
+        }
     }
 
 
