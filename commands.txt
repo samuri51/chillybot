@@ -81,6 +81,8 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /stalk<space><userid> --> use a persons userid to get a link to the room their in(works in the pm too, only works if user is in the room)
 
+/lengthLimit --> toggles the song length limit on and off
+
 
 
 
@@ -103,6 +105,8 @@ COMMANDS: (public)
 /cheers --> user raises their glass for a toast
 
 /uptime --> get the amount of time the bot has been running for.
+
+/mytime --> tells you how long you've been in the room for.
 
 /djplays --> get the current song count for each dj.
 

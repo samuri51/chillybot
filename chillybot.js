@@ -13,11 +13,11 @@
 
 
 var Bot = require('ttapi');
-var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
-var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
+var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
+var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
 var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
-var songLengthLimit = 9.5; //set song limit in minutes, set to zero for no limit
+var songLengthLimit = 10.0; //set song limit in minutes
 var afkLimit = 20; //set the afk limit in minutes here
 var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
 
@@ -46,6 +46,7 @@ var voteSkip = false; //voteskipping(off by default)
 var roomAFK = false; //audience afk limit(off by default)
 var SONGSTATS = true; //song stats after each song(on by default)
 var kickTTSTAT = false; //kicks the ttstats bot when it tries to join the room(off by default)
+var LIMIT = true; //song length limit (on by default)
 
 
 /************************************EndSetUp**********************************************************************/
@@ -104,6 +105,7 @@ global.escortList = [];
 global.currentDjs = [];
 global.queueList = [];
 global.queueName = [];
+global.myTime = [];
 global.curSongWatchdog = null;
 global.takedownTimer = null;
 global.lastdj = null;
@@ -437,15 +439,18 @@ bot.on('newsong', function (data)
     //this boots the user if their song is over the length limit
     if ((length / 60) >= songLengthLimit)
     {
-        if (songLengthLimit !== 0 && modIndex == -1)
+        if (lastdj == USERID || modIndex == -1)
         {
-            bot.speak("@" + theUsersList[checkLast + 1] + ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
-            //START THE 20 SEC TIMER
-            songLimitTimer = setTimeout(function ()
+            if (LIMIT === true)
             {
-                songLimitTimer = null;
-                bot.remDj(lastdj); // Remove Saved DJ from last newsong call
-            }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
+                bot.speak("@" + theUsersList[checkLast + 1] + ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
+                //START THE 20 SEC TIMER
+                songLimitTimer = setTimeout(function ()
+                {
+                    songLimitTimer = null;
+                    bot.remDj(lastdj); // Remove Saved DJ from last newsong call
+                }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
+            }
         }
     }
 
@@ -714,6 +719,19 @@ bot.on('speak', function (data)
             }
         });
     }
+    else if (text.match(/^\/lengthLimit/) && condition === true)
+    {
+        if (LIMIT === true)
+        {
+            LIMIT = false;
+            bot.speak('the song length limit is now inactive');
+        }
+        else
+        {
+            LIMIT = true;
+            bot.speak('the song length limit is now active');
+        }
+    }
     else if (text.match(/^\/voteskipon/) && condition === true)
     {
         checkVotes = [];
@@ -861,6 +879,27 @@ bot.on('speak', function (data)
     {
         bot.skip();
     }
+    else if (text.match(/^\/mytime/))
+    {
+        var msecPerMinute1 = 1000 * 60;
+        var msecPerHour1 = msecPerMinute1 * 60;
+        var msecPerDay1 = msecPerHour1 * 24;
+        var endTime1 = Date.now();
+        var currentTime1 = endTime1 - myTime[data.userid];
+
+        var days1 = Math.floor(currentTime1 / msecPerDay1);
+        currentTime1 = currentTime1 - (days1 * msecPerDay1);
+
+        var hours1 = Math.floor(currentTime1 / msecPerHour1);
+        currentTime1 = currentTime1 - (hours1 * msecPerHour1);
+
+        var minutes1 = Math.floor(currentTime1 / msecPerMinute1);
+
+        bot.getProfile(data.userid, function (data6)
+        {
+            bot.speak('@' + data6.name + ' you have been in the room for: ' + days1 + ' days, ' + hours1 + ' hours, ' + minutes1 + ' minutes');
+        });
+    }
     else if (text.match(/^\/uptime/))
     {
         var msecPerMinute = 1000 * 60;
@@ -919,7 +958,7 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /theme, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /theme, /mytime, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands');
     }
     else if (text.match(/^\/queuecommands/))
@@ -928,7 +967,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
-        bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /noTheme, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /noTheme, /lengthLimit, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff /songstats, /username, /modpm');
         condition = false;
@@ -1788,6 +1827,26 @@ bot.on('pmmed', function (data)
             bot.pm('The theme is currently set to: ' + whatIsTheme, data.senderid);
         }
     }
+    else if (text.match(/^\/mytime/) && isInRoom === true)
+    {
+        var msecPerMinute1 = 1000 * 60;
+        var msecPerHour1 = msecPerMinute1 * 60;
+        var msecPerDay1 = msecPerHour1 * 24;
+        var endTime1 = Date.now();
+        var currentTime1 = endTime1 - myTime[data.senderid];
+
+        var days1 = Math.floor(currentTime1 / msecPerDay1);
+        currentTime1 = currentTime1 - (days1 * msecPerDay1);
+
+        var hours1 = Math.floor(currentTime1 / msecPerHour1);
+        currentTime1 = currentTime1 - (hours1 * msecPerHour1);
+
+        var minutes1 = Math.floor(currentTime1 / msecPerMinute1);
+
+
+        bot.pm('you have been in the room for: ' + days1 + ' days, ' + hours1 + ' hours, ' + minutes1 + ' minutes', data.senderid);
+
+    }
     else if (text.match(/^\/uptime/) && isInRoom === true)
     {
         var msecPerMinute = 1000 * 60;
@@ -2061,7 +2120,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/commands/) && isInRoom === true)
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /theme, /fanratio @, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+            ' /mom, /chilly, /cheers, /theme, /fanratio @, /mytime, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
             '/dice, /props, /m, /getTags, /skip, /dive, /surf, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
@@ -2070,11 +2129,11 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('/admincommands, /queuecommands, /theme, /stalk, /inform, /whosafk, /afk, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
+        bot.pm('/admincommands, /queuecommands, /mytime, /theme, /stalk, /inform, /whosafk, /afk, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stalk, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stalk, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
@@ -2149,7 +2208,6 @@ bot.on('roomChanged', function (data)
 
 
 
-
     //sets everyones spam count to zero	
     //puts people on the global afk list when it joins the room	
     for (var z = 0; z < userIds.length; z++)
@@ -2161,6 +2219,13 @@ bot.on('roomChanged', function (data)
         justSaw4(userIds[z]);
     }
 
+
+
+    //starts time in room for everyone currently in the room
+    for (var zy = 0; zy < userIds.length; zy++)
+    {
+        myTime[userIds[zy]] = Date.now();
+    }
 
 });
 
@@ -2209,7 +2274,8 @@ bot.on('registered', function (data)
     }
 
 
-
+    //starts time for everyone that joins the room
+    myTime[data.user[0].userid] = Date.now();
 
 
     //adds users who join the room to the user list if their not already on the list
@@ -2317,6 +2383,7 @@ bot.on('deregistered', function (data)
     delete lastSeen4[data.user[0].userid];
     delete people[data.user[0].userid];
     delete timer[data.user[0].userid];
+    delete myTime[data.user[0].userid];
 
 
     //removes people who leave the room from the afk list
