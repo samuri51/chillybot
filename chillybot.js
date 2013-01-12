@@ -16,7 +16,7 @@ var Bot = require('ttapi');
 var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
 var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
-var playLimit = 4; //set the playlimit here (default 4 songs), set to 0 for no play limit
+var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 10.0; //set song limit in minutes
 var afkLimit = 20; //set the afk limit in minutes here
 var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
@@ -47,6 +47,7 @@ var roomAFK = false; //audience afk limit(off by default)
 var SONGSTATS = true; //song stats after each song(on by default)
 var kickTTSTAT = false; //kicks the ttstats bot when it tries to join the room(off by default)
 var LIMIT = true; //song length limit (on by default)
+var PLAYLIMIT = false; //song play limit, this is for the playLimit variable up above(off by default)
 
 
 /************************************EndSetUp**********************************************************************/
@@ -968,7 +969,7 @@ bot.on('speak', function (data)
     else if (text.match(/^\/admincommands/) && condition === true)
     {
         bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /noTheme, /lengthLimit, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-            '/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
+            '/snagon, /snag, /snagoff, /removesong, /playLimitOn, /playLimitOff, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff /songstats, /username, /modpm');
         condition = false;
     }
@@ -1365,12 +1366,22 @@ bot.on('speak', function (data)
         queueName = [];
         bot.speak('the queue is now active.');
         queue = true;
+    }
+    else if (text.match(/^\/playLimitOn$/) && condition === true)
+    {
+        PLAYLIMIT = true;
+        bot.speak('the play limit is now active, dj song counters have been reset.');
         for (var ig = 0; ig < currentDjs.length; ig++)
         {
             djs20[currentDjs[ig]] = {
                 nbSong: 0
             };
         }
+    }
+    else if (text.match(/^\/playLimitOff$/) && condition === true)
+    {
+        PLAYLIMIT = false;
+        bot.speak('the play limit is now inactive.');
     }
     else if (text.match('/surf'))
     {
@@ -2133,7 +2144,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stalk, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /unban @, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
@@ -2430,14 +2441,12 @@ bot.on('endsong', function (data)
     if (++djs20[djId].nbSong >= playLimit)
     {
         var checklist33 = theUsersList.indexOf(djId) + 1;
-        if (queue === true)
+        if (djId != USERID && PLAYLIMIT === true)
         {
-            if (djId != USERID && playLimit !== 0)
-            {
-                bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
-                bot.remDj(djId);
-            }
+            bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
+            bot.remDj(djId);
         }
+
     }
 
 

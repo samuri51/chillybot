@@ -83,6 +83,10 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /lengthLimit --> toggles the song length limit on and off
 
+/playLimitOn --> activates the song play limit, resets dj song counters
+
+/playLimitOff --> turns play limit off
+
 
 
 
