@@ -735,7 +735,7 @@ bot.on('speak', function (data)
         }
         else
         {
-            bot.speak('The theme is currently set to ' + whatIsTheme);
+            bot.speak('The theme is currently set to: ' + whatIsTheme);
         }
     }
     else if (text.match(/^\/voteskipoff$/) && condition === true)
@@ -1770,7 +1770,7 @@ bot.on('pmmed', function (data)
         }
         else
         {
-            bot.pm('The theme is currently set to ' + whatIsTheme, data.senderid);
+            bot.pm('The theme is currently set to: ' + whatIsTheme, data.senderid);
         }
     }
     else if (text.match(/^\/uptime/) && isInRoom === true)
