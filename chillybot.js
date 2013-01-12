@@ -970,7 +970,7 @@ bot.on('speak', function (data)
     {
         bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /noTheme, /lengthLimit, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snag, /snagoff, /removesong, /playLimitOn, /playLimitOff, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
-            '/whostagebanned, /roomafkon, /roomafkoff /songstats, /username, /modpm');
+            '/whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm');
         condition = false;
     }
     else if (text.match(/^\/tableflip/))
