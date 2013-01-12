@@ -660,7 +660,7 @@ bot.on('speak', function (data)
             });
         }
     }
-    else if (text.match('turntable.fm/') && !text.match('turntable.fm/' + ttRoomName) && modIndex == -1)
+    else if (text.match('turntable.fm/') && !text.match('turntable.fm/' + ttRoomName) && modIndex == -1 && data.userid != USERID)
     {
         bot.boot(data.userid, 'do not advertise other rooms here');
     }
@@ -698,6 +698,21 @@ bot.on('speak', function (data)
 
             }
         }
+    }
+    else if (text.match(/^\/stalk/) && condition === true)
+    {
+        var stalker = text.substring(7);
+        bot.stalk(stalker, allInformations = true, function (data4)
+        {
+            if (data4.success !== false)
+            {
+                bot.speak('User found in room: http://turntable.fm/' + data4.room.shortcut);
+            }
+            else
+            {
+                bot.speak('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist');
+            }
+        });
     }
     else if (text.match(/^\/voteskipon/) && condition === true)
     {
@@ -913,7 +928,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
-        bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /noTheme, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /noTheme, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snag, /snagoff, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff /songstats, /username, /modpm');
         condition = false;
@@ -1897,6 +1912,21 @@ bot.on('pmmed', function (data)
             index = null;
         }
     }
+    else if (text.match(/^\/stalk/) && condition === true && isInRoom === true)
+    {
+        var stalker = text.substring(7);
+        bot.stalk(stalker, allInformations = true, function (data4)
+        {
+            if (data4.success !== false)
+            {
+                bot.pm('User found in room: http://turntable.fm/' + data4.room.shortcut, data.senderid);
+            }
+            else
+            {
+                bot.pm('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist', data.senderid);
+            }
+        });
+    }
     else if (text.match(/^\/whobanned$/) && condition === true && isInRoom === true)
     {
         if (blackList.length !== 0)
@@ -2040,11 +2070,11 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('/admincommands, /queuecommands, /theme, /inform, /whosafk, /afk, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
+        bot.pm('/admincommands, /queuecommands, /theme, /stalk, /inform, /whosafk, /afk, /commands, /username, /userid @, /banstage @, /unbanstage @, /ban @, /unban @, /stage @, /m, /chilly, /escortme, /stopescortme, /snag, /removesong, /whobanned, /whostagebanned, /modpm', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /unban @, /skipon, /skipoff, /stalk, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
