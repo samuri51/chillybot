@@ -719,7 +719,7 @@ bot.on('speak', function (data)
     else if (text.match(/^\/noTheme/) && condition === true)
     {
         THEME = false;
-        bot.speak('The theme is inactive');
+        bot.speak('The theme is now inactive');
     }
     else if (text.match(/^\/setTheme/) && condition === true)
     {
