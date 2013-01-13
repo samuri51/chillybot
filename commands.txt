@@ -87,7 +87,7 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /playLimitOff --> turns play limit off
 
-/status --> tells you which features are turned off and which are turned on (only the ones that you can toggle)
+/botstatus --> tells you which features are turned off and which are turned on (only the ones that you can toggle)
 
 
 
