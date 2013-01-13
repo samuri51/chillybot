@@ -733,6 +733,101 @@ bot.on('speak', function (data)
             bot.speak('the song length limit is now active');
         }
     }
+    else if (text.match(/^\/status/) && condition === true)
+    {
+        var whatsOn = '';
+
+        if (queue === true)
+        {
+            whatsOn += 'queue: On, ';
+        }
+        else
+        {
+            whatsOn += 'queue: Off, ';
+        }
+        if (AFK === true)
+        {
+            whatsOn += 'dj afk limit: On, ';
+        }
+        else
+        {
+            whatsOn += 'dj afk limit: Off, ';
+        }
+        if (getonstage === true)
+        {
+            whatsOn += 'autodjing: On, ';
+        }
+        else
+        {
+            whatsOn += 'autodjing: Off, ';
+        }
+        if (MESSAGE === true)
+        {
+            whatsOn += 'room message: On, ';
+        }
+        else
+        {
+            whatsOn += 'room message: Off, ';
+        }
+        if (GREET === true)
+        {
+            whatsOn += 'greeting message: On, ';
+        }
+        else
+        {
+            whatsOn += 'greeting message: Off, ';
+        }
+        if (voteSkip === true)
+        {
+            whatsOn += 'voteskipping: On, ';
+        }
+        else
+        {
+            whatsOn += 'voteskipping: Off, ';
+        }
+        if (roomAFK === true)
+        {
+            whatsOn += 'audience afk limit: On, ';
+        }
+        else
+        {
+            whatsOn += 'audience afk limit: Off, ';
+        }
+        if (SONGSTATS === true)
+        {
+            whatsOn += 'song stats: On, ';
+        }
+        else
+        {
+            whatsOn += 'song stats: Off, ';
+        }
+        if (kickTTSTAT === true)
+        {
+            whatsOn += 'auto ttstat kick: On, ';
+        }
+        else
+        {
+            whatsOn += 'auto ttstat kick: Off, ';
+        }
+        if (LIMIT === true)
+        {
+            whatsOn += 'song length limit: On, ';
+        }
+        else
+        {
+            whatsOn += 'song length limit: Off, ';
+        }
+        if (PLAYLIMIT === true)
+        {
+            whatsOn += 'song play limit: On';
+        }
+        else
+        {
+            whatsOn += 'song play limit: Off';
+        }
+
+        bot.speak(whatsOn);
+    }
     else if (text.match(/^\/voteskipon/) && condition === true)
     {
         checkVotes = [];
@@ -968,7 +1063,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
-        bot.speak('the mod commands are /ban @, /unban @, /skipon, /skipoff, /noTheme, /lengthLimit, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.speak('the mod commands are /ban @, /unban @, /skipon, /status, /skipoff, /noTheme, /lengthLimit, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snagon, /snag, /snagoff, /removesong, /playLimitOn, /playLimitOff, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm');
         condition = false;
@@ -1891,6 +1986,101 @@ bot.on('pmmed', function (data)
             condition = false;
         }
     }
+    else if (text.match(/^\/status/) && condition === true && isInRoom === true)
+    {
+        var whatsOn = '';
+
+        if (queue === true)
+        {
+            whatsOn += 'queue: On, ';
+        }
+        else
+        {
+            whatsOn += 'queue: Off, ';
+        }
+        if (AFK === true)
+        {
+            whatsOn += 'dj afk limit: On, ';
+        }
+        else
+        {
+            whatsOn += 'dj afk limit: Off, ';
+        }
+        if (getonstage === true)
+        {
+            whatsOn += 'autodjing: On, ';
+        }
+        else
+        {
+            whatsOn += 'autodjing: Off, ';
+        }
+        if (MESSAGE === true)
+        {
+            whatsOn += 'room message: On, ';
+        }
+        else
+        {
+            whatsOn += 'room message: Off, ';
+        }
+        if (GREET === true)
+        {
+            whatsOn += 'greeting message: On, ';
+        }
+        else
+        {
+            whatsOn += 'greeting message: Off, ';
+        }
+        if (voteSkip === true)
+        {
+            whatsOn += 'voteskipping: On, ';
+        }
+        else
+        {
+            whatsOn += 'voteskipping: Off, ';
+        }
+        if (roomAFK === true)
+        {
+            whatsOn += 'audience afk limit: On, ';
+        }
+        else
+        {
+            whatsOn += 'audience afk limit: Off, ';
+        }
+        if (SONGSTATS === true)
+        {
+            whatsOn += 'song stats: On, ';
+        }
+        else
+        {
+            whatsOn += 'song stats: Off, ';
+        }
+        if (kickTTSTAT === true)
+        {
+            whatsOn += 'auto ttstat kick: On, ';
+        }
+        else
+        {
+            whatsOn += 'auto ttstat kick: Off, ';
+        }
+        if (LIMIT === true)
+        {
+            whatsOn += 'song length limit: On, ';
+        }
+        else
+        {
+            whatsOn += 'song length limit: Off, ';
+        }
+        if (PLAYLIMIT === true)
+        {
+            whatsOn += 'song play limit: On';
+        }
+        else
+        {
+            whatsOn += 'song play limit: Off';
+        }
+
+        bot.pm(whatsOn, data.senderid);
+    }
     else if (text.match(/^\/djplays/) && isInRoom === true)
     {
         if (currentDjs.length !== 0)
@@ -2145,7 +2335,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
         bot.pm('the mod commands are /ban @, /unban @, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-            '/snagon, /snagoff, /snag, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
+            '/snagon, /snagoff, /snag, /status, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
     }
