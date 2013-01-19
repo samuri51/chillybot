@@ -2047,7 +2047,7 @@ bot.on('pmmed', function (data)
             var list2 = queueName.indexOf(data6.name);
             if (list2 != -1)
             {
-                if (data.name == queueName[0])
+                if (data6.name == queueName[0])
                 {
                     clearTimeout(beginTimer);
                     sayOnce = true;
