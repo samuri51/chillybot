@@ -1959,7 +1959,7 @@ bot.on('pmmed', function (data)
         isInRoom = false;
     }
 
-    if (text.match('/chilly') && isInRoom === true)
+    if (text.match(/^\/chilly/) && isInRoom === true)
     {
         bot.speak('@' + theUsersList[name1] + ' is pleasantly chilled.');
     }
