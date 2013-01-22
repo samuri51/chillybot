@@ -1745,17 +1745,25 @@ bot.on('update_votes', function (data)
 
 
     //this is for /autosnag, automatically adds songs that get over the awesome threshold
+    //thanks to alain gilbert for playlist pre - testing, snag animation only when song not
+    //already in playlist
     if (autoSnag === true && snagSong === false && upVotes >= howManyVotes)
     {
         bot.playlistAll(function (playlist)
         {
-            bot.playlistAdd(getSong, playlist.list.length, function (call)
+            var found = false;
+            for (var i = 0; i < playlist.list.length; i++)
             {
-                if (call.success === true)
+                if (playlist.list[i]._id == getSong)
                 {
-                    bot.snag();
+                    found = true;
                 }
-            });
+            }
+            if (!found)
+            {
+                bot.playlistAdd(getSong, playlist.list.length);
+                bot.snag();
+            }
         });
     }
 })
