@@ -39,9 +39,9 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /skipOff --> toggles off the bots skip feature, they will now play their playlist.
 
-/snagon --> the bot adds every new song it hears to it's playlist.
+/snagevery --> toggles on and off the bots ability to add every song that plays (turns off /autosnag when turned on)
 
-/snagoff --> the bot stops adding songs to its playlist.
+/autosnag --> toggles on and off the bots ability to add every song that gets over a certain threshold of up votes (turns off /snagevery when turned on)
 
 /snag --> the bot adds the currently playing song to its queue
 
