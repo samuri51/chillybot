@@ -1378,7 +1378,7 @@ bot.on('speak', function (data)
                 if (!found)
                 {
                     bot.playlistAdd(getSong, playlist.list.length);
-                    bot.speak('song added', data.senderid);
+                    bot.speak('song added');
                 }
             });
         }
