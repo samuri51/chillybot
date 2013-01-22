@@ -1771,7 +1771,7 @@ bot.on('update_votes', function (data)
                     found = true;
                 }
             }
-            if (!found)
+            if (!found && getSong != null)
             {
                 bot.playlistAdd(getSong, playlist.list.length);
                 bot.snag();
