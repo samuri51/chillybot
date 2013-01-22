@@ -51,6 +51,7 @@ var LIMIT = true; //song length limit (on by default)
 var PLAYLIMIT = false; //song play limit, this is for the playLimit variable up above(off by default)
 var autoSnag = false; //auto song adding(different from every song adding), tied to howManyVotes up above, (off by default)
 
+
 /************************************EndSetUp**********************************************************************/
 
 
@@ -484,7 +485,7 @@ bot.on('newsong', function (data)
     getSong = data.room.metadata.current_song._id;
 
 
-	
+
     //adds a song to the end of your bots queue
     if (snagSong === true)
     {
@@ -867,14 +868,14 @@ bot.on('speak', function (data)
         {
             whatsOn += 'every song adding: Off, ';
         }
-		if (autoSnag === true)
-		{
-			whatsOn += 'vote based song adding: On, ';
-		}
-		else
-		{
-			whatsOn += 'vote based song adding: Off, ';
-		}
+        if (autoSnag === true)
+        {
+            whatsOn += 'vote based song adding: On, ';
+        }
+        else
+        {
+            whatsOn += 'vote based song adding: Off, ';
+        }
         if (randomOnce === 0)
         {
             whatsOn += 'playlist reordering in progress?: No';
@@ -1331,33 +1332,33 @@ bot.on('speak', function (data)
     {
         bot.speak('Hey! How are you @' + name + '?');
     }
-	else if (text.match(/^\/snagevery$/) && condition === true)
+    else if (text.match(/^\/snagevery$/) && condition === true)
     {
-		if(snagSong === true)
-		{
-			snagSong = false;
-			bot.speak('I am no longer adding every song that plays');
-		}
-		else if(snagSong === false)
-		{
-			snagSong = true; //this is for /snagevery
-			autoSnag = false; //this turns off /autosnag
-			bot.speak('I am now adding every song that plays, /autosnag has been turned off');
-		}		
-    }   
-	else if (text.match(/^\/autosnag/) && condition === true)
+        if (snagSong === true)
+        {
+            snagSong = false;
+            bot.speak('I am no longer adding every song that plays');
+        }
+        else if (snagSong === false)
+        {
+            snagSong = true; //this is for /snagevery
+            autoSnag = false; //this turns off /autosnag
+            bot.speak('I am now adding every song that plays, /autosnag has been turned off');
+        }
+    }
+    else if (text.match(/^\/autosnag/) && condition === true)
     {
-        if(autoSnag === false)
-		{
-			autoSnag = true; //this is for /autosnag
-			snagSong = false; //this is for /snagevery			
-			bot.speak('I am now adding every song that gets at least (' + howManyVotes + ') awesome\'s, /snagevery has been turned off');
-		}
-		else if(autoSnag === true)
-		{
-			autoSnag = false;
-			bot.speak('vote snagging has been turned off');
-		}			
+        if (autoSnag === false)
+        {
+            autoSnag = true; //this is for /autosnag
+            snagSong = false; //this is for /snagevery			
+            bot.speak('I am now adding every song that gets at least (' + howManyVotes + ') awesome\'s, /snagevery has been turned off');
+        }
+        else if (autoSnag === true)
+        {
+            autoSnag = false;
+            bot.speak('vote snagging has been turned off');
+        }
     }
     else if (text.match(/^\/snag/) && condition === true)
     {
@@ -1741,22 +1742,22 @@ bot.on('update_votes', function (data)
     //this is for keeping track of the upvotes and downvotes on the bot
     upVotes = data.room.metadata.upvotes;
     downVotes = data.room.metadata.downvotes;
-	
-	
-	//this is for /autosnag, automatically adds songs that get over the awesome threshold
-	if(autoSnag === true && snagSong === false && upVotes >= howManyVotes)
-	{		
-		bot.playlistAll(function (playlist)
+
+
+    //this is for /autosnag, automatically adds songs that get over the awesome threshold
+    if (autoSnag === true && snagSong === false && upVotes >= howManyVotes)
+    {
+        bot.playlistAll(function (playlist)
+        {
+            bot.playlistAdd(getSong, playlist.list.length, function (call)
             {
-                bot.playlistAdd(getSong, playlist.list.length, function(call)
-				{
-					if(call.success === true)
-					{
-						bot.snag();
-					}
-				});                
+                if (call.success === true)
+                {
+                    bot.snag();
+                }
             });
-	}
+        });
+    }
 })
 
 
@@ -1772,7 +1773,7 @@ bot.on('snagged', function (data)
         justSaw4(data.userid);
     }
 
-    whoSnagged += 1;	
+    whoSnagged += 1;
 })
 
 
@@ -2201,33 +2202,33 @@ bot.on('pmmed', function (data)
             }
         }
     }
-	else if (text.match(/^\/snagevery$/) && condition === true && isInRoom === true)
+    else if (text.match(/^\/snagevery$/) && condition === true && isInRoom === true)
     {
-		if(snagSong === true)
-		{
-			snagSong = false;
-			bot.pm('I am no longer adding every song that plays', data.senderid);
-		}
-		else if(snagSong === false)
-		{
-			snagSong = true; //this is for /snagevery
-			autoSnag = false; //this turns off /autosnag
-			bot.pm('I am now adding every song that plays, /autosnag has been turned off', data.senderid);
-		}		
-    }   
+        if (snagSong === true)
+        {
+            snagSong = false;
+            bot.pm('I am no longer adding every song that plays', data.senderid);
+        }
+        else if (snagSong === false)
+        {
+            snagSong = true; //this is for /snagevery
+            autoSnag = false; //this turns off /autosnag
+            bot.pm('I am now adding every song that plays, /autosnag has been turned off', data.senderid);
+        }
+    }
     else if (text.match(/^\/autosnag/) && condition === true && isInRoom === true)
     {
-        if(autoSnag === false)
-		{
-			autoSnag = true; //this is for /autosnag
-			snagSong = false; //this is for /snagevery			
-			bot.pm('I am now adding every song that gets at least (' + howManyVotes + ') awesome\'s, /snagevery has been turned off', data.senderid);
-		}
-		else if(autoSnag === true)
-		{
-			autoSnag = false;
-			bot.pm('vote snagging has been turned off', data.senderid);
-		}			
+        if (autoSnag === false)
+        {
+            autoSnag = true; //this is for /autosnag
+            snagSong = false; //this is for /snagevery			
+            bot.pm('I am now adding every song that gets at least (' + howManyVotes + ') awesome\'s, /snagevery has been turned off', data.senderid);
+        }
+        else if (autoSnag === true)
+        {
+            autoSnag = false;
+            bot.pm('vote snagging has been turned off', data.senderid);
+        }
     }
     else if (text.match(/^\/dive/) && isInRoom === true)
     {
@@ -2699,14 +2700,14 @@ bot.on('pmmed', function (data)
         {
             whatsOn += 'every song adding: Off, ';
         }
-		if (autoSnag === true)
-		{
-			whatsOn += 'vote based song adding: On, ';
-		}
-		else
-		{
-			whatsOn += 'vote based song adding: Off, ';
-		}
+        if (autoSnag === true)
+        {
+            whatsOn += 'vote based song adding: On, ';
+        }
+        else
+        {
+            whatsOn += 'vote based song adding: Off, ';
+        }
         if (randomOnce === 0)
         {
             whatsOn += 'playlist reordering in progress?: No';
