@@ -68,7 +68,7 @@ var song = null;
 var album = null;
 var genre = null;
 var skipOn = null;
-var snagSong = null;
+var snagSong = false;
 var checkWhoIsDj;
 var randomOnce = 0;
 var voteCountSkip = 0;
