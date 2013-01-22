@@ -1366,13 +1366,25 @@ bot.on('speak', function (data)
         {
             bot.playlistAll(function (playlist)
             {
-                bot.playlistAdd(getSong, playlist.list.length);
-                bot.speak('song added.');
+                var found = false;
+                for (var igh = 0; igh < playlist.list.length; igh++)
+                {
+                    if (playlist.list[igh]._id == getSong)
+                    {
+                        found = true;
+                        bot.speak('I already have that song');
+                    }
+                }
+                if (!found)
+                {
+                    bot.playlistAdd(getSong, playlist.list.length);
+                    bot.speak('song added', data.senderid);
+                }
             });
         }
         else
         {
-            bot.pm('error, you can\'t snag the first song that plays when the bot enters the room', data.userid);
+            bot.pm('error, you can\'t snag the song that\'s playing when the bot enters the room', data.userid);
         }
     }
     else if (text.match(/^\/removesong$/) && condition === true)
@@ -2878,8 +2890,20 @@ bot.on('pmmed', function (data)
         {
             bot.playlistAll(function (playlist)
             {
-                bot.playlistAdd(getSong, playlist.list.length);
-                bot.pm('song added.', data.senderid);
+                var found = false;
+                for (var igh = 0; igh < playlist.list.length; igh++)
+                {
+                    if (playlist.list[igh]._id == getSong)
+                    {
+                        found = true;
+                        bot.pm('I already have that song', data.senderid);
+                    }
+                }
+                if (!found)
+                {
+                    bot.playlistAdd(getSong, playlist.list.length);
+                    bot.pm('song added', data.senderid);
+                }
             });
         }
         else
