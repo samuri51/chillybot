@@ -727,6 +727,23 @@ bot.on('speak', function (data)
             }
         });
     }
+    else if (text.match(/^\/position/))
+    {
+        var checkPosition = queueName.indexOf(data.name);
+
+        if (checkPosition != -1 && queue === true) //if person is in the queue and queue is active
+        {
+            bot.speak('@' + name + ' you are currently in position number ' + (checkPosition + 1) + ' in the queue');
+        }
+        else if (checkPosition == -1 && queue === true)
+        {
+            bot.speak('@' + name + ' i can\'t tell you your position unless you are currently in the queue');
+        }
+        else
+        {
+            bot.speak('@' + name + ' there is currently no queue');
+        }
+    }
     else if (text.match(/^\/lengthLimit/) && condition === true)
     {
         if (LIMIT === true)
@@ -1096,7 +1113,7 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /theme, /mytime, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /theme, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands');
     }
     else if (text.match(/^\/queuecommands/))
@@ -1980,6 +1997,23 @@ bot.on('pmmed', function (data)
 
         }
     }
+    else if (text.match(/^\/position/)) //tells you your position in the queue, if there is one
+    {
+        var checkPosition = queueName.indexOf(theUsersList[name1]);
+
+        if (checkPosition != -1 && queue === true) //if person is in the queue and queue is active
+        {
+            bot.pm('you are currently in position number ' + (checkPosition + 1) + ' in the queue', data.senderid);
+        }
+        else if (checkPosition == -1 && queue === true)
+        {
+            bot.pm('i can\'t tell you your position unless you are currently in the queue', data.senderid);
+        }
+        else
+        {
+            bot.pm('there is currently no queue', data.senderid);
+        }
+    }
     else if (text.match(/^\/playLimitOn$/) && condition === true && isInRoom === true)
     {
         PLAYLIMIT = true;
@@ -2857,7 +2891,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/commands/) && isInRoom === true)
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /theme, /fanratio @, /mytime, /playlist, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+            ' /mom, /chilly, /cheers, /theme, /fanratio @, /mytime, /playlist, /position, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
             '/dice, /props, /m, /getTags, /skip, /dive, /surf, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands, /pmcommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
@@ -2866,13 +2900,13 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
-        bot.pm('/chilly, /moon, /modpm, /playlist, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
+        bot.pm('/chilly, /moon, /modpm, /playlist, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
             '/userid @, /ban @, /unban @, /stalk, /whobanned, /whostagebanned, /stopescortme, /escortme, /snag, /inform, ' +
             '/removesong, /username, /afk, /whosafk, /commands, /admincommands', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && !condition === true && isInRoom === true) //non - moderators see this
     {
-        bot.pm('/chilly, /moon, /addme, /removeme, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
+        bot.pm('/chilly, /moon, /addme, /removeme, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {

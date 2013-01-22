@@ -108,6 +108,8 @@ COMMANDS: (public)
 
 /playlist --> bot says the total amount of songs in its playlist.
 
+/position --> the bot tells you your position in the queue
+
 /cheers --> user raises their glass for a toast
 
 /uptime --> get the amount of time the bot has been running for.
