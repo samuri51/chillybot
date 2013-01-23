@@ -502,8 +502,7 @@ bot.on('newsong', function (data)
 
 
     //used to check who the currently playing dj is.
-    checkWhoIsDj = data.room.metadata.current_dj;
-    var current = data.room.metadata.current_dj;
+    checkWhoIsDj = data.room.metadata.current_dj;    
 
 
     //used to get current dj's name.
@@ -513,7 +512,7 @@ bot.on('newsong', function (data)
 
 
     //used to have the bot skip its song if its the current player (if it has any)
-    if (userId == current && skipOn === true)
+    if (userId == checkWhoIsDj && skipOn === true)
     {
         bot.skip();
     }
@@ -614,8 +613,7 @@ bot.on('speak', function (data)
     {
         if (current < 5)
         {
-            bot.addDj();
-            current = null;
+            bot.addDj();            
         }
         else
         {
@@ -2416,8 +2414,7 @@ bot.on('pmmed', function (data)
     {
         if (current < 5)
         {
-            bot.addDj();
-            current = null;
+            bot.addDj();            
         }
         else
         {
