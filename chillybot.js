@@ -476,14 +476,12 @@ bot.on('newsong', function (data)
     downVotes = 0;
 
 
-
     //procedure for getting song tags
     song = data.room.metadata.current_song.metadata.song;
     album = data.room.metadata.current_song.metadata.album;
     genre = data.room.metadata.current_song.metadata.genre;
     artist = data.room.metadata.current_song.metadata.artist;
     getSong = data.room.metadata.current_song._id;
-
 
 
     //adds a song to the end of your bots queue
@@ -496,13 +494,11 @@ bot.on('newsong', function (data)
     }
 
 
-
-
     var userId = USERID; // the bots userid
 
 
     //used to check who the currently playing dj is.
-    checkWhoIsDj = data.room.metadata.current_dj;    
+    checkWhoIsDj = data.room.metadata.current_dj;
 
 
     //used to get current dj's name.
@@ -510,13 +506,11 @@ bot.on('newsong', function (data)
     bot.bop(); //automatically awesomes each song. will not awesome again until the next song.
 
 
-
     //used to have the bot skip its song if its the current player (if it has any)
     if (userId == checkWhoIsDj && skipOn === true)
     {
         bot.skip();
     }
-
 
 
     //puts bot on stage if there is one dj on stage, and removes them when there is 5 dj's on stage.
@@ -538,7 +532,6 @@ bot.on('newsong', function (data)
     {
         skipOn = false;
     }
-
 
 
     var checkIfAdmin = modList.indexOf(checkWhoIsDj);
@@ -613,9 +606,9 @@ bot.on('speak', function (data)
     {
         if (current < 5)
         {
-            bot.addDj();            
+            bot.addDj();
         }
-        else
+        else if (current != null && current >= 5)
         {
             bot.pm('error, the stage is full', data.userid);
         }
@@ -1800,7 +1793,6 @@ bot.on('snagged', function (data)
 //checks when a dj leaves the stage
 bot.on('rem_dj', function (data)
 {
-
     //removes one from dj count
     djsOnStage -= 1;
 
@@ -1897,8 +1889,6 @@ bot.on('add_dj', function (data)
 
     //adds a user to the current Djs list when they join the stage.
     currentDjs.push(data.user[0].userid);
-
-
 
 
 
@@ -2414,9 +2404,9 @@ bot.on('pmmed', function (data)
     {
         if (current < 5)
         {
-            bot.addDj();            
+            bot.addDj();
         }
-        else
+        else if (current != null && current >= 5)
         {
             bot.pm('error, the stage is full', data.senderid);
         }
@@ -3027,18 +3017,24 @@ bot.on('roomChanged', function (data)
     //start the uptime
     beginTime = Date.now();
 
+
     //gets your rooms name and shortcut
     roomName = data.room.name;
     ttRoomName = data.room.shortcut;
 
 
-    //finds out who the currently playing dj's are.
-    currentDjs = data.room.metadata.djs;
+
+    //finds out who the currently playing dj's are.    
+    for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
+    {
+        currentDjs.push(data.room.metadata.djs[iop]);
+
+    }
+
 
 
     //counts how many djs there are on stage
     djsOnStage = currentDjs.length;
-
 
 
 
@@ -3053,7 +3049,6 @@ bot.on('roomChanged', function (data)
 
 
 
-
     //list of escorts, users, and moderators is reset    
     escortList = [];
     theUsersList = [];
@@ -3062,8 +3057,11 @@ bot.on('roomChanged', function (data)
 
 
     //set modlist to list of moderators
-    modList = data.room.metadata.moderator_id;
-
+    //modList = data.room.metadata.moderator_id;
+    for (var ihp = 0; ihp < data.room.metadata.moderator_id.length; ihp++)
+    {
+        modList.push(data.room.metadata.moderator_id[ihp]);
+    }
 
 
 
@@ -3248,7 +3246,6 @@ bot.on('new_moderator', function (data)
 //starts up when a user leaves the room
 bot.on('deregistered', function (data)
 {
-
     //removes dj's from the lastSeen object when they leave the room
     delete lastSeen[data.user[0].userid];
     delete lastSeen1[data.user[0].userid];
@@ -3299,7 +3296,6 @@ bot.on('endsong', function (data)
 
     //iterates through the dj list incrementing dj song counts and
     //removing them if they are over the limit.
-
     var djId = data.room.metadata.current_dj;
     if (++djs20[djId].nbSong >= playLimit)
     {
