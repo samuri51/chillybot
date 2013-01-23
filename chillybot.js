@@ -887,7 +887,7 @@ bot.on('speak', function (data)
             bot.speak("error, please enter a valid number");
         }
 
-        if (!isNaN(HowManyVotesToSkip))
+        if (!isNaN(HowManyVotesToSkip) && HowManyVotesToSkip !== 0)
         {
             bot.speak("vote skipping is now active, current votes needed to pass " + "the vote is " + HowManyVotesToSkip);
             voteSkip = true;
@@ -2469,7 +2469,7 @@ bot.on('pmmed', function (data)
             bot.pm("error, please enter a valid number", data.senderid);
         }
 
-        if (!isNaN(HowManyVotesToSkip))
+        if (!isNaN(HowManyVotesToSkip) && HowManyVotesToSkip !== 0)
         {
             bot.pm("vote skipping is now active, current votes needed to pass " + "the vote is " + HowManyVotesToSkip, data.senderid);
             voteSkip = true;
