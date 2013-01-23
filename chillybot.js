@@ -941,11 +941,11 @@ bot.on('speak', function (data)
 
             var findLastDj = theUsersList.indexOf(lastdj);
             if (votesLeft !== 0 && checkIfMod == -1)
-            {
+            {				
                 bot.speak("Current Votes for a song skip: " + voteCountSkip +
                     " Votes needed to skip the song: " + HowManyVotesToSkip);
-            }
-            if (votesLeft === 0 && checkIfMod == -1)
+            }			
+            if (votesLeft === 0 && checkIfMod == -1 && !isNaN(HowManyVotesToSkip))
             {
                 bot.speak("@" + theUsersList[findLastDj + 1] + " you have been voted off stage");
                 bot.remDj(lastdj);
