@@ -1804,24 +1804,22 @@ bot.on('rem_dj', function (data)
 
     //updates the current dj's list.
     var check30 = currentDjs.indexOf(data.user[0].userid);
-    currentDjs.splice(check30, 1);
+	if (check30 != -1)
+	{
+        currentDjs.splice(check30, 1);
+	}
 
 
 
     //takes a user off the escort list if they leave the stage.
     var checkEscort = escortList.indexOf(data.user[0].userid);
 
-    var user = data.user;
+    
+	
     if (checkEscort != -1)
     {
         escortList.splice(checkEscort, 1);
-    }
-    var checkDj = currentDjs.indexOf(data.user[0].userid);
-
-    if (checkDj != -1)
-    {
-        currentDjs.splice(checkDj, 1);
-    }
+    }    
 })
 
 
@@ -1888,7 +1886,11 @@ bot.on('add_dj', function (data)
 
 
     //adds a user to the current Djs list when they join the stage.
-    currentDjs.push(data.user[0].userid);
+	var check89 = currentDjs.indexOf(data.user[0].userid);
+	if (check89 == -1)
+	{
+        currentDjs.push(data.user[0].userid);
+	}
 
 
 
