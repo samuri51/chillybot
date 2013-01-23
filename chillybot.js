@@ -941,10 +941,10 @@ bot.on('speak', function (data)
 
             var findLastDj = theUsersList.indexOf(lastdj);
             if (votesLeft !== 0 && checkIfMod == -1)
-            {				
+            {
                 bot.speak("Current Votes for a song skip: " + voteCountSkip +
                     " Votes needed to skip the song: " + HowManyVotesToSkip);
-            }			
+            }
             if (votesLeft === 0 && checkIfMod == -1 && !isNaN(HowManyVotesToSkip))
             {
                 bot.speak("@" + theUsersList[findLastDj + 1] + " you have been voted off stage");
@@ -1804,22 +1804,22 @@ bot.on('rem_dj', function (data)
 
     //updates the current dj's list.
     var check30 = currentDjs.indexOf(data.user[0].userid);
-	if (check30 != -1)
-	{
+    if (check30 != -1)
+    {
         currentDjs.splice(check30, 1);
-	}
+    }
 
 
 
     //takes a user off the escort list if they leave the stage.
     var checkEscort = escortList.indexOf(data.user[0].userid);
 
-    
-	
+
+
     if (checkEscort != -1)
     {
         escortList.splice(checkEscort, 1);
-    }    
+    }
 })
 
 
@@ -1886,11 +1886,11 @@ bot.on('add_dj', function (data)
 
 
     //adds a user to the current Djs list when they join the stage.
-	var check89 = currentDjs.indexOf(data.user[0].userid);
-	if (check89 == -1)
-	{
+    var check89 = currentDjs.indexOf(data.user[0].userid);
+    if (check89 == -1)
+    {
         currentDjs.push(data.user[0].userid);
-	}
+    }
 
 
 
