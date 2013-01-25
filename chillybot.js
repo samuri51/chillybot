@@ -504,10 +504,10 @@ bot.on('newsong', function (data)
 
     //used to get current dj's name.
     dj = data.room.metadata.current_song.djname;
-	if(autoBop === true) //if true causes the bot to autobop
-	{
-	    bot.bop(); //automatically awesomes each song. will not awesome again until the next song.
-	}
+    if (autoBop === true) //if true causes the bot to autobop
+    {
+        bot.bop(); //automatically awesomes each song. will not awesome again until the next song.
+    }
 
 
     //used to have the bot skip its song if its the current player (if it has any)
@@ -612,7 +612,7 @@ bot.on('speak', function (data)
         {
             bot.addDj();
         }
-        else if (current != null && current >= 5)
+        else if (current !== null && current >= 5)
         {
             bot.pm('error, the stage is full', data.userid);
         }
@@ -1368,6 +1368,7 @@ bot.on('speak', function (data)
                     {
                         found = true;
                         bot.speak('I already have that song');
+                        break;
                     }
                 }
                 if (!found)
@@ -1764,9 +1765,10 @@ bot.on('update_votes', function (data)
                 if (playlist.list[i]._id == getSong)
                 {
                     found = true;
+                    break;
                 }
             }
-            if (!found && getSong != null)
+            if (!found && getSong !== null)
             {
                 bot.playlistAdd(getSong, playlist.list.length);
                 bot.snag();
@@ -2412,7 +2414,7 @@ bot.on('pmmed', function (data)
         {
             bot.addDj();
         }
-        else if (current != null && current >= 5)
+        else if (current !== null && current >= 5)
         {
             bot.pm('error, the stage is full', data.senderid);
         }
@@ -2890,6 +2892,7 @@ bot.on('pmmed', function (data)
                     {
                         found = true;
                         bot.pm('I already have that song', data.senderid);
+                        break;
                     }
                 }
                 if (!found)
