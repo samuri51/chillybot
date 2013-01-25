@@ -50,6 +50,7 @@ var kickTTSTAT = false; //kicks the ttstats bot when it tries to join the room(o
 var LIMIT = true; //song length limit (on by default)
 var PLAYLIMIT = false; //song play limit, this is for the playLimit variable up above(off by default)
 var autoSnag = false; //auto song adding(different from every song adding), tied to howManyVotes up above, (off by default)
+var autoBop = false; //choose whether the bot will autobop for each song or not(against the rules but i leave it up to you)
 
 
 /************************************EndSetUp**********************************************************************/
@@ -503,7 +504,10 @@ bot.on('newsong', function (data)
 
     //used to get current dj's name.
     dj = data.room.metadata.current_song.djname;
-    bot.bop(); //automatically awesomes each song. will not awesome again until the next song.
+	if(autoBop === true) //if true causes the bot to autobop
+	{
+	    bot.bop(); //automatically awesomes each song. will not awesome again until the next song.
+	}
 
 
     //used to have the bot skip its song if its the current player (if it has any)
