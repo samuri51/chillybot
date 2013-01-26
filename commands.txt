@@ -173,7 +173,7 @@ QUEUE COMMANDS: (public / moderator)
 
 /addme --> adds the user to the queue list.
 
-/queueOn --> turns the queue on. (moderator only)
+/queueOn --> turns the queue on. Also clears any existing queue. (moderator only)
 
 /queueOff --> turns the queue off. (moderator only)
 
