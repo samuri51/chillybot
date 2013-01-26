@@ -689,15 +689,8 @@ bot.on('speak', function (data)
 
 
     if (text.match(/^\/autodj$/) && condition === true)
-    {
-        if (current < 5)
-        {
-            bot.addDj();
-        }
-        else if (current !== null && current >= 5)
-        {
-            bot.pm('error, the stage is full', data.userid);
-        }
+    {        
+        bot.addDj();       
     }
     else if (text.match(/^\/modpm/) && condition === true)
     {
@@ -2632,15 +2625,8 @@ bot.on('pmmed', function (data)
         }
     }
     else if (text.match(/^\/autodj$/) && condition === true && isInRoom === true)
-    {
-        if (current < 5)
-        {
-            bot.addDj();
-        }
-        else if (current !== null && current >= 5)
-        {
-            bot.pm('error, the stage is full', data.senderid);
-        }
+    {        
+        bot.addDj();      
     }
     else if (text.match(/^\/removedj$/) && condition === true && isInRoom === true)
     {
