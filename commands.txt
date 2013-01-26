@@ -104,6 +104,8 @@ COMMANDS: (public)
 
 /afk --> this will mark you as afk the first time you type it, and unmark you as afk the second time
 
+/djafk --> tells you the afk time of the dj's in minutes
+
 /whosafk --> the bot says the names of everyone whos currently using the /afk command
 
 /awesome --> the bot awesomes the currently playing song if they are not already.

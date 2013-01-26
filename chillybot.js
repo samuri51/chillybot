@@ -788,6 +788,40 @@ bot.on('speak', function (data)
             }
         });
     }
+    else if (text.match(/^\/djafk/))
+    {
+        if (AFK === true) //afk limit turned on?
+        {
+            if (currentDjs.length !== 0) //any dj's on stage?
+            {
+                var afkDjs = 'dj afk time: ';
+
+                for (var ijhp = 0; ijhp < currentDjs.length; ijhp++)
+                {
+                    var lastUpdate = Math.floor((Date.now() - lastSeen[currentDjs[ijhp]]) / 1000 / 60); //their afk time in minutes
+                    var whatIsTheName = theUsersList.indexOf(currentDjs[ijhp]); //their name
+
+                    if (currentDjs[ijhp] != currentDjs[currentDjs.length - 1])
+                    {
+                        afkDjs += theUsersList[whatIsTheName + 1] + ': ' + lastUpdate + ' mins, ';
+                    }
+                    else
+                    {
+                        afkDjs += theUsersList[whatIsTheName + 1] + ': ' + lastUpdate + ' mins';
+                    }
+                }
+                bot.speak(afkDjs);
+            }
+            else
+            {
+                bot.pm('error, there are currently no dj\'s on stage.', data.userid);
+            }
+        }
+        else
+        {
+            bot.pm('error, the dj afk timer has to be active for me to report afk time.', data.userid);
+        }
+    }
     else if (text.match(/^\/position/))
     {
         var checkPosition = queueName.indexOf(data.name);
@@ -1182,7 +1216,7 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /theme, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /theme, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands');
     }
     else if (text.match(/^\/queuecommands/))
@@ -2173,6 +2207,40 @@ bot.on('pmmed', function (data)
             bot.pm('there is currently no queue', data.senderid);
         }
     }
+    else if (text.match(/^\/djafk/) && isInRoom === true)
+    {
+        if (AFK === true) //afk limit turned on?
+        {
+            if (currentDjs.length !== 0) //any dj's on stage?
+            {
+                var afkDjs = 'dj afk time: ';
+
+                for (var ijhp = 0; ijhp < currentDjs.length; ijhp++)
+                {
+                    var lastUpdate = Math.floor((Date.now() - lastSeen[currentDjs[ijhp]]) / 1000 / 60); //their afk time in minutes
+                    var whatIsTheName = theUsersList.indexOf(currentDjs[ijhp]); //their name
+
+                    if (currentDjs[ijhp] != currentDjs[currentDjs.length - 1])
+                    {
+                        afkDjs += theUsersList[whatIsTheName + 1] + ': ' + lastUpdate + ' mins, ';
+                    }
+                    else
+                    {
+                        afkDjs += theUsersList[whatIsTheName + 1] + ': ' + lastUpdate + ' mins';
+                    }
+                }
+                bot.pm(afkDjs, data.senderid);
+            }
+            else
+            {
+                bot.pm('error, there are currently no dj\'s on stage.', data.senderid);
+            }
+        }
+        else
+        {
+            bot.pm('error, the dj afk timer has to be active for me to report afk time.', data.senderid);
+        }
+    }
     else if (text.match(/^\/playminus/) && condition === true && isInRoom === true)
     {
         if (PLAYLIMIT === true) //is the play limit on?
@@ -3125,7 +3193,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/commands/) && isInRoom === true)
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /theme, /fanratio @, /mytime, /playlist, /position, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
+            ' /mom, /chilly, /cheers, /theme, /djafk, /fanratio @, /mytime, /playlist, /position, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
             '/dice, /props, /m, /getTags, /skip, /dive, /surf, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands, /pmcommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
@@ -3134,13 +3202,13 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
-        bot.pm('/chilly, /moon, /modpm, /playlist, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
+        bot.pm('/chilly, /moon, /modpm, /playlist, /djafk, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
             '/userid @, /ban @, /unban @, /stalk, /whobanned, /whostagebanned, /stopescortme, /escortme, /snag, /inform, ' +
             '/removesong, /username, /afk, /whosafk, /commands, /admincommands', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && !condition === true && isInRoom === true) //non - moderators see this
     {
-        bot.pm('/chilly, /moon, /addme, /removeme, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
+        bot.pm('/chilly, /moon, /addme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
@@ -3173,24 +3241,18 @@ bot.on('roomChanged', function (data)
     for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
     {
         currentDjs.push(data.room.metadata.djs[iop]);
-
+        djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
+            nbSong: 0
+        };
+        justSaw(data.room.metadata.djs[iop]); //initialize dj afk count
+        justSaw1(data.room.metadata.djs[iop]);
+        justSaw2(data.room.metadata.djs[iop]);
     }
 
 
 
     //counts how many djs there are on stage
     djsOnStage = currentDjs.length;
-
-
-
-    //initializes currently playing dj's song count to zero.
-    var currentPlayers = data.room.metadata.djs;
-    for (var iz = 0; iz < currentPlayers.length; iz++)
-    {
-        djs20[currentPlayers[iz]] = {
-            nbSong: 0
-        };
-    }
 
 
 
@@ -3245,7 +3307,6 @@ bot.on('roomChanged', function (data)
     {
         myTime[userIds[zy]] = Date.now();
     }
-
 });
 
 
