@@ -1124,11 +1124,11 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/queuecommands/))
     {
-        bot.speak('the commands are /queue, /removefromqueue, /removeme, /addme, /queueOn, /queueOff, /bumptop');
+        bot.speak('the commands are /queue, /removefromqueue @, /removeme, /addme, /queueOn, /queueOff, /bumptop @');
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
-        bot.speak('the mod commands are /ban @, /unban @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.speak('the mod commands are /ban @, /unban @, /playminus @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /removesong, /playLimitOn, /playLimitOff, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm');
         condition = false;
@@ -1428,6 +1428,42 @@ bot.on('speak', function (data)
         else
         {
             bot.speak('There is currently no queue.');
+        }
+    }
+    else if (text.match(/^\/playminus/) && condition === true)
+    {
+        if (PLAYLIMIT === true) //is the play limit on?
+        {
+            var playMinus = data.text.slice(12);
+            var areTheyInRoom = theUsersList.indexOf(playMinus);
+            var areTheyDj = currentDjs.indexOf(theUsersList[areTheyInRoom - 1]);
+            if (areTheyInRoom != -1) //are they in the room?
+            {
+                if (areTheyDj != -1) //are they a dj?
+                {
+                    if (!djs20[theUsersList[areTheyInRoom - 1]].nbSong <= 0) //is their play count already 0 or lower?
+                    {
+                        --djs20[theUsersList[areTheyInRoom - 1]].nbSong;
+                        bot.speak(theUsersList[areTheyInRoom] + '\'s play count has been reduced by one');
+                    }
+                    else
+                    {
+                        bot.pm('error, that user\'s play count is already at zero', data.userid);
+                    }
+                }
+                else
+                {
+                    bot.pm('error, that user is not currently djing', data.userid);
+                }
+            }
+            else
+            {
+                bot.pm('error, that user is not currently in the room', data.userid);
+            }
+        }
+        else
+        {
+            bot.pm('error, the play limit must be turned on in order for me to decrement play counts', data.userid);
         }
     }
     else if (text.match(/^\/whobanned$/) && condition === true)
@@ -2073,6 +2109,43 @@ bot.on('pmmed', function (data)
         {
             bot.pm('there is currently no queue', data.senderid);
         }
+    }
+    else if (text.match(/^\/playminus/) && condition === true && isInRoom === true)
+    {
+        if (PLAYLIMIT === true) //is the play limit on?
+        {
+            var playMinus = data.text.slice(12);
+            var areTheyInRoom = theUsersList.indexOf(playMinus);
+            var areTheyDj = currentDjs.indexOf(theUsersList[areTheyInRoom - 1]);
+            if (areTheyInRoom != -1) //are they in the room?
+            {
+                if (areTheyDj != -1) //are they a dj?
+                {
+                    if (!djs20[theUsersList[areTheyInRoom - 1]].nbSong <= 0) //is their play count already 0 or lower?
+                    {
+                        --djs20[theUsersList[areTheyInRoom - 1]].nbSong;
+                        bot.pm(theUsersList[areTheyInRoom] + '\'s play count has been reduced by one', data.senderid);
+                    }
+                    else
+                    {
+                        bot.pm('error, that user\'s play count is already at zero', data.senderid);
+                    }
+                }
+                else
+                {
+                    bot.pm('error, that user is not currently djing', data.senderid);
+                }
+            }
+            else
+            {
+                bot.pm('error, that user is not currently in the room', data.senderid);
+            }
+        }
+        else
+        {
+            bot.pm('error, the play limit must be turned on in order for me to decrement play counts', data.senderid);
+        }
+
     }
     else if (text.match(/^\/playLimitOn$/) && condition === true && isInRoom === true)
     {
@@ -2994,11 +3067,11 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
     {
-        bot.pm('the commands are /queue, /removefromqueue, /removeme, /addme, /queueOn, /queueOff, /bumptop', data.senderid);
+        bot.pm('the commands are /queue, /removefromqueue @, /removeme, /addme, /queueOn, /queueOff, /bumptop @', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
-        bot.pm('/chilly, /moon, /modpm, /playlist, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
+        bot.pm('/chilly, /moon, /modpm, /playlist, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
             '/userid @, /ban @, /unban @, /stalk, /whobanned, /whostagebanned, /stopescortme, /escortme, /snag, /inform, ' +
             '/removesong, /username, /afk, /whosafk, /commands, /admincommands', data.senderid);
     }
@@ -3008,7 +3081,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /unban @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /unban @, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /botstatus, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
