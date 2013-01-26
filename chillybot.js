@@ -21,6 +21,12 @@ var songLengthLimit = 10.0; //set song limit in minutes
 var afkLimit = 20; //set the afk limit in minutes here
 var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
 var howManyVotes = 5; //how many awesome's for a song to be automatically added to the bot's playlist(only works when autoSnag = true;)
+var howLongStage = 30;
+/*how many second's does a dj have to get on stage when it's their turn to dj after waiting in the queue.
+						 The value must be entered in seconds in order to display the correct message, i.e 3 mins = 180 seconds.
+						 Note that people are not removed from the queue when they leave the room so a lower number is preferable in high pop rooms to avoid backup.
+						 (only work when queue = true)
+						*/
 
 var roomJoinMessage = ''; //the message users will see when they join the room, leave it empty for the default message (only works when greet is turned on)
 //example of how to use this, var roomJoinMessage = 'your message goes here';
@@ -344,13 +350,26 @@ queueCheck15 = function ()
         if (sayOnce === true && djsOnStage < 5)
         {
             sayOnce = false;
-            bot.speak('@' + queueName[0] + ' you have 30 seconds to get on stage.');
+            if ((howLongStage / 60) < 1) //is it seconds
+            {
+                bot.speak('@' + queueName[0] + ' you have ' + howLongStage + ' seconds to get on stage.');
+            }
+            else if ((howLongStage / 60) == 1) //is it one minute
+            {
+                var minute = Math.floor((howLongStage / 60));
+                bot.speak('@' + queueName[0] + ' you have ' + minute + ' minute to get on stage.');
+            }
+            else if ((howLongStage / 60) > 1) //is it more than one minute
+            {
+                var minutes = Math.floor((howLongStage / 60));
+                bot.speak('@' + queueName[0] + ' you have ' + minutes + ' minutes to get on stage.');
+            }
             beginTimer = setTimeout(function ()
             {
                 queueList.splice(0, 2);
                 queueName.splice(0, 1);
                 sayOnce = true;
-            }, 30 * 1000);
+            }, howLongStage * 1000); //timeout variably set
         }
     }
 }
