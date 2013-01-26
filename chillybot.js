@@ -22,6 +22,10 @@ var afkLimit = 20; //set the afk limit in minutes here
 var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
 var howManyVotes = 5; //how many awesome's for a song to be automatically added to the bot's playlist(only works when autoSnag = true;)
 
+var roomJoinMessage = ''; //the message users will see when they join the room, leave it empty for the default message (only works when greet is turned on)
+//example of how to use this, var roomJoinMessage = 'your message goes here';
+
+
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed.
 global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain', 'tpain', 'katy perry', 'eminem', 'porter robinson', //banned artist/ song list (MUST BE LOWERCASE)
@@ -42,6 +46,10 @@ var getonstage = true; //autodjing(on by default)
 var queue = true; //queue(on by default)
 var AFK = true; //afk limit(on by default), this is for the dj's on stage
 var MESSAGE = true; //room message(on by default), the bot says your room info every 15 mins
+var defaultMessage = true;
+/*This corresponds to the MESSAGE variable directly above, if true it will give you the default repeat message along with your room info, if false it will only say your room info.
+							  (only works when MESSAGE = true) (this feature is on by default)
+							*/
 var GREET = true; //room greeting when someone joins the room(on by default)
 var voteSkip = false; //voteskipping(off by default)
 var roomAFK = false; //audience afk limit(off by default)
@@ -50,7 +58,13 @@ var kickTTSTAT = false; //kicks the ttstats bot when it tries to join the room(o
 var LIMIT = true; //song length limit (on by default)
 var PLAYLIMIT = false; //song play limit, this is for the playLimit variable up above(off by default)
 var autoSnag = false; //auto song adding(different from every song adding), tied to howManyVotes up above, (off by default)
-var autoBop = false; //choose whether the bot will autobop for each song or not(against the rules but i leave it up to you)
+var autoBop = false; //choose whether the bot will autobop for each song or not(against the rules but i leave it up to you) (off by default)
+var afkThroughPm = false; //choose whether afk warnings(for dj's on stage) will be given through the pm or the chatbox (false = chatbox, true = pm message)
+var greetThroughPm = false; //choose whether greeting message is through the pm or the chatbox(false = chatbox, true = pm), (only works when greeting message is turned on) (off by default)
+var repeatMessageThroughPm = false;
+/*choose whether the repeating room message(the one corresponding to MESSAGE up above) will be through the chatbox or the pm,
+									  (false = through the chatbox, true = through the pm) (MESSAGE must equal true for this to work) (this feature is off by default)										
+									*/
 
 
 /************************************EndSetUp**********************************************************************/
@@ -230,7 +244,14 @@ afkCheck = function ()
         {
             if (afker != USERID && isAfkMod === -1)
             {
-                bot.speak('@' + theUsersList[whatIsAfkerName] + ' you have 5 minutes left of afk, chat or awesome please.');
+                if (afkThroughPm === false)
+                {
+                    bot.speak('@' + theUsersList[whatIsAfkerName] + ' you have 5 minutes left of afk, chat or awesome please.');
+                }
+                else
+                {
+                    bot.pm('you have 5 minutes left of afk, chat or awesome please.', afker);
+                }
                 justSaw1(afker);
             }
         }
@@ -238,7 +259,14 @@ afkCheck = function ()
         {
             if (afker != USERID && isAfkMod == -1)
             {
-                bot.speak('@' + theUsersList[whatIsAfkerName] + ' you have 1 minute left of afk, chat or awesome please.');
+                if (afkThroughPm === false)
+                {
+                    bot.speak('@' + theUsersList[whatIsAfkerName] + ' you have 1 minute left of afk, chat or awesome please.');
+                }
+                else
+                {
+                    bot.pm('you have 1 minute left of afk, chat or awesome please.', afker);
+                }
                 justSaw2(afker);
             }
         }
@@ -248,7 +276,14 @@ afkCheck = function ()
             {
                 if (afker != checkWhoIsDj)
                 {
-                    bot.speak('@' + theUsersList[whatIsAfkerName] + ' you are over the afk limit of ' + afkLimit + ' minutes.');
+                    if (afkThroughPm === false)
+                    {
+                        bot.speak('@' + theUsersList[whatIsAfkerName] + ' you are over the afk limit of ' + afkLimit + ' minutes.');
+                    }
+                    else
+                    {
+                        bot.pm('you are over the afk limit of ' + afkLimit + ' minutes.', afker);
+                    }
                     justSaw1(afker);
                     justSaw2(afker);
                     justSaw(afker);
@@ -360,11 +395,39 @@ repeatMessage = function ()
 {
     if (MESSAGE === true && detail !== undefined)
     {
-        bot.speak('Welcome to ' + roomName + ', the rules are simple, ' + detail); //set the message you wish the bot to repeat here i.e rules and such.
+        if (repeatMessageThroughPm === false) //if not doing through the pm
+        {
+            if (defaultMessage === true) //if using default message
+            {
+                bot.speak('Welcome to ' + roomName + ', the rules are simple, ' + detail); //set the message you wish the bot to repeat here i.e rules and such.
+            }
+            else
+            {
+                bot.speak('' + detail);
+            }
+        }
+        else
+        {
+            if (defaultMessage === true)
+            {
+                for (var jkl = 0; jkl < userIds.length; jkl++)
+                {
+                    bot.pm('Welcome to ' + roomName + ', the rules are simple, ' + detail, userIds[jkl]); //set the message you wish the bot to repeat here i.e rules and such.
+                }
+            }
+            else
+            {
+                for (var lkj = 0; lkj < userIds.length; lkj++)
+                {
+                    bot.pm('' + detail, userIds[lkj]); //set the message you wish the bot to repeat here i.e rules and such.
+                }
+            }
+        }
     }
 };
 
 setInterval(repeatMessage, 900 * 1000) //repeats this message every 15 mins if /messageOn has been used.
+
 
 
 
@@ -3216,13 +3279,55 @@ bot.on('registered', function (data)
             greetingTimer[data.user[0].userid] = setTimeout(function ()
             {
                 greetingTimer[data.user[0].userid] = null;
-                if (THEME === false) //if theres no theme this is the message.
+                if (roomJoinMessage !== '') //if your not using the default greeting
                 {
-                    bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' enjoy your stay!');
+                    if (THEME === false) //if theres no theme this is the message.
+                    {
+                        if (greetThroughPm === false) //if your not sending the message through the pm
+                        {
+                            bot.speak('@' + roomjoin.name + ', ' + roomJoinMessage);
+                        }
+                        else
+                        {
+                            bot.pm(roomJoinMessage, roomjoin.userid);
+                        }
+                    }
+                    else
+                    {
+                        if (greetThroughPm === false)
+                        {
+                            bot.speak('@' + roomjoin.name + ', ' + roomJoinMessage + '; The theme is currently set to: ' + whatIsTheme);
+                        }
+                        else
+                        {
+                            bot.pm(roomJoinMessage + '; The theme is currently set to: ' + whatIsTheme, roomjoin.userid);
+                        }
+                    }
                 }
                 else
                 {
-                    bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ' the theme is currently set to: ' + whatIsTheme);
+                    if (THEME === false) //if theres no theme this is the message.
+                    {
+                        if (greetThroughPm === false)
+                        {
+                            bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ', enjoy your stay!');
+                        }
+                        else
+                        {
+                            bot.pm('Welcome to ' + roomName + ' @' + roomjoin.name + ', enjoy your stay!', roomjoin.userid);
+                        }
+                    }
+                    else
+                    {
+                        if (greetThroughPm === false)
+                        {
+                            bot.speak('Welcome to ' + roomName + ' @' + roomjoin.name + ', the theme is currently set to: ' + whatIsTheme);
+                        }
+                        else
+                        {
+                            bot.pm('Welcome to ' + roomName + ' @' + roomjoin.name + ', the theme is currently set to: ' + whatIsTheme, roomjoin.userid);
+                        }
+                    }
                 }
                 delete greetingTimer[data.user[0].userid];
             }, 3 * 1000);
