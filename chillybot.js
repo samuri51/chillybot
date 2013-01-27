@@ -385,7 +385,7 @@ setInterval(queueCheck15, 5000) //repeats the check every five seconds.
 vipListCheck = function ()
 {
     //this kicks all users off stage when the vip list is not empty
-    if (vipList.length !== 0 && djsOnStage.length != vipList.length)
+    if (vipList.length !== 0 && djsOnStage != vipList.length)
     {
         for (var p = 0; p < currentDjs.length; p++)
         {
