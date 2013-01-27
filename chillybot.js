@@ -28,6 +28,10 @@ var howLongStage = 30;
 						 (only work when queue = true)
 						*/
 
+//this is for the bot's autodjing(triggers on new song, bot also gets on when no song is playing, unless autodjing is turned off)
+var whenToGetOnStage = 3; //when this many or less people djing the bot will get on stage(only if autodjing is enabled)
+var whenToGetOffStage = 5; //when this many people are on stage and auto djing is enabled the bot will get off stage(note: the bot counts as one person)
+
 var roomJoinMessage = ''; //the message users will see when they join the room, leave it empty for the default message (only works when greet is turned on)
 //example of how to use this, var roomJoinMessage = 'your message goes here';
 
@@ -601,14 +605,14 @@ bot.on('newsong', function (data)
 
     //puts bot on stage if there is one dj on stage, and removes them when there is 5 dj's on stage.
     current = data.room.metadata.djcount;
-    if (current >= 1 && current <= 3 && queueList.length === 0)
+    if (current >= 1 && current <= whenToGetOnStage && queueList.length === 0)
     {
         if (getonstage === true && vipList.length === 0)
         {
             bot.addDj();
         }
     }
-    if (current == 5 && getonstage === true)
+    if (current == whenToGetOffStage && getonstage === true)
     {
         bot.remDj();
     }
