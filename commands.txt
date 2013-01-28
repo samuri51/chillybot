@@ -150,7 +150,7 @@ COMMANDS: (public)
 
 /dice --> returns a random integer between 1 and 6.
 
-/m<space><your message here> --> the bot says literally what you type.
+/m<space><your message here> --> the bot says literally what you type. (mod only)
 
 /hello --> greets the user.
 
@@ -178,27 +178,13 @@ QUEUE COMMANDS: (public / moderator)
 /queueOff --> turns the queue off. (moderator only)
 
 
-PM COMMANDS: (public)
+PM COMMANDS: (public / moderator)
 
-/chilly --> the bot says the user is chill in chat.
-
-/m<space><your message here> --> the bot says literally what you type.
-
-/ban<space><@name> --> kicks the person specified and prevents them from reentering the room (temp ban).
-
-/unban<space><@name> --> takes the person specified off the ban list. they can now reenter the room.
-
-/banstage<space><@name> --> bans a user from playing songs on stage but does not kick them from the room
-
-/unbanstage<space><@name> --> removes the user specified from the stage banning list
-
-/queuecommands --> shows a list of the bots queueing commands.
-
-/admincommands --> pm's the user the commands if they are an admin.
-
-/commands --> pm's the user a list of the bots public commands.
-
-/pmcommands --> tells the sender the pm commands
+/pmcommands --> tells the sender all of the commands that they can use in the pm, there is a separate list for moderators
+				and non- moderators. all commands have the same behavior as those listed above.
+				
+/stage<space><@name> --> the command that only works in the pm, it allows moderators to remove any dj from stage using their name
+						anonymously through the bot.
 
 
 
