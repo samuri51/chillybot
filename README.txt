@@ -5,6 +5,7 @@ afk limit
 afk audience limit(separate from afk limit, both can be toggled on and off)
 song length limit
 ban list
+master Id list
 song play limit
 vote skipping
 room greeting
@@ -18,10 +19,6 @@ very noninstrusive, only enforces the queue when people are in the queue
 ability to toggle just about everything
 very easy to use! entirely script based just download node, run the script and your off!
 
-do not be confused if limit's, such as the afk limit, and the song length limit, etc, do not affect you. i made them so that it does
-not enforce the limits on moderators, in my opinion when making this, the room belongs to the moderators and they should be able
-to dj for as long as they want to. if you would like any of these limits changed, open an issue on my github and i will tell you how to change
-them.
 
 
 For a full list of commands, please consult the commands.txt file(does not contain all features, just commands).

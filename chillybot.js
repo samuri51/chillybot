@@ -28,6 +28,12 @@ var howLongStage = 30;
 						 (only work when queue = true)
 						*/
 
+global.masterIds = ['1234','1234']; //example (clear this before using)
+/*This is the master id list, userid's that are put in here will not be affected by the song length limit, the song play limit, the /skip command, or the dj afk limit.
+						 This is meant to explicitly give extra privileges to yourself and anyone else you want to put in here. It takes userid's as input in string format separated by commas.
+						 You can put the person's name in the array either before or after a userid to tell who it belongs to, it will not affect its ability to function.
+					   */
+
 //this is for the bot's autodjing(triggers on new song, bot also gets on when no song is playing, unless autodjing is turned off)
 var whenToGetOnStage = 3; //when this many or less people djing the bot will get on stage(only if autodjing is enabled)
 var whenToGetOffStage = 5; //when this many people are on stage and auto djing is enabled the bot will get off stage(note: the bot counts as one person)
@@ -248,11 +254,11 @@ afkCheck = function ()
     for (var i = 0; i < currentDjs.length; i++)
     {
         afker = currentDjs[i]; //Pick a DJ
-        var isAfkMod = modList.indexOf(afker);
+        var isAfkMaster = masterIds.indexOf(afker); //master ids check
         var whatIsAfkerName = theUsersList.indexOf(afker) + 1;
         if ((isAfk1(afker, (afkLimit - 5))) && AFK === true)
         {
-            if (afker != USERID && isAfkMod === -1)
+            if (afker != USERID && isAfkMaster == -1)
             {
                 if (afkThroughPm === false)
                 {
@@ -267,7 +273,7 @@ afkCheck = function ()
         }
         if ((isAfk2(afker, (afkLimit - 1))) && AFK === true)
         {
-            if (afker != USERID && isAfkMod == -1)
+            if (afker != USERID && isAfkMaster == -1)
             {
                 if (afkThroughPm === false)
                 {
@@ -282,7 +288,7 @@ afkCheck = function ()
         }
         if ((isAfk(afker, afkLimit)) && AFK === true)
         { //if Dj is afk then	   
-            if (afker != USERID && isAfkMod == -1) //checks to see if afker is a mod or a bot or the current dj, if they are is does not kick them.
+            if (afker != USERID && isAfkMaster == -1) //checks to see if afker is a mod or a bot or the current dj, if they are is does not kick them.
             {
                 if (afker != checkWhoIsDj)
                 {
@@ -505,7 +511,7 @@ bot.on('newsong', function (data)
     // Set this after processing things from last timer calls
     lastdj = data.room.metadata.current_dj;
     checkLast = theUsersList.indexOf(lastdj);
-    var modIndex = modList.indexOf(lastdj);
+    var masterIndex = masterIds.indexOf(lastdj); //master id's check
 
 
 
@@ -529,7 +535,7 @@ bot.on('newsong', function (data)
     //this boots the user if their song is over the length limit
     if ((length / 60) >= songLengthLimit)
     {
-        if (lastdj == USERID || modIndex == -1)
+        if (lastdj == USERID || masterIndex == -1) //if dj is the bot or not a master
         {
             if (LIMIT === true)
             {
@@ -693,8 +699,8 @@ bot.on('speak', function (data)
 
 
     if (text.match(/^\/autodj$/) && condition === true)
-    {        
-        bot.addDj();       
+    {
+        bot.addDj();
     }
     else if (text.match(/^\/modpm/) && condition === true)
     {
@@ -1043,13 +1049,9 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/skip$/) && voteSkip === true)
     {
-        var takeBotOff = modList.indexOf(USERID);
-        var checkIfOnList = checkVotes.indexOf(data.userid)
-        var checkIfMod = modList.indexOf(lastdj);
-        if (takeBotOff != -1)
-        {
-            modList.splice(takeBotOff, 1);
-        }
+        var checkIfOnList = checkVotes.indexOf(data.userid);
+        var checkIfMaster = masterIds.indexOf(lastdj); //master id's list      
+
         if (checkIfOnList == -1 && data.userid != USERID)
         {
             voteCountSkip += 1;
@@ -1057,12 +1059,12 @@ bot.on('speak', function (data)
             checkVotes.unshift(data.userid);
 
             var findLastDj = theUsersList.indexOf(lastdj);
-            if (votesLeft !== 0 && checkIfMod == -1)
+            if (votesLeft !== 0 && checkIfMaster == -1)
             {
                 bot.speak("Current Votes for a song skip: " + voteCountSkip +
                     " Votes needed to skip the song: " + HowManyVotesToSkip);
             }
-            if (votesLeft === 0 && checkIfMod == -1 && !isNaN(HowManyVotesToSkip))
+            if (votesLeft === 0 && checkIfMaster == -1 && !isNaN(HowManyVotesToSkip))
             {
                 bot.speak("@" + theUsersList[findLastDj + 1] + " you have been voted off stage");
                 bot.remDj(lastdj);
@@ -2629,8 +2631,8 @@ bot.on('pmmed', function (data)
         }
     }
     else if (text.match(/^\/autodj$/) && condition === true && isInRoom === true)
-    {        
-        bot.addDj();      
+    {
+        bot.addDj();
     }
     else if (text.match(/^\/removedj$/) && condition === true && isInRoom === true)
     {
@@ -3554,10 +3556,11 @@ bot.on('endsong', function (data)
     //iterates through the dj list incrementing dj song counts and
     //removing them if they are over the limit.
     var djId = data.room.metadata.current_dj;
+    var isMaster = masterIds.indexOf(djId);
     if (++djs20[djId].nbSong >= playLimit)
     {
         var checklist33 = theUsersList.indexOf(djId) + 1;
-        if (djId != USERID && PLAYLIMIT === true)
+        if (djId != USERID && PLAYLIMIT === true && isMaster == -1) //is not bot, playlimit on, not master, then true
         {
             bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
             bot.remDj(djId);
