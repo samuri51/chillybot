@@ -85,7 +85,7 @@ automatically removed from stage as well.
 
 
 anti room advertising - if someone who is not a moderator puts a link in your chatbox to another room
-they are automatically booted from the room.
+they are automatically booted from the room. It does not kick for linking to the room its being used in.
 
 
 
@@ -118,7 +118,7 @@ are removed or added and distribute command access appropriately.
 
 
 when the queue is on and 5 djs are on stage - it sends a pm to you telling you
-the queue is active and how to add and remove yourself from it.
+the queue is active and how to add and remove yourself from it(when you join the room and this is true).
 
 
 
