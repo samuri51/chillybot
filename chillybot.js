@@ -29,7 +29,7 @@ var howLongStage = 30;
 						*/
 
 global.masterIds = ['1234','1234']; //example (clear this before using)
-/*This is the master id list, userid's that are put in here will not be affected by the song length limit, the song play limit, the /skip command, or the dj afk limit.
+/*This is the master id list, userid's that are put in here will not be affected by the song length limit, the song play limit, artist / song banning, the /skip command, or the dj afk limit.
 						 This is meant to explicitly give extra privileges to yourself and anyone else you want to put in here. It takes userid's as input in string format separated by commas.
 						 You can put the person's name in the array either before or after a userid to tell who it belongs to, it will not affect its ability to function.
 					   */
@@ -630,7 +630,7 @@ bot.on('newsong', function (data)
     }
 
 
-    var checkIfAdmin = modList.indexOf(checkWhoIsDj);
+    var checkIfAdmin = masterIds.indexOf(checkWhoIsDj);
     //removes current dj from stage if they play a banned song or artist.
     if (bannedArtists.length !== 0)
     {
