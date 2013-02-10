@@ -28,7 +28,7 @@ var howLongStage = 30;
 						 (only work when queue = true)
 						*/
 
-global.masterIds = ['1234','1234']; //example (clear this before using)
+global.masterIds = ['1234', '1234']; //example (clear this before using)
 /*This is the master id list, userid's that are put in here will not be affected by the song length limit, the song play limit, artist / song banning, the /skip command, or the dj afk limit.
 						 This is meant to explicitly give extra privileges to yourself and anyone else you want to put in here. It takes userid's as input in string format separated by commas.
 						 You can put the person's name in the array either before or after a userid to tell who it belongs to, it will not affect its ability to function.
@@ -1874,9 +1874,12 @@ bot.on('speak', function (data)
     //checks to see if someone is trying to speak to an afk person or not.	
     if (afkPeople.length !== 0 && data.userid != USERID)
     {
-        for (var j = 0; j < afkPeople.length; j++)
+        var whatDoesTextBox = data.text.split(' '); //text box words split into pieces		
+        for (var j = 0; j < afkPeople.length; j++) //loop through afk people array
         {
-            if (data.text.match(afkPeople[j]))
+            var areTheyAfk56 = whatDoesTextBox.indexOf(afkPeople[j]); //is an afk persons name being called	
+            var areTheyAfk57 = whatDoesTextBox.indexOf('@' + afkPeople[j]); //is their name being used with an @ symbol		
+            if (areTheyAfk56 !== -1 || areTheyAfk57 !== -1)
             {
                 bot.speak(afkPeople[j] + ' is afk');
             }
