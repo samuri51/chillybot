@@ -636,7 +636,7 @@ bot.on('newsong', function (data)
     {
         for (var j = 0; j < bannedArtists.length; j++)
         {
-            if (artist.toLowerCase().match(bannedArtists[j]) || song.toLowerCase().match(bannedArtists[j]))
+            if (artist.toLowerCase().indexOf(bannedArtists[j].toLowerCase()) !== -1 || song.toLowerCase().indexOf(bannedArtists[j].toLowerCase()) !== -1)
             {
                 if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
                 {
