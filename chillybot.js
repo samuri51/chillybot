@@ -1873,9 +1873,9 @@ bot.on('speak', function (data)
 
     //checks to see if someone is trying to speak to an afk person or not.  
     if (afkPeople.length !== 0 && data.userid != USERID)
-    {       
+    {
         for (var j = 0; j < afkPeople.length; j++) //loop through afk people array
-        {           
+        {
             var areTheyAfk56 = data.text.toLowerCase().indexOf(afkPeople[j].toLowerCase()); //is an afk persons name being called             
             if (areTheyAfk56 !== -1)
             {
@@ -3558,15 +3558,18 @@ bot.on('endsong', function (data)
     //removing them if they are over the limit.
     var djId = data.room.metadata.current_dj;
     var isMaster = masterIds.indexOf(djId);
-    if (++djs20[djId].nbSong >= playLimit)
-    {
-        var checklist33 = theUsersList.indexOf(djId) + 1;
-        if (djId != USERID && PLAYLIMIT === true && isMaster == -1) //is not bot, playlimit on, not master, then true
-        {
-            bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
-            bot.remDj(djId);
-        }
 
+    if (typeof (djs20[djId]) !== 'undefined')
+    {
+        if (++djs20[djId].nbSong >= playLimit)
+        {
+            var checklist33 = theUsersList.indexOf(djId) + 1;
+            if (djId != USERID && PLAYLIMIT === true && isMaster == -1) //is not bot, playlimit on, not master, then true
+            {
+                bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
+                bot.remDj(djId);
+            }
+        }
     }
 
 
