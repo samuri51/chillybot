@@ -1284,7 +1284,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/mom$/))
     {
-        var x = Math.floor(Math.random() * 4);
+        var x = Math.round(Math.random() * 3);
         switch (x)
         {
             case 0:
@@ -1304,7 +1304,7 @@ bot.on('speak', function (data)
     }
     else if (text.match('/coinflip'))
     {
-        var y = Math.floor(Math.random() * 2 + 1);
+        var y = Math.ceil(Math.random() * 2);
         switch (y)
         {
             case 1:
