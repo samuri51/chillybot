@@ -1871,15 +1871,13 @@ bot.on('speak', function (data)
         }
     }
 
-    //checks to see if someone is trying to speak to an afk person or not.	
+    //checks to see if someone is trying to speak to an afk person or not.  
     if (afkPeople.length !== 0 && data.userid != USERID)
-    {
-        var whatDoesTextBox = data.text.toLowerCase().split(' '); //text box words split into pieces and made lower case		
+    {       
         for (var j = 0; j < afkPeople.length; j++) //loop through afk people array
-        {
-            var areTheyAfk56 = whatDoesTextBox.indexOf(afkPeople[j]); //is an afk persons name being called	
-            var areTheyAfk57 = whatDoesTextBox.indexOf('@' + afkPeople[j]); //is their name being used with an @ symbol		
-            if (areTheyAfk56 !== -1 || areTheyAfk57 !== -1)
+        {           
+            var areTheyAfk56 = data.text.toLowerCase().indexOf(afkPeople[j].toLowerCase()); //is an afk persons name being called             
+            if (areTheyAfk56 !== -1)
             {
                 bot.speak(afkPeople[j] + ' is afk');
             }
