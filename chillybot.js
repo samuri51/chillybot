@@ -29,7 +29,7 @@ var howLongStage = 30;
 						*/
 
 global.masterIds = ['1234', '1234']; //example (clear this before using)
-/*This is the master id list, userid's that are put in here will not be affected by the song length limit, the song play limit, artist / song banning, the /skip command, or the dj afk limit.
+/*This is the master id list, userid's that are put in here will not be affected by the song length limit, artist / song banning, the /skip command, or the dj afk limit.
 						 This is meant to explicitly give extra privileges to yourself and anyone else you want to put in here. It takes userid's as input in string format separated by commas.
 						 You can put the person's name in the array either before or after a userid to tell who it belongs to, it will not affect its ability to function.
 					   */
@@ -3557,14 +3557,13 @@ bot.on('endsong', function (data)
     //iterates through the dj list incrementing dj song counts and
     //removing them if they are over the limit.
     var djId = data.room.metadata.current_dj;
-    var isMaster = masterIds.indexOf(djId);
 
     if (typeof (djs20[djId]) !== 'undefined')
     {
         if (++djs20[djId].nbSong >= playLimit)
         {
             var checklist33 = theUsersList.indexOf(djId) + 1;
-            if (djId != USERID && PLAYLIMIT === true && isMaster == -1) //is not bot, playlimit on, not master, then true
+            if (djId != USERID && PLAYLIMIT === true) //is not bot, playlimit on, not master, then true
             {
                 bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
                 bot.remDj(djId);
