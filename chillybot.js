@@ -797,18 +797,21 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/stalk/) && condition === true)
     {
-        var stalker = text.substring(7);
-        bot.stalk(stalker, allInformations = true, function (data4)
-        {
-            if (data4.success !== false)
-            {
-                bot.speak('User found in room: http://turntable.fm/' + data4.room.shortcut);
-            }
-            else
-            {
-                bot.speak('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist');
-            }
-        });
+        var stalker = text.substring(8);		
+		bot.getUserId(stalker, function(data6)
+		{			
+			bot.stalk(data6.userid, allInformations = true, function (data4)
+			{
+				if (data4.success !== false)
+				{
+					bot.speak('User found in room: http://turntable.fm/' + data4.room.shortcut);
+				}
+				else
+				{
+					bot.speak('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist');
+				}
+			});
+		});
     }
     else if (text.match(/^\/djafk/))
     {
@@ -1243,7 +1246,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
-        bot.speak('the mod commands are /ban @, /unban @, /playminus @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.speak('the mod commands are /ban @, /unban @, /playminus @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk @, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /removesong, /playLimitOn, /playLimitOff, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm');
         condition = false;
@@ -3041,18 +3044,21 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/stalk/) && condition === true && isInRoom === true)
     {
-        var stalker = text.substring(7);
-        bot.stalk(stalker, allInformations = true, function (data4)
-        {
-            if (data4.success !== false)
-            {
-                bot.pm('User found in room: http://turntable.fm/' + data4.room.shortcut, data.senderid);
-            }
-            else
-            {
-                bot.pm('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist', data.senderid);
-            }
-        });
+        var stalker = text.substring(8);
+		bot.getUserId(stalker, function(data6)
+		{
+			bot.stalk(data6.userid, allInformations = true, function (data4)
+			{
+				if (data4.success !== false)
+				{
+					bot.pm('User found in room: http://turntable.fm/' + data4.room.shortcut, data.senderid);
+				}
+				else
+				{
+					bot.pm('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist', data.senderid);
+				}
+			});
+		});
     }
     else if (text.match(/^\/whobanned$/) && condition === true && isInRoom === true)
     {
@@ -3215,7 +3221,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
         bot.pm('/chilly, /moon, /modpm, /playlist, /djafk, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
-            '/userid @, /ban @, /unban @, /stalk, /whobanned, /whostagebanned, /stopescortme, /escortme, /snag, /inform, ' +
+            '/userid @, /ban @, /unban @, /stalk @, /whobanned, /whostagebanned, /stopescortme, /escortme, /snag, /inform, ' +
             '/removesong, /username, /afk, /whosafk, /commands, /admincommands', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && !condition === true && isInRoom === true) //non - moderators see this
@@ -3224,7 +3230,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /unban @, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /unban @, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk @, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /botstatus, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
@@ -3562,12 +3568,15 @@ bot.on('endsong', function (data)
     {
         if (++djs20[djId].nbSong >= playLimit)
         {
-            var checklist33 = theUsersList.indexOf(djId) + 1;
-            if (djId != USERID && PLAYLIMIT === true) //is not bot, playlimit on, not master, then true
-            {
-                bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
-                bot.remDj(djId);
-            }
+			if(djId == currentDjs[0]) //if person is in the far left seat
+			{				
+				if (PLAYLIMIT === true) //is playlimit on?
+				{
+					var checklist33 = theUsersList.indexOf(djId) + 1;
+					bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
+					bot.remDj(djId);
+				}
+			}
         }
     }
 
