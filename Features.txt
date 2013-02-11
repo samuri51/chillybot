@@ -46,6 +46,9 @@ list then they are exempt from this.
 song play limit - It keeps a record of the amount of songs that each dj has played. It increments
 their song count at the end of their song, after which it compares the persons song count to
 the value you have set in the chillybot.js file, if it is larger they are removed from stage.
+*note it now waits until the queue loops around to the first person on the left, this is so people on the left side are not constantly skipped.
+*this means that if you start the play limit in the middle of the queue some people will play one extra song, also the bot is also removed now,
+*and master immunity no longer applies for the same reasons.
 
 
 
