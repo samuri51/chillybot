@@ -3576,7 +3576,7 @@ bot.on('endsong', function (data)
                     bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' song');
                     bot.remDj(djId);
                 }
-                else if (djId != USERID) //if limit is more than one
+                else if (djId != USERID && playLimit !== 1) //if limit is more than one
                 {
                     var checklist33 = theUsersList.indexOf(djId) + 1;
                     bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
