@@ -797,21 +797,21 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/stalk/) && condition === true)
     {
-        var stalker = text.substring(8);		
-		bot.getUserId(stalker, function(data6)
-		{			
-			bot.stalk(data6.userid, allInformations = true, function (data4)
-			{
-				if (data4.success !== false)
-				{
-					bot.speak('User found in room: http://turntable.fm/' + data4.room.shortcut);
-				}
-				else
-				{
-					bot.speak('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist');
-				}
-			});
-		});
+        var stalker = text.substring(8);
+        bot.getUserId(stalker, function (data6)
+        {
+            bot.stalk(data6.userid, allInformations = true, function (data4)
+            {
+                if (data4.success !== false)
+                {
+                    bot.speak('User found in room: http://turntable.fm/' + data4.room.shortcut);
+                }
+                else
+                {
+                    bot.speak('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist');
+                }
+            });
+        });
     }
     else if (text.match(/^\/djafk/))
     {
@@ -3045,20 +3045,20 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/stalk/) && condition === true && isInRoom === true)
     {
         var stalker = text.substring(8);
-		bot.getUserId(stalker, function(data6)
-		{
-			bot.stalk(data6.userid, allInformations = true, function (data4)
-			{
-				if (data4.success !== false)
-				{
-					bot.pm('User found in room: http://turntable.fm/' + data4.room.shortcut, data.senderid);
-				}
-				else
-				{
-					bot.pm('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist', data.senderid);
-				}
-			});
-		});
+        bot.getUserId(stalker, function (data6)
+        {
+            bot.stalk(data6.userid, allInformations = true, function (data4)
+            {
+                if (data4.success !== false)
+                {
+                    bot.pm('User found in room: http://turntable.fm/' + data4.room.shortcut, data.senderid);
+                }
+                else
+                {
+                    bot.pm('User not found, they may be offline or in the lobby, they may also have just joined a room, or they may not exist', data.senderid);
+                }
+            });
+        });
     }
     else if (text.match(/^\/whobanned$/) && condition === true && isInRoom === true)
     {
@@ -3568,15 +3568,15 @@ bot.on('endsong', function (data)
     {
         if (++djs20[djId].nbSong >= playLimit)
         {
-			if(djId == currentDjs[0]) //if person is in the far left seat
-			{				
-				if (PLAYLIMIT === true) //is playlimit on?
-				{
-					var checklist33 = theUsersList.indexOf(djId) + 1;
-					bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
-					bot.remDj(djId);
-				}
-			}
+            if (djId == currentDjs[0]) //if person is in the far left seat
+            {
+                if (PLAYLIMIT === true) //is playlimit on?
+                {
+                    var checklist33 = theUsersList.indexOf(djId) + 1;
+                    bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
+                    bot.remDj(djId);
+                }
+            }
         }
     }
 
