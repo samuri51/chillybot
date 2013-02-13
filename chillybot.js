@@ -19,6 +19,7 @@ var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want t
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 10.0; //set song limit in minutes
 var afkLimit = 20; //set the afk limit in minutes here
+var howOftenToRepeatMessage = 15; //how often (in minutes) to repeat the room message (this corresponds to the MESSAGE variable below, only works when MESSAGE = true;)
 var roomafkLimit = 10; //set the afk limit for the audience here(in minutes), this feature is off by default
 var howManyVotes = 5; //how many awesome's for a song to be automatically added to the bot's playlist(only works when autoSnag = true;)
 var howLongStage = 30;
@@ -61,7 +62,7 @@ var HowManyVotesToSkip = 2; //how many votes for a song to get skipped(default v
 var getonstage = true; //autodjing(on by default)
 var queue = true; //queue(on by default)
 var AFK = true; //afk limit(on by default), this is for the dj's on stage
-var MESSAGE = true; //room message(on by default), the bot says your room info every 15 mins
+var MESSAGE = true; //room message(on by default), the bot says your room info in intervals of whatever the howOftenToRepeatMessage variable above is set to in minutes
 var defaultMessage = true;
 /*This corresponds to the MESSAGE variable directly above, if true it will give you the default repeat message along with your room info, if false it will only say your room info.
 							  (only works when MESSAGE = true) (this feature is on by default)
@@ -455,7 +456,7 @@ repeatMessage = function ()
     }
 };
 
-setInterval(repeatMessage, 900 * 1000) //repeats this message every 15 mins if /messageOn has been used.
+setInterval(repeatMessage, howOftenToRepeatMessage * 60 * 1000) //repeats this message every 15 mins if /messageOn has been used.
 
 
 
