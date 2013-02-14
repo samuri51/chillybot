@@ -1698,7 +1698,7 @@ bot.on('speak', function (data)
         var list3 = queueList.indexOf(data.name);
         var list10 = currentDjs.indexOf(data.userid)
         var checkStageList = stageList.indexOf(data.userid);
-		var checkManualStageList = bannedFromStage.indexOf(data.userid);
+        var checkManualStageList = bannedFromStage.indexOf(data.userid);
         if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
         {
             queueList.push(data.name, data.userid);
@@ -1716,7 +1716,6 @@ bot.on('speak', function (data)
                 }
             }
             bot.speak(temp91);
-
         }
     }
     else if (text.match(/^\/queueOn$/) && condition === true)
@@ -2337,7 +2336,7 @@ bot.on('pmmed', function (data)
             var list3 = queueList.indexOf(data6.name);
             var list10 = currentDjs.indexOf(data.senderid)
             var checkStageList = stageList.indexOf(data.senderid);
-			var checkManualStageList = bannedFromStage.indexOf(data.senderid);
+            var checkManualStageList = bannedFromStage.indexOf(data.senderid);
             if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
             {
                 queueList.push(data6.name, data.senderid);
