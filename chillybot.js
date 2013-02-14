@@ -1698,7 +1698,8 @@ bot.on('speak', function (data)
         var list3 = queueList.indexOf(data.name);
         var list10 = currentDjs.indexOf(data.userid)
         var checkStageList = stageList.indexOf(data.userid);
-        if (list3 == -1 && list10 == -1 && checkStageList == -1)
+		var checkManualStageList = bannedFromStage.indexOf(data.userid);
+        if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
         {
             queueList.push(data.name, data.userid);
             queueName.push(data.name);
@@ -2336,7 +2337,8 @@ bot.on('pmmed', function (data)
             var list3 = queueList.indexOf(data6.name);
             var list10 = currentDjs.indexOf(data.senderid)
             var checkStageList = stageList.indexOf(data.senderid);
-            if (list3 == -1 && list10 == -1 && checkStageList == -1)
+			var checkManualStageList = bannedFromStage.indexOf(data.senderid);
+            if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
             {
                 queueList.push(data6.name, data.senderid);
                 queueName.push(data6.name);
