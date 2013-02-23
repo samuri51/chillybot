@@ -105,7 +105,6 @@ var checkWhoIsDj;
 var randomOnce = 0;
 var voteCountSkip = 0;
 var votesLeft = HowManyVotesToSkip;
-var djsOnStage = null;
 var sayOnce = true;
 var artist = null;
 var getSong = null;
@@ -358,7 +357,7 @@ queueCheck15 = function ()
     //in line has 60 seconds to get on stage before being remove from the queue
     if (queue === true && queueList.length !== 0)
     {
-        if (sayOnce === true && djsOnStage < 5)
+        if (sayOnce === true && currentDjs.length < 5)
         {
             sayOnce = false;
             if ((howLongStage / 60) < 1) //is it seconds
@@ -392,7 +391,7 @@ setInterval(queueCheck15, 5000) //repeats the check every five seconds.
 vipListCheck = function ()
 {
     //this kicks all users off stage when the vip list is not empty
-    if (vipList.length !== 0 && djsOnStage != vipList.length)
+    if (vipList.length !== 0 && currentDjs.length != vipList.length)
     {
         for (var p = 0; p < currentDjs.length; p++)
         {
@@ -1954,11 +1953,7 @@ bot.on('snagged', function (data)
 
 //checks when a dj leaves the stage
 bot.on('rem_dj', function (data)
-{
-    //removes one from dj count
-    djsOnStage -= 1;
-
-
+{  
     //removes user from the dj list when they leave the stage
     delete djs20[data.user[0].userid];
 
@@ -2010,10 +2005,6 @@ bot.on('add_dj', function (data)
             };
         }, 10 * 1000);
     }
-
-
-    //adds one to dj count
-    djsOnStage += 1;
 
 
     //sets dj's songcount to zero when they enter the stage.
@@ -3271,11 +3262,6 @@ bot.on('roomChanged', function (data)
 
 
 
-    //counts how many djs there are on stage
-    djsOnStage = currentDjs.length;
-
-
-
     //list of escorts, users, and moderators is reset    
     escortList = [];
     theUsersList = [];
@@ -3338,7 +3324,7 @@ bot.on('roomChanged', function (data)
 bot.on('registered', function (data)
 {
 
-    if (queue === true && djsOnStage == 5)
+    if (queue === true && currentDjs.length == 5)
     {
         bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
     }
