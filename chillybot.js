@@ -655,7 +655,7 @@ bot.on('newsong', function (data)
 //bot gets on stage and starts djing if no song is playing.
 bot.on('nosong', function (data)
 {
-    if (getonstage === true && vipList.length === 0)
+    if (getonstage === true && vipList.length === 0 && queueList.length === 0)
     {
         bot.addDj();
     }
