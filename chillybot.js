@@ -621,7 +621,7 @@ bot.on('newsong', function (data)
             bot.addDj();
         }
     }
-    if (current == whenToGetOffStage && getonstage === true)
+    if (current >= whenToGetOffStage && getonstage === true)
     {
         bot.remDj();
     }
