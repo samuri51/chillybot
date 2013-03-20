@@ -13,9 +13,9 @@
 
 
 var Bot = require('ttapi');
-var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
-var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
+var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
+var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 10.0; //set song limit in minutes
 var afkLimit = 20; //set the afk limit in minutes here
@@ -46,7 +46,8 @@ var roomJoinMessage = ''; //the message users will see when they join the room, 
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed.
 global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain', 'tpain', 'katy perry', 'eminem', 'porter robinson', //banned artist / song list
-'gorgoroth', 'justin bieber', 'deadmau5', 'rick roll', 'nosia', 'infected mushroom', 'never gonna give you up', 'rick astley', 'spongebob squarepants'];
+    'gorgoroth', 'justin bieber', 'deadmau5', 'rick roll', 'nosia', 'infected mushroom', 'never gonna give you up', 'rick astley', 'spongebob squarepants'
+];
 global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe']; //banned users list, put userids in string form here for permanent banning(put their name after their userid to tell who is banned).
 global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe']; //put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
 
@@ -119,6 +120,8 @@ var ttRoomName = null;
 var THEME = false;
 var whatIsTheme = null;
 
+global.modpm = []; //for modpm
+global.warnme = [];
 global.timer = [];
 global.greetingTimer = [];
 global.djs20 = [];
@@ -629,6 +632,27 @@ bot.on('newsong', function (data)
         skipOn = false;
     }
 
+    //this is for /warnme
+    if (warnme.length != 0) //is there anyone in the warnme?
+    {
+        var whatIsPosition = currentDjs.indexOf(checkWhoIsDj); //what position are they
+
+        if (whatIsPosition == 4) //if 5th dj is playing, check guy on the left
+        {
+            var areTheyNext = warnme.indexOf(currentDjs[0]);
+        }
+        else
+        {
+            var areTheyNext = warnme.indexOf(currentDjs[whatIsPosition + 1]);
+        }
+
+        if (areTheyNext != -1) //is the next dj up in the warnme?
+        {
+            bot.pm('your song is up next!', currentDjs[whatIsPosition + 1]);
+            warnme.splice(areTheyNext, 1);
+        }
+    }
+
 
     var checkIfAdmin = masterIds.indexOf(checkWhoIsDj);
     //removes current dj from stage if they play a banned song or artist.
@@ -701,19 +725,6 @@ bot.on('speak', function (data)
     if (text.match(/^\/autodj$/) && condition === true)
     {
         bot.addDj();
-    }
-    else if (text.match(/^\/modpm/) && condition === true)
-    {
-        var speak = text.substring(7);
-        for (var g = 0; g < modList.length; g++)
-        {
-            var isModInRoom = theUsersList.indexOf(modList[g]);
-            if (isModInRoom != -1)
-            {
-                bot.pm(name + ' said: ' + speak, modList[g]);
-            }
-
-        }
     }
     else if (text.match(/^\/playlist/))
     {
@@ -791,7 +802,6 @@ bot.on('speak', function (data)
                     }
                 }
                 bot.speak(temp92);
-
             }
         }
     }
@@ -812,6 +822,72 @@ bot.on('speak', function (data)
                 }
             });
         });
+    }
+    else if (text.match(/^\/move/) && condition === true)
+    {
+        var moveName = data.text.slice(5);
+        var tempName = moveName.split(" ");
+        var whatIsTheirName = tempName[1].substring(1); //cut the @ off
+        var areTheyInTheQueue = queueName.indexOf(whatIsTheirName); //name in queueName
+        var areTheyInTheQueueList = queueList.indexOf(whatIsTheirName); //name in queuList
+        var whatIsTheirUserid2 = theUsersList.indexOf(whatIsTheirName); //userid
+
+        if (queue == true) //if queue is turned on
+        {
+            if (tempName.length == 3 && areTheyInTheQueue != -1) //if three parameters, and name found
+            {
+                if (tempName[2] <= 1) //if position given lower than 1
+                {
+                    queueName.splice(areTheyInTheQueue, 1); //remove them
+                    queueList.splice(areTheyInTheQueueList, 2); //remove them
+                    queueName.splice(0, 0, whatIsTheirName); //add them to beggining
+                    queueList.splice(0, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to beggining
+                    clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                    sayOnce = true;
+                    bot.speak(whatIsTheirName + ' has been moved to position 1 in the queue');
+                }
+                else if (tempName[2] >= queueName.length)
+                {
+                    if (queueName[areTheyInTheQueue] == queueName[0]) //if position given higher than end
+                    {
+                        clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                        sayOnce = true;
+                    }
+                    queueName.splice(areTheyInTheQueue, 1); //remove them
+                    queueList.splice(areTheyInTheQueueList, 2); //remove them
+                    queueName.splice(queueName.length, 0, whatIsTheirName); //add them to end
+                    queueList.splice(queueName.length, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to end
+
+                    bot.speak(whatIsTheirName + ' has been moved to position ' + queueName.length + ' in the queue');
+                }
+                else
+                {
+                    if (queueName[areTheyInTheQueue] == queueName[0])
+                    {
+                        clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                        sayOnce = true;
+                    }
+                    queueName.splice(areTheyInTheQueue, 1); //remove them
+                    queueList.splice(areTheyInTheQueueList, 2); //remove them
+                    queueName.splice((tempName[2] - 1), 0, whatIsTheirName); //add them to given position shift left 1 because array starts at 0
+                    queueList.splice((tempName[2] - 1), 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //same as above
+                    bot.speak(whatIsTheirName + ' has been moved to position ' + tempName[2] + ' in the queue');
+                }
+
+            }
+            else if (tempName.length != 3) //if invalid number of parameters
+            {
+                bot.pm('error, invalid number of parameters, must have /move name #', data.userid);
+            }
+            else if (areTheyInTheQueue == -1) //if name not found
+            {
+                bot.pm('error, name not found', data.userid);
+            }
+        }
+        else
+        {
+            bot.pm('error, queue must turned on to use this command', data.userid);
+        }
     }
     else if (text.match(/^\/djafk/))
     {
@@ -1230,6 +1306,18 @@ bot.on('speak', function (data)
         bot.speak('message: Off');
         MESSAGE = false;
     }
+    else if (text.match(/^\/up?/)) //works for djs on stage
+    {
+        var areTheyADj = currentDjs.indexOf(data.userid); //are they a dj?
+        if (areTheyADj != -1) //yes
+        {
+            bot.speak('anybody want up?');
+        }
+        else
+        {
+            bot.pm('error, you must be on stage to use that command', data.userid);
+        }
+    }
     else if (text.match(/^\/pmcommands/))
     {
         bot.pm('that command only works in the pm', data.userid);
@@ -1237,16 +1325,16 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /theme, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands');
     }
     else if (text.match(/^\/queuecommands/))
     {
-        bot.speak('the commands are /queue, /removefromqueue @, /removeme, /addme, /queueOn, /queueOff, /bumptop @');
+        bot.speak('the commands are /queue, /queuewithnumbers, /removefromqueue @, /removeme, /move, /addme, /queueOn, /queueOff, /bumptop @');
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
-        bot.speak('the mod commands are /ban @, /unban @, /playminus @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk @, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.speak('the mod commands are /ban @, /unban @, /move, /boot, /playminus @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk @, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /removesong, /playLimitOn, /playLimitOff, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm');
         condition = false;
@@ -1520,6 +1608,33 @@ bot.on('speak', function (data)
             }
         })
     }
+    else if (text.match(/^\/queuewithnumbers$/))
+    {
+        if (queue === true && queueName.length !== 0)
+        {
+            var temp95 = 'The queue is now: ';
+            for (var kl = 0; kl < queueName.length; kl++)
+            {
+                if (kl != (queueName.length - 1))
+                {
+                    temp95 += queueName[kl] + ' [' + (kl + 1) + ']' + ', ';
+                }
+                else if (kl == (queueName.length - 1))
+                {
+                    temp95 += queueName[kl] + ' [' + (kl + 1) + ']';
+                }
+            }
+            bot.speak(temp95);
+        }
+        else if (queue === true)
+        {
+            bot.speak('The queue is currently empty.');
+        }
+        else
+        {
+            bot.speak('There is currently no queue.');
+        }
+    }
     else if (text.match(/^\/queue$/))
     {
         if (queue === true && queueName.length !== 0)
@@ -1749,6 +1864,29 @@ bot.on('speak', function (data)
         bot.speak('the queue is now inactive.');
         queue = false;
     }
+    else if (text.match(/^\/warnme/))
+    {
+        var areTheyBeingWarned = warnme.indexOf(data.userid);
+        var areTheyDj80 = currentDjs.indexOf(data.userid);
+
+        if (areTheyDj80 != -1) //are they on stage?
+        {
+            if (areTheyBeingWarned == -1) //are they already being warned? no
+            {
+                warnme.unshift(data.userid);
+                bot.speak('@' + name + ' you will be warned when your song is up next');
+            }
+            else if (areTheyBeingWarned != -1) //yes
+            {
+                warnme.splice(areTheyBeingWarned, 1);
+                bot.speak('@' + name + ' you will no longer be warned');
+            }
+        }
+        else
+        {
+            bot.pm('error, you must be on stage to use that command', data.userid);
+        }
+    }
     else if (text.match('/banstage') && condition === true)
     {
         var ban = data.text.slice(11);
@@ -1953,7 +2091,7 @@ bot.on('snagged', function (data)
 
 //checks when a dj leaves the stage
 bot.on('rem_dj', function (data)
-{  
+{
     //removes user from the dj list when they leave the stage
     delete djs20[data.user[0].userid];
 
@@ -1966,7 +2104,16 @@ bot.on('rem_dj', function (data)
         currentDjs.splice(check30, 1);
     }
 
+    //this is for /warnme
+    if (warnme.length != 0)
+    {
+        var areTheyBeingWarned = warnme.indexOf(data.user[0].userid);
 
+        if (areTheyBeingWarned != -1) //if theyre on /warnme and they leave the stage
+        {
+            warnme.splice(areTheyBeingWarned, 1);
+        }
+    }
 
     //takes a user off the escort list if they leave the stage.
     var checkEscort = escortList.indexOf(data.user[0].userid);
@@ -2183,6 +2330,9 @@ bot.on('pmmed', function (data)
         isInRoom = false;
     }
 
+
+
+
     if (text.match(/^\/chilly/) && isInRoom === true)
     {
         bot.speak('@' + theUsersList[name1] + ' is pleasantly chilled.');
@@ -2193,15 +2343,150 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/modpm/) && condition === true && isInRoom === true)
     {
-        var speak = text.substring(7);
-        for (var g = 0; g < modList.length; g++)
-        {
-            var isModInRoom = theUsersList.indexOf(modList[g]);
-            if (isModInRoom != -1)
-            {
-                bot.pm(theUsersList[name1] + ' said: ' + speak, modList[g]);
-            }
+        var areTheyInModPm = modpm.indexOf(data.senderid);
 
+        if (areTheyInModPm == -1) //are they already in modpm? no
+        {
+            modpm.unshift(data.senderid);
+            bot.pm('you have now entered into modpm mode, your messages ' +
+                'will go to other moderators currently in the modpm', data.senderid);
+            if (modpm.length != 0)
+            {
+                for (var jk = 0; jk < modpm.length; jk++)
+                {
+                    if (modpm[jk] != data.senderid)
+                    {
+                        bot.pm(theUsersList[name1] + ' has entered the modpm chat', modpm[jk]); //declare user has entered chat
+                    }
+                }
+            }
+        }
+        else if (areTheyInModPm != -1) //yes
+        {
+            modpm.splice(areTheyInModPm, 1);
+            bot.pm('you have now left modpm mode', data.senderid);
+            if (modpm.length != 0)
+            {
+                for (var jk = 0; jk < modpm.length; jk++)
+                {
+                    bot.pm(theUsersList[name1] + ' has left the modpm chat', modpm[jk]); //declare user has entered chat
+                }
+            }
+        }
+    }
+    else if (text.match(/^\/whosinmodpm/) && condition === true && isInRoom === true)
+    {
+        if (modpm.length != 0)
+        {
+            var temper = "Users in modpm: "; //holds names
+
+            for (var gfh = 0; gfh < modpm.length; gfh++)
+            {
+                var whatAreTheirNames = theUsersList.indexOf(modpm[gfh]) + 1;
+
+                if (gfh != (modpm.length - 1))
+                {
+                    temper += theUsersList[whatAreTheirNames] + ', ';
+
+                }
+                else
+                {
+                    temper += theUsersList[whatAreTheirNames];
+                }
+            }
+            bot.pm(temper, data.senderid);
+        }
+        else
+        {
+            bot.pm('no one is currently in modpm', data.senderid);
+        }
+    }
+    else if (text.match(/^\/warnme/) && isInRoom === true)
+    {
+        var areTheyBeingWarned = warnme.indexOf(data.senderid);
+        var areTheyDj80 = currentDjs.indexOf(data.senderid);
+
+        if (areTheyDj80 != -1) //are they on stage?
+        {
+            if (areTheyBeingWarned == -1) //are they already being warned? no
+            {
+                warnme.unshift(data.senderid);
+                bot.pm('you will be warned when your song is up next', data.senderid);
+            }
+            else if (areTheyBeingWarned != -1) //yes
+            {
+                warnme.splice(areTheyBeingWarned, 1);
+                bot.pm('you will no longer be warned', data.senderid);
+            }
+        }
+        else
+        {
+            bot.pm('error, you must be on stage to use that command', data.senderid);
+        }
+    }
+    else if (text.match(/^\/move/) && condition === true && isInRoom === true)
+    {
+        var moveName = data.text.slice(5);
+        var tempName = moveName.split(" ");
+        var areTheyInTheQueue = queueName.indexOf(tempName[1]); //name in queueName
+        var areTheyInTheQueueList = queueList.indexOf(tempName[1]); //name in queuList
+        var whatIsTheirUserid2 = theUsersList.indexOf(tempName[1]); //userid
+
+        if (queue == true) //if queue is turned on
+        {
+            if (tempName.length == 3 && areTheyInTheQueue != -1) //if three parameters, and name found
+            {
+
+                if (tempName[2] <= 1)
+                {
+                    queueName.splice(areTheyInTheQueue, 1); //remove them
+                    queueList.splice(areTheyInTheQueueList, 2); //remove them
+                    queueName.splice(0, 0, tempName[1]); //add them to beggining
+                    queueList.splice(0, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to beggining
+                    clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                    sayOnce = true;
+                    bot.pm(tempName[1] + ' has been moved to position 1 in the queue', data.senderid);
+                }
+                else if (tempName[2] >= queueName.length)
+                {
+                    if (queueName[areTheyInTheQueue] == queueName[0])
+                    {
+                        clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                        sayOnce = true;
+                    }
+                    queueName.splice(areTheyInTheQueue, 1); //remove them
+                    queueList.splice(areTheyInTheQueueList, 2); //remove them
+                    queueName.splice(queueName.length, 0, tempName[1]); //add them to end
+                    queueList.splice(queueName.length, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to end
+
+                    bot.pm(tempName[1] + ' has been moved to position ' + queueName.length + ' in the queue', data.senderid);
+                }
+                else
+                {
+                    if (queueName[areTheyInTheQueue] == queueName[0])
+                    {
+                        clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                        sayOnce = true;
+                    }
+                    queueName.splice(areTheyInTheQueue, 1); //remove them
+                    queueList.splice(areTheyInTheQueueList, 2); //remove them
+                    queueName.splice((tempName[2] - 1), 0, tempName[1]); //add them to given position shift left 1 because array starts at 0
+                    queueList.splice((tempName[2] - 1), 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //same as above
+                    bot.pm(tempName[1] + ' has been moved to position ' + tempName[2] + ' in the queue', data.senderid);
+                }
+            }
+            else if (tempName.length != 3) //if invalid number of parameters
+            {
+                bot.pm('error, invalid number of parameters, must have /move name #', data.senderid);
+            }
+            else if (areTheyInTheQueue == -1) //if name not found
+            {
+                bot.pm('error, name not found', data.senderid);
+            }
+        }
+        else
+        {
+            bot.pm('error, queue must turned on to use this command', data.senderid);
         }
     }
     else if (text.match(/^\/position/)) //tells you your position in the queue, if there is one
@@ -2697,6 +2982,34 @@ bot.on('pmmed', function (data)
             votesLeft = HowManyVotesToSkip;
         }
     }
+    else if (text.match(/^\/queuewithnumbers$/) && isInRoom === true)
+    {
+        if (queue === true && queueName.length !== 0)
+        {
+            var temp95 = 'The queue is now: ';
+            for (var kl = 0; kl < queueName.length; kl++)
+            {
+                if (kl != (queueName.length - 1))
+                {
+                    temp95 += queueName[kl] + ' [' + (kl + 1) + ']' + ', ';
+                }
+                else if (kl == (queueName.length - 1))
+                {
+                    temp95 += queueName[kl] + ' [' + (kl + 1) + ']';
+                }
+            }
+            bot.pm(temp95, data.senderid);
+
+        }
+        else if (queue === true)
+        {
+            bot.pm('The queue is currently empty.', data.senderid);
+        }
+        else
+        {
+            bot.pm('There is currently no queue.', data.senderid);
+        }
+    }
     else if (text.match(/^\/queue$/) && isInRoom === true)
     {
         if (queue === true && queueName.length !== 0)
@@ -3163,6 +3476,31 @@ bot.on('pmmed', function (data)
             bot.pm(data.name, senderid);
         });
     }
+    else if (text.match(/^\/boot/) && condition === true && isInRoom === true) //admin only
+    {
+        var bootName = data.text.slice(5); //holds their name
+        var tempArray = bootName.split(" ");
+        var reason = "";
+        var whatIsTheirUserid = theUsersList.indexOf(tempArray[1]);
+
+        if (tempArray.length > 2 && whatIsTheirUserid != -1)
+        {
+            for (var ikp = 2; ikp < tempArray.length; ikp++)
+            {
+                reason += tempArray[ikp] + " ";
+            }
+
+            bot.boot(theUsersList[whatIsTheirUserid - 1], reason);
+        }
+        else if (whatIsTheirUserid != -1)
+        {
+            bot.boot(theUsersList[whatIsTheirUserid - 1]);
+        }
+        else
+        {
+            bot.pm('error, that user was not found in the room.', data.senderid);
+        }
+    }
     else if (text.match(/^\/afk/) && isInRoom === true)
     {
         var isUserAfk = theUsersList.indexOf(data.senderid) + 1;
@@ -3201,33 +3539,50 @@ bot.on('pmmed', function (data)
             bot.pm('No one is currently marked as afk', data.senderid);
         }
     }
-    else if (text.match(/^\/commands/) && isInRoom === true)
+    else if (text.match(/^\/commands/))
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /theme, /djafk, /fanratio @, /mytime, /playlist, /position, /moon, /coinflip, /dance, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, ' +
-            '/dice, /props, /m, /getTags, /skip, /dive, /surf, /smoke, /uptime, /djplays, /afk, /whosafk, /admincommands, /queuecommands, /pmcommands', data.senderid);
+            ' /mom, /chilly, /cheers, /fanratio @, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
     {
-        bot.pm('the commands are /queue, /removefromqueue @, /removeme, /addme, /queueOn, /queueOff, /bumptop @', data.senderid);
+        bot.pm('the commands are /queue, /queuewithnumbers, /removefromqueue @, /removeme, /addme, /move, /queueOn, /queueOff, /bumptop @', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
-        bot.pm('/chilly, /moon, /modpm, /playlist, /djafk, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
+        bot.pm('/chilly, /moon, /modpm, /warnme, /playlist, /move, /boot, /roominfo, /djafk, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
             '/userid @, /ban @, /unban @, /stalk @, /whobanned, /whostagebanned, /stopescortme, /escortme, /snag, /inform, ' +
             '/removesong, /username, /afk, /whosafk, /commands, /admincommands', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && !condition === true && isInRoom === true) //non - moderators see this
     {
-        bot.pm('/chilly, /moon, /addme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
+        bot.pm('/chilly, /moon, /addme, /warnme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /unban @, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk @, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /unban @, /boot, /move, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk @, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /botstatus, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
     }
+    else if (modpm.length != 0) //if no other commands match, send modpm
+    {
+        var areTheyInModPm = modpm.indexOf(data.senderid);
+
+        if (areTheyInModPm != -1)
+        {
+            for (var jhg = 0; jhg < modpm.length; jhg++)
+            {
+                if (modpm[jhg] != data.senderid) //this will prevent you from messaging yourself
+                {
+                    bot.pm(theUsersList[name1] + ' said: ' + data.text, modpm[jhg]);
+                }
+            }
+        }
+    }
+
+
 });
 
 
@@ -3519,6 +3874,25 @@ bot.on('deregistered', function (data)
         if (checkUserName != -1)
         {
             afkPeople.splice(checkUserName, 1);
+        }
+    }
+
+    //removes people leaving the room in modpm still
+    if (modpm.length !== 0)
+    {
+        var areTheyStillInModpm = modpm.indexOf(data.user[0].userid);
+
+        if (areTheyStillInModpm != -1)
+        {
+            var whatIsTheirName = theUsersList.indexOf(data.user[0].userid);
+            modpm.splice(areTheyStillInModpm, 1);
+            for (var hg = 0; hg < modpm.length; hg++)
+            {
+                if (modpm[hg] != data.user[0].userid)
+                {
+                    bot.pm(theUsersList[whatIsTheirName + 1] + ' has left the modpm chat', modpm[hg]);
+                }
+            }
         }
     }
 

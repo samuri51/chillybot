@@ -73,7 +73,13 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /songstatsoff --> turns song stats off
 
-/modpm --> pms all mods in the room
+/modpm --> type this to enter the modpm group chat, only other people in the group chat can see your pm's,
+	   type it again to leave the modpm group chat. you may still use commands while in the group chat, it only
+           takes it as a modpm if no other commands match. while in the group chat just type 	   normally into the bot pm box and
+           other people will see your message
+
+/whosinmodpm --> returns a list of all the admins that are currently in the modpm group chat (pm only / admin only)
+
 
 /setTheme<space><your message here> --> sets theme theme to be checked by /theme, also tells to the theme to people who join the room
 
@@ -160,6 +166,10 @@ COMMANDS: (public)
 
 /dive --> removes you from stage if your on stage.
 
+/up? --> This only works if your on stage, it asks the audience if anyone wants to dj, chatbox only
+
+/warnme --> warns dj's on stage when their song is to be played next
+
 
 
 
@@ -177,14 +187,26 @@ QUEUE COMMANDS: (public / moderator)
 
 /queueOff --> turns the queue off. (moderator only)
 
+/move<space><name><space><number> --> this moves the person specified in the queue to the position
+				      specified. example: /move bob 3
+				      when used in the chatbox you must use an @ symbol also
+                                      example: /move @bob 3
+
+/queuewithnumbers --> returns a list of the people in the queue with a number signifying their position next to their name, this is useful with /move
+
 
 PM COMMANDS: (public / moderator)
 
-/pmcommands --> tells the sender all of the commands that they can use in the pm, there is a separate list for moderators
-				and non- moderators. all commands have the same behavior as those listed above.
+/pmcommands --> tells the sender all of the commands that they can use in the pm, there is a separate list for moderators and non- moderators. all commands have the same behavior as those listed above.
 				
-/stage<space><@name> --> the command that only works in the pm, it allows moderators to remove any dj from stage using their name
-						anonymously through the bot.
+/stage<space><@name> --> the command that only works in the pm, it allows moderators to remove any dj from stage using their name anonymously through the bot.
+
+/boot<space><name> --> this command is admin only, boots the user from the room
+
+/boot<space><name><space><reason> --> example: /boot bob cause i wanted to
+				      This is an overloaded version of boot, it will automatically use the one with more parameters
+
+/whosinmodpm --> returns a list of all the admins that are currently in the modpm group chat (pm only / admin only)
 
 
 
