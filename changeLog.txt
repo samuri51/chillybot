@@ -67,3 +67,8 @@ date: 12/06/2012
 
 --> changed speaking through the bot to all around moderator only after realizing that anyone who used commands through the bot
 could access moderator commands
+
+date: 03/20/2013
+
+--> added several new commands /boot, /move, /whosinmodpm, /up?, /queuewithnumbers, /warnme
+    changed definition of /modpm to be a moderator group chat, see commands.txt for details
