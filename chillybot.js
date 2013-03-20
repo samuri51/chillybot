@@ -7,11 +7,7 @@
 	and a credit to alaingilbert for his help and the afk timer pattern. thanks to DubbyTT also for 
 	the song skipping algorithm.
 */
-
-
 /*******************************BeginSetUp*****************************************************************************/
-
-
 var Bot = require('ttapi');
 var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
@@ -640,16 +636,20 @@ bot.on('newsong', function (data)
         if (whatIsPosition == 4) //if 5th dj is playing, check guy on the left
         {
             var areTheyNext = warnme.indexOf(currentDjs[0]);
+            if (areTheyNext != -1) //is the next dj up in the warnme?
+            {
+                bot.pm('your song is up next!', currentDjs[0]);
+                warnme.splice(areTheyNext, 1);
+            }
         }
         else
         {
             var areTheyNext = warnme.indexOf(currentDjs[whatIsPosition + 1]);
-        }
-
-        if (areTheyNext != -1) //is the next dj up in the warnme?
-        {
-            bot.pm('your song is up next!', currentDjs[whatIsPosition + 1]);
-            warnme.splice(areTheyNext, 1);
+            if (areTheyNext != -1) //is the next dj up in the warnme?
+            {
+                bot.pm('your song is up next!', currentDjs[whatIsPosition + 1]);
+                warnme.splice(areTheyNext, 1);
+            }
         }
     }
 
