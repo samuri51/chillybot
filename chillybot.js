@@ -1243,19 +1243,7 @@ bot.on('speak', function (data)
     {
         bot.speak('message: Off');
         MESSAGE = false;
-    }
-    else if (text.match(/^\/up?/)) //works for djs on stage
-    {
-        var areTheyADj = currentDjs.indexOf(data.userid); //are they a dj?
-        if (areTheyADj != -1) //yes
-        {
-            bot.speak('anybody want up?');
-        }
-        else
-        {
-            bot.pm('error, you must be on stage to use that command', data.userid);
-        }
-    }
+    } 
     else if (text.match(/^\/pmcommands/))
     {
         bot.pm('that command only works in the pm', data.userid);
@@ -2003,6 +1991,18 @@ bot.on('speak', function (data)
         {
             bot.speak('@' + name + ' you are no longer afk');
             afkPeople.splice(isAlreadyAfk, 1);
+        }
+    }
+	else if (text.match(/^\/up?/)) //works for djs on stage
+    {
+        var areTheyADj = currentDjs.indexOf(data.userid); //are they a dj?
+        if (areTheyADj != -1) //yes
+        {
+            bot.speak('anybody want up?');
+        }
+        else
+        {
+            bot.pm('error, you must be on stage to use that command', data.userid);
         }
     }
     else if (text.match(/^\/whosafk/))
