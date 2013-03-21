@@ -1,5 +1,5 @@
 /** Chilly bot
-    version 1.0
+    version 1.5
 	this bot runs on turntable fm, simply switch out the auth, userid, and roomid,
 	and it will work with any account.
 	credits: a big thanks to the people at the turntable api for all the input they gave
