@@ -1993,7 +1993,7 @@ bot.on('speak', function (data)
             afkPeople.splice(isAlreadyAfk, 1);
         }
     }
-	else if (text.match(/^\/up?/)) //works for djs on stage
+	else if (text == '/up?') //works for djs on stage
     {
         var areTheyADj = currentDjs.indexOf(data.userid); //are they a dj?
         if (areTheyADj != -1) //yes
