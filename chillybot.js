@@ -465,7 +465,7 @@ setInterval(repeatMessage, howOftenToRepeatMessage * 60 * 1000) //repeats this m
 
 
 //stuck song detection, song length limit, /inform command
-global.checkOnNewSong = function(data)
+global.checkOnNewSong = function (data)
 {
     var length = data.room.metadata.current_song.metadata.length;
 
@@ -675,9 +675,9 @@ bot.on('newsong', function (data)
             }
         }
     }
-	
-	//look at function above, /inform, song length limit,stuck song detection
-	checkOnNewSong(data);
+
+    //look at function above, /inform, song length limit,stuck song detection
+    checkOnNewSong(data);
 });
 
 
@@ -1245,7 +1245,7 @@ bot.on('speak', function (data)
     {
         bot.speak('message: Off');
         MESSAGE = false;
-    } 
+    }
     else if (text.match(/^\/pmcommands/))
     {
         bot.pm('that command only works in the pm', data.userid);
@@ -1995,7 +1995,7 @@ bot.on('speak', function (data)
             afkPeople.splice(isAlreadyAfk, 1);
         }
     }
-	else if (text == '/up?') //works for djs on stage
+    else if (text == '/up?') //works for djs on stage
     {
         var areTheyADj = currentDjs.indexOf(data.userid); //are they a dj?
         if (areTheyADj != -1) //yes
@@ -2136,9 +2136,6 @@ bot.on('rem_dj', function (data)
 
     //takes a user off the escort list if they leave the stage.
     var checkEscort = escortList.indexOf(data.user[0].userid);
-
-
-
     if (checkEscort != -1)
     {
         escortList.splice(checkEscort, 1);
@@ -2150,7 +2147,6 @@ bot.on('rem_dj', function (data)
 //this activates when a user joins the stage.
 bot.on('add_dj', function (data)
 {
-
     //removes dj when they try to join the stage if the vip list has members in it.
     //does not remove the bot
     var checkVip = vipList.indexOf(data.user[0].userid);
@@ -3902,6 +3898,7 @@ bot.on('deregistered', function (data)
         }
     }
 
+	
     //removes people leaving the room in modpm still
     if (modpm.length !== 0)
     {
