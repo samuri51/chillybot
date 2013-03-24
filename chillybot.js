@@ -637,7 +637,7 @@ bot.on('newsong', function (data)
     {
         var whatIsPosition = currentDjs.indexOf(checkWhoIsDj); //what position are they
 
-        if (whatIsPosition == 4) //if 5th dj is playing, check guy on the left
+        if (whatIsPosition == currentDjs.length - 1) //if 5th dj is playing, check guy on the left
         {
             var areTheyNext = warnme.indexOf(currentDjs[0]);
             if (areTheyNext != -1) //is the next dj up in the warnme?
