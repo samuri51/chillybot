@@ -464,8 +464,8 @@ setInterval(repeatMessage, howOftenToRepeatMessage * 60 * 1000) //repeats this m
 
 
 
-
-bot.on('newsong', function (data)
+//stuck song detection, song length limit, /inform command
+global.checkOnNewSong = function(data)
 {
     var length = data.room.metadata.current_song.metadata.length;
 
@@ -552,8 +552,7 @@ bot.on('newsong', function (data)
             }
         }
     }
-
-});
+}
 
 
 
@@ -676,6 +675,9 @@ bot.on('newsong', function (data)
             }
         }
     }
+	
+	//look at function above, /inform, song length limit,stuck song detection
+	checkOnNewSong(data);
 });
 
 
