@@ -462,6 +462,38 @@ setInterval(repeatMessage, howOftenToRepeatMessage * 60 * 1000) //repeats this m
 
 
 
+global.warnMeCall = function ()
+{
+    if (warnme.length != 0) //is there anyone in the warnme?
+    {
+        var whatIsPosition = currentDjs.indexOf(checkWhoIsDj); //what position are they
+
+
+        if (whatIsPosition == currentDjs.length - 1) //if 5th dj is playing, check guy on the left
+        {
+            var areTheyNext = warnme.indexOf(currentDjs[0]);
+            if (areTheyNext != -1) //is the next dj up in the warnme?
+            {
+                bot.pm('your song is up next!', currentDjs[0]);
+                warnme.splice(areTheyNext, 1);
+
+            }
+        }
+        else
+        {
+            var areTheyNext = warnme.indexOf(currentDjs[whatIsPosition + 1]);
+            if (areTheyNext != -1) //is the next dj up in the warnme?
+            {
+                bot.pm('your song is up next!', currentDjs[whatIsPosition + 1]);
+                warnme.splice(areTheyNext, 1);
+
+            }
+        }
+
+
+    }
+}
+
 
 
 //stuck song detection, song length limit, /inform command
@@ -632,30 +664,7 @@ bot.on('newsong', function (data)
     }
 
     //this is for /warnme
-    if (warnme.length != 0) //is there anyone in the warnme?
-    {
-        var whatIsPosition = currentDjs.indexOf(checkWhoIsDj); //what position are they
-
-        if (whatIsPosition == currentDjs.length - 1) //if 5th dj is playing, check guy on the left
-        {
-            var areTheyNext = warnme.indexOf(currentDjs[0]);
-            if (areTheyNext != -1) //is the next dj up in the warnme?
-            {
-                bot.pm('your song is up next!', currentDjs[0]);
-                warnme.splice(areTheyNext, 1);
-            }
-        }
-        else
-        {
-            var areTheyNext = warnme.indexOf(currentDjs[whatIsPosition + 1]);
-            if (areTheyNext != -1) //is the next dj up in the warnme?
-            {
-                bot.pm('your song is up next!', currentDjs[whatIsPosition + 1]);
-                warnme.splice(areTheyNext, 1);
-            }
-        }
-    }
-
+    warnMeCall();
 
     var checkIfAdmin = masterIds.indexOf(checkWhoIsDj);
     //removes current dj from stage if they play a banned song or artist.
@@ -1875,18 +1884,39 @@ bot.on('speak', function (data)
     {
         var areTheyBeingWarned = warnme.indexOf(data.userid);
         var areTheyDj80 = currentDjs.indexOf(data.userid);
+        var Position56 = currentDjs.indexOf(checkWhoIsDj); //current djs index
 
         if (areTheyDj80 != -1) //are they on stage?
         {
-            if (areTheyBeingWarned == -1) //are they already being warned? no
+            if (checkWhoIsDj != null)
             {
-                warnme.unshift(data.userid);
-                bot.speak('@' + name + ' you will be warned when your song is up next');
+                if (checkWhoIsDj == data.userid)
+                {
+                    bot.pm('you are currently playing a song!', data.userid);
+                }
+                else if (currentDjs[Position56] == currentDjs[currentDjs.length - 1] &&
+                    currentDjs[0] == data.userid ||
+                    currentDjs[Position56 + 1] == data.userid) //if they aren't the next person to play a song
+                {
+                    bot.pm('your song is up next!', data.userid);
+                }
+                else
+                {
+                    if (areTheyBeingWarned == -1) //are they already being warned? no
+                    {
+                        warnme.unshift(data.userid);
+                        bot.speak('@' + name + ' you will be warned when your song is up next');
+                    }
+                    else if (areTheyBeingWarned != -1) //yes
+                    {
+                        warnme.splice(areTheyBeingWarned, 1);
+                        bot.speak('@' + name + ' you will no longer be warned');
+                    }
+                }
             }
-            else if (areTheyBeingWarned != -1) //yes
+            else
             {
-                warnme.splice(areTheyBeingWarned, 1);
-                bot.speak('@' + name + ' you will no longer be warned');
+                bot.pm('you must wait one song since the bot has started up to use this command', data.userid);
             }
         }
         else
@@ -2114,8 +2144,6 @@ bot.on('rem_dj', function (data)
     //removes user from the dj list when they leave the stage
     delete djs20[data.user[0].userid];
 
-
-
     //updates the current dj's list.
     var check30 = currentDjs.indexOf(data.user[0].userid);
     if (check30 != -1)
@@ -2133,6 +2161,10 @@ bot.on('rem_dj', function (data)
             warnme.splice(areTheyBeingWarned, 1);
         }
     }
+
+    //checks if when someone gets off the stage, if the person
+    //on the left is now the next dj
+    warnMeCall();
 
     //takes a user off the escort list if they leave the stage.
     var checkEscort = escortList.indexOf(data.user[0].userid);
@@ -2420,18 +2452,39 @@ bot.on('pmmed', function (data)
     {
         var areTheyBeingWarned = warnme.indexOf(data.senderid);
         var areTheyDj80 = currentDjs.indexOf(data.senderid);
+        var Position56 = currentDjs.indexOf(checkWhoIsDj); //current djs index
 
         if (areTheyDj80 != -1) //are they on stage?
         {
-            if (areTheyBeingWarned == -1) //are they already being warned? no
+            if (checkWhoIsDj != null)
             {
-                warnme.unshift(data.senderid);
-                bot.pm('you will be warned when your song is up next', data.senderid);
+                if (checkWhoIsDj == data.senderid)
+                {
+                    bot.pm('you are currently playing a song!', data.senderid);
+                }
+                else if (currentDjs[Position56] == currentDjs[currentDjs.length - 1] &&
+                    currentDjs[0] == data.senderid ||
+                    currentDjs[Position56 + 1] == data.senderid) //if they aren't the next person to play a song
+                {
+                    bot.pm('your song is up next!', data.senderid);
+                }
+                else
+                {
+                    if (areTheyBeingWarned == -1) //are they already being warned? no
+                    {
+                        warnme.unshift(data.senderid);
+                        bot.pm('you will be warned when your song is up next', data.senderid);
+                    }
+                    else if (areTheyBeingWarned != -1) //yes
+                    {
+                        warnme.splice(areTheyBeingWarned, 1);
+                        bot.pm('you will no longer be warned', data.senderid);
+                    }
+                }
             }
-            else if (areTheyBeingWarned != -1) //yes
+            else
             {
-                warnme.splice(areTheyBeingWarned, 1);
-                bot.pm('you will no longer be warned', data.senderid);
+                bot.pm('you must wait one song since the bot has started up to use this command', data.senderid);
             }
         }
         else
@@ -3898,7 +3951,7 @@ bot.on('deregistered', function (data)
         }
     }
 
-	
+
     //removes people leaving the room in modpm still
     if (modpm.length !== 0)
     {
