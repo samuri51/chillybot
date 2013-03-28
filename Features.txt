@@ -36,6 +36,11 @@ audience afk limit - this works the same way as the dj afk limit, except it only
 before the timeout and then it boots you from the room.
 
 
+event messages - this is an array of messages that you can type into the setup area. they will be displayed in the minute intervals that you specified in the setup,
+one message will be displayed at a time, and then the counter is incremented and on the next time interval the next chronological message is displayed. if the counter
+reached the end of the messages array it resets so the messages keep looping through until you turn the feature off. theres also the option of sending these messages through the pm.
+
+
 
 vote skipping - This is voting to skip a song, type /skip in the chatbox in order to vote to skip the currently playing song.
 If the vote passes then the currently playing dj is removed from stage by the bot. If the currently playing dj is on the masterIds

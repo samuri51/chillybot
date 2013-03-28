@@ -13,6 +13,10 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /autodj --> this puts your bot on stage.
 
+/eventmessageOn --> turns event messages on, if you have any messages in your event messages array the bot will say them at the time interval you specified
+
+/eventmessageOff --> toggles event messages off
+
 /removedj --> this removes your bot from the stage.
 
 /randomSong --> this moves all the songs on your bots playlist into a random order. (one song switched per second, see console)
