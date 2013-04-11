@@ -1365,19 +1365,19 @@ bot.on('speak', function (data)
         var x = Math.round(Math.random() * 3);
         switch (x)
         {
-            case 0:
-                bot.speak('@' + name + ' ur mom is fat');
-                break;
-            case 1:
-                bot.speak('@' + name + ' yo momma sooo fat....');
-                break;
-            case 2:
-                bot.speak('@' + name + ' damn yo momma fat');
-                break;
-            case 3:
-                bot.speak('@' + name + ' your mother is an outstanding member of the community ' +
-                    'and well liked by all.');
-                break;
+        case 0:
+            bot.speak('@' + name + ' ur mom is fat');
+            break;
+        case 1:
+            bot.speak('@' + name + ' yo momma sooo fat....');
+            break;
+        case 2:
+            bot.speak('@' + name + ' damn yo momma fat');
+            break;
+        case 3:
+            bot.speak('@' + name + ' your mother is an outstanding member of the community ' +
+                'and well liked by all.');
+            break;
         }
     }
     else if (text.match('/coinflip'))
@@ -1385,12 +1385,12 @@ bot.on('speak', function (data)
         var y = Math.ceil(Math.random() * 2);
         switch (y)
         {
-            case 1:
-                bot.speak('@' + name + ' i am flipping a coin... you got... heads');
-                break;
-            case 2:
-                bot.speak('@' + name + ' i am flipping a coin... you got... tails');
-                break;
+        case 1:
+            bot.speak('@' + name + ' i am flipping a coin... you got... heads');
+            break;
+        case 2:
+            bot.speak('@' + name + ' i am flipping a coin... you got... tails');
+            break;
         }
     }
     else if (text.match(/^\/dance$/))
@@ -1551,8 +1551,8 @@ bot.on('speak', function (data)
                         }
                         queueName.splice(areTheyInTheQueue, 1); //remove them
                         queueList.splice(areTheyInTheQueueList, 2); //remove them
-                        queueName.splice(queueName.length, 0, whatIsTheirName); //add them to end
-                        queueList.splice(queueName.length, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to end
+                        queueName.splice(queueName.length + 1, 0, whatIsTheirName); //add them to end
+                        queueList.splice(queueName.length + 1, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to end
 
                         bot.speak(whatIsTheirName + ' has been moved to position ' + queueName.length + ' in the queue');
                     }
@@ -1563,13 +1563,23 @@ bot.on('speak', function (data)
                             clearTimeout(beginTimer); //clear timeout because first person has been replaced
                             sayOnce = true;
                         }
+
                         queueName.splice(areTheyInTheQueue, 1); //remove them
                         queueList.splice(areTheyInTheQueueList, 2); //remove them
-                        queueName.splice((Math.round(tempName[2]) - 1), 0, whatIsTheirName); //add them to given position shift left 1 because array starts at 0
-                        queueList.splice((Math.round(tempName[2]) - 1), 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //same as above
+
+                        if ((tempName[2]) % 2 == 0) //if even number let it go, otherwise shift right by one
+                        {
+                            queueName.splice((Math.round(tempName[2]) - 1), 0, whatIsTheirName); //add them to given position shift left 1 because array starts at 0
+                            queueList.splice((Math.round(tempName[2])), 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //same as above
+                        }
+                        else
+                        {
+                            queueName.splice((Math.round(tempName[2]) - 1), 0, whatIsTheirName); //add them to given position shift left 1 because array starts at 0
+                            queueList.splice((Math.round(tempName[2]) + 1), 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //same as above
+                        }
+
                         bot.speak(whatIsTheirName + ' has been moved to position ' + Math.round(tempName[2]) + ' in the queue');
                     }
-
                 }
                 else
                 {
@@ -1590,6 +1600,7 @@ bot.on('speak', function (data)
         {
             bot.pm('error, queue must turned on to use this command', data.userid);
         }
+
     }
     else if (text.match(/^\/m/) && !text.match(/^\/me/) && condition === true)
     {
@@ -2575,8 +2586,8 @@ bot.on('pmmed', function (data)
                         }
                         queueName.splice(areTheyInTheQueue, 1); //remove them
                         queueList.splice(areTheyInTheQueueList, 2); //remove them
-                        queueName.splice(queueName.length, 0, tempName[1]); //add them to end
-                        queueList.splice(queueName.length, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to end
+                        queueName.splice(queueName.length + 1, 0, tempName[1]); //add them to end
+                        queueList.splice(queueName.length + 1, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to end
 
                         bot.pm(tempName[1] + ' has been moved to position ' + queueName.length + ' in the queue', data.senderid);
                     }
@@ -2587,10 +2598,21 @@ bot.on('pmmed', function (data)
                             clearTimeout(beginTimer); //clear timeout because first person has been replaced
                             sayOnce = true;
                         }
+
                         queueName.splice(areTheyInTheQueue, 1); //remove them
                         queueList.splice(areTheyInTheQueueList, 2); //remove them
-                        queueName.splice((Math.round(tempName[2]) - 1), 0, tempName[1]); //add them to given position shift left 1 because array starts at 0
-                        queueList.splice((Math.round(tempName[2]) - 1), 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //same as above
+
+                        if ((tempName[2]) % 2 == 0) //if even number let it go, otherwise shift right by one
+                        {
+                            queueName.splice((Math.round(tempName[2]) - 1), 0, tempName[1]); //add them to given position shift left 1 because array starts at 0
+                            queueList.splice((Math.round(tempName[2])), 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //same as above
+                        }
+                        else
+                        {
+                            queueName.splice((Math.round(tempName[2]) - 1), 0, tempName[1]); //add them to given position shift left 1 because array starts at 0
+                            queueList.splice((Math.round(tempName[2]) + 1), 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //same as above
+                        }
+
                         bot.pm(tempName[1] + ' has been moved to position ' + Math.round(tempName[2]) + ' in the queue', data.senderid);
                     }
                 }
