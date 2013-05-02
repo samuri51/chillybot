@@ -101,7 +101,7 @@ global.eventMessages = ['hello there', //enter your different event messages her
 
 /************************************EndSetUp**********************************************************************/
 
-
+var defaultPlayLimit = playLimit; //saves the default value for the play limit
 var spamLimit = 3; //number of times a user can spam being kicked off the stage within 10 secs
 var myId = null;
 var detail = null;
@@ -1908,16 +1908,54 @@ bot.on('speak', function (data)
         bot.speak('the queue is now active.');
         queue = true;
     }
-    else if (text.match(/^\/playLimitOn$/) && condition === true)
-    {
-        PLAYLIMIT = true;
-        bot.speak('the play limit is now active, dj song counters have been reset.');
-        for (var ig = 0; ig < currentDjs.length; ig++)
+    else if (text.match(/^\/playLimitOn/) && condition === true)
+    {        
+        var playLimitNumber = Number(data.text.slice(13)); //holds given number
+        
+        if(playLimitNumber != '') //if an additional arguement was given
         {
-            djs20[currentDjs[ig]] = {
-                nbSong: 0
-            };
+            if(!isNaN(playLimitNumber) && playLimitNumber > 0) //if parameter given is a number and greater than zero
+            {              
+                playLimit = Math.ceil(playLimitNumber);// round play limit to make sure its not a fraction
+                
+                bot.speak('the play limit is now active and has been set to ' + 
+                playLimit + ' songs. dj song counters have been reset.'); 
+                
+                //reset song counters
+                for (var ig = 0; ig < currentDjs.length; ig++)
+                {
+                    djs20[currentDjs[ig]] = {
+                        nbSong: 0
+                    };
+                }
+                
+                PLAYLIMIT = true; //mark playlimit as being on               
+            }
+            else
+            {
+                bot.pm('invalid arguement given, the play limit must be set to an integer. ' +
+                'it can either be used as /playLimitOn or /playLimitOn #.', data.userid);
+                
+                PLAYLIMIT = false; // on failure turn it off
+            }
         }
+        else
+        {
+            bot.speak('the play limit is now active and has been set to the default value of ' + 
+            defaultPlayLimit + ' songs. dj song counters have been reset.');
+            
+            playLimit = defaultPlayLimit; //set playlimit to default 
+
+            //reset song counters
+            for (var ig = 0; ig < currentDjs.length; ig++)
+            {
+                djs20[currentDjs[ig]] = {
+                    nbSong: 0
+                };
+            }
+            
+            PLAYLIMIT = true; //mark playlimit as being on    
+        }        
     }
     else if (text.match(/^\/playLimitOff$/) && condition === true)
     {
@@ -2704,18 +2742,55 @@ bot.on('pmmed', function (data)
         {
             bot.pm('error, the play limit must be turned on in order for me to decrement play counts', data.senderid);
         }
-
     }
-    else if (text.match(/^\/playLimitOn$/) && condition === true && isInRoom === true)
+    else if (text.match(/^\/playLimitOn/) && condition === true && isInRoom === true)
     {
-        PLAYLIMIT = true;
-        bot.pm('the play limit is now active, dj song counters have been reset.', data.senderid);
-        for (var ig = 0; ig < currentDjs.length; ig++)
+        var playLimitNumber = Number(data.text.slice(13)); //holds given number
+        
+        if(playLimitNumber != '') //if an additional arguement was given
         {
-            djs20[currentDjs[ig]] = {
-                nbSong: 0
-            };
+            if(!isNaN(playLimitNumber) && playLimitNumber > 0) //if parameter given is a number and greater than zero
+            {              
+                playLimit = Math.ceil(playLimitNumber);// round play limit to make sure its not a fraction
+                
+                bot.pm('the play limit is now active and has been set to ' + 
+                playLimit + ' songs. dj song counters have been reset.', data.senderid); 
+                
+                //reset song counters
+                for (var ig = 0; ig < currentDjs.length; ig++)
+                {
+                    djs20[currentDjs[ig]] = {
+                        nbSong: 0
+                    };
+                }
+                
+                PLAYLIMIT = true; //mark playlimit as being on               
+            }
+            else
+            {
+                bot.pm('invalid arguement given, the play limit must be set to an integer. ' +
+                'it can either be used as /playLimitOn or /playLimitOn #.', data.senderid);
+                
+                PLAYLIMIT = false; //on failure turn it off
+            }
         }
+        else
+        {
+            bot.pm('the play limit is now active and has been set to the default value of ' + 
+            defaultPlayLimit + ' songs. dj song counters have been reset.', data.senderid);
+            
+            playLimit = defaultPlayLimit; //set playlimit to default 
+
+            //reset song counters
+            for (var ig = 0; ig < currentDjs.length; ig++)
+            {
+                djs20[currentDjs[ig]] = {
+                    nbSong: 0
+                };
+            }
+            
+            PLAYLIMIT = true; //mark playlimit as being on    
+        }        
     }
     else if (text.match(/^\/playLimitOff$/) && condition === true && isInRoom === true)
     {

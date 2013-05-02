@@ -53,7 +53,7 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /voteskipon<space><number> --> set the vote skip limit and turn it on.
 
-/voteskipon<space><number> --> turn the vote skip limit off.
+/voteskipoff --> turn the vote skip limit off.
 
 /getonstage --> the first time you type it, it turns autodjing off, the second time you type it, it turns it back on again.
 
@@ -93,7 +93,9 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /lengthLimit --> toggles the song length limit on and off
 
-/playLimitOn --> activates the song play limit, resets dj song counters
+/playLimitOn --> if no additional arguements given it sets the play limit to the default value in the setup
+
+/playLimitOn<space><number> --> sets the play limit to whatever number you specifiy, i.e. /playLimitOn 3 sets it to 3
 
 /playLimitOff --> turns play limit off
 
