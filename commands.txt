@@ -99,6 +99,8 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /playLimitOff --> turns play limit off
 
+/whatsplaylimit --> tells you what the play limit is currently set to, if it is turned on.
+
 /botstatus --> tells you which features are turned off and which are turned on (only the ones that you can toggle)
 
 /playminus<space><@name> --> decrements a person's play count by one (to give them more songs to dj with when the play limit is turned on)

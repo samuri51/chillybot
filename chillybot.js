@@ -1312,7 +1312,7 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /whatsplaylimit, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands');
     }
     else if (text.match(/^\/queuecommands/))
@@ -1907,6 +1907,17 @@ bot.on('speak', function (data)
         queueName = [];
         bot.speak('the queue is now active.');
         queue = true;
+    }
+    else if (text.match(/^\/whatsplaylimit/))
+    {
+        if(PLAYLIMIT === true)
+        {
+            bot.speak('the play limit is currently set to: ' + playLimit + ' songs.');
+        }
+        else
+        {
+            bot.speak('the play limit is currently turned off');
+        }
     }
     else if (text.match(/^\/playLimitOn/) && condition === true)
     {        
@@ -2741,6 +2752,17 @@ bot.on('pmmed', function (data)
         else
         {
             bot.pm('error, the play limit must be turned on in order for me to decrement play counts', data.senderid);
+        }
+    }
+    else if (text.match(/^\/whatsplaylimit/) && isInRoom === true)
+    {
+        if(PLAYLIMIT === true)
+        {
+            bot.pm('the play limit is currently set to: ' + playLimit + ' songs.', data.senderid);
+        }
+        else
+        {
+            bot.pm('the play limit is currently turned off', data.senderid);
         }
     }
     else if (text.match(/^\/playLimitOn/) && condition === true && isInRoom === true)
@@ -3764,7 +3786,7 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /whatsplaylimit, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
@@ -3773,13 +3795,13 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
-        bot.pm('/chilly, /moon, /modpm, /warnme, /whosinmodpm, /playlist, /move, /eventmessageOn, /eventmessageOff, /boot, /roominfo, /djafk, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
+        bot.pm('/chilly, /moon, /modpm, /whatsplaylimit, /warnme, /whosinmodpm, /playlist, /move, /eventmessageOn, /eventmessageOff, /boot, /roominfo, /djafk, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
             '/userid @, /ban @, /unban @, /stalk @, /whobanned, /whostagebanned, /stopescortme, /escortme, /snag, /inform, ' +
             '/removesong, /username, /afk, /whosafk, /commands, /admincommands', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && !condition === true && isInRoom === true) //non - moderators see this
     {
-        bot.pm('/chilly, /moon, /addme, /warnme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
+        bot.pm('/chilly, /moon, /addme, /whatsplaylimit, /warnme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
