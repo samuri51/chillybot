@@ -4106,7 +4106,16 @@ bot.on('deregistered', function (data)
     delete timer[data.user[0].userid];
     delete myTime[data.user[0].userid];
 
+    
+    //double check to make sure that if someone is on stage and they disconnect, that they are being removed
+    //from the current Dj's array
+    var checkIfStillInDjArray = currentDjs.indexOf(data.user[0].userid);
+    if (checkIfStillInDjArray != -1)
+    {
+        currentDjs.splice(checkIfStillInDjArray, 1);
+    }
 
+    
     //removes people who leave the room from the afk list
     if (afkPeople.length !== 0)
     {
