@@ -2480,9 +2480,23 @@ bot.on('pmmed', function (data)
     }
 
 
+    //if no commands match, the pmmer is a moderator and theres more than zero people in the modpm chat
+    if (modpm.length != 0 && data.text.charAt(0) != '/' && condition === true) //if no other commands match, send modpm
+    {
+        var areTheyInModPm = modpm.indexOf(data.senderid);
 
-
-    if (text.match(/^\/chilly/) && isInRoom === true)
+        if (areTheyInModPm != -1)
+        {
+            for (var jhg = 0; jhg < modpm.length; jhg++)
+            {
+                if (modpm[jhg] != data.senderid && modpm[jhg] != USERID) //this will prevent you from messaging yourself
+                {
+                    bot.pm(theUsersList[name1] + ' said: ' + data.text, modpm[jhg]);
+                }
+            }
+        }
+    }
+    else if (text.match(/^\/chilly/) && isInRoom === true)
     {
         bot.speak('@' + theUsersList[name1] + ' is pleasantly chilled.');
     }
@@ -3810,23 +3824,6 @@ bot.on('pmmed', function (data)
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
     }
-    else if (modpm.length != 0) //if no other commands match, send modpm
-    {
-        var areTheyInModPm = modpm.indexOf(data.senderid);
-
-        if (areTheyInModPm != -1)
-        {
-            for (var jhg = 0; jhg < modpm.length; jhg++)
-            {
-                if (modpm[jhg] != data.senderid) //this will prevent you from messaging yourself
-                {
-                    bot.pm(theUsersList[name1] + ' said: ' + data.text, modpm[jhg]);
-                }
-            }
-        }
-    }
-
-
 });
 
 
