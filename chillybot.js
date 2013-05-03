@@ -726,7 +726,7 @@ bot.on('newsong', function (data)
     {
         currentDjs = []; //reset current djs array
     
-        for(int hjg = 0; hjg < data.room.metadata.djcount; hjg++)
+        for(var hjg = 0; hjg < data.room.metadata.djcount; hjg++)
         {
             currentDjs.push(data.room.metadata.djs[hjg]);
         }    
