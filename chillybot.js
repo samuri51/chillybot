@@ -719,6 +719,18 @@ bot.on('newsong', function (data)
 
     //look at function above, /inform, song length limit,stuck song detection
     checkOnNewSong(data);
+    
+    //quality control check, if current dj's information is somehow wrong because
+    //of some event not firing, remake currentDj's array
+    if(data.room.metadata.djcount !== currentDjs.length)
+    {
+        currentDjs = []; //reset current djs array
+    
+        for(int hjg = 0; hjg < data.room.metadata.djcount; hjg++)
+        {
+            currentDjs.push(data.room.metadata.djs[hjg]);
+        }    
+    }
 });
 
 
