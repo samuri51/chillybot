@@ -641,8 +641,12 @@ bot.on('newsong', function (data)
     genre = data.room.metadata.current_song.metadata.genre;
     artist = data.room.metadata.current_song.metadata.artist;
     getSong = data.room.metadata.current_song._id;
+    
+    
+    //set room description again in case it was changed
+    detail = data.room.description;
 
-
+    
     //adds a song to the end of your bots queue
     if (snagSong === true)
     {
