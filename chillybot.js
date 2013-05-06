@@ -169,42 +169,58 @@ var randomPort = Math.ceil(Math.random() * 10000 + 6000);
 var bot = new Bot(AUTH, USERID, ROOMID);
 bot.listen(randomPort, '127.0.0.1');
 
-//updates the afk list
-justSaw = function (uid)
-{
-    return lastSeen[uid] = Date.now();
-}
-
-//updates the afk list
-justSaw1 = function (uid)
-{
-    return lastSeen1[uid] = Date.now();
-}
 
 
-//updates the afk list
-justSaw2 = function (uid)
-{
-    return lastSeen2[uid] = Date.now();
-}
-
-//these update the afk of everyone in the room
-justSaw3 = function (uid)
-{
-    return lastSeen3[uid] = Date.now();
-}
-
-//these update the afk of everyone in the room
-justSaw4 = function (uid)
-{
-    return lastSeen4[uid] = Date.now();
+//whichFunction represents which justSaw object do you want to access
+global.justSaw = function (uid, whichFunction)
+{    
+    switch(whichFunction)
+    {
+    case 'justSaw':
+        return lastSeen[uid] = Date.now();
+        break;
+    case 'justSaw1':
+        return lastSeen1[uid] = Date.now();
+        break;
+    case 'justSaw2':
+        return lastSeen2[uid] = Date.now();
+        break;
+    case 'justSaw3':
+        return lastSeen3[uid] = Date.now();
+        break;
+    case 'justSaw4':
+        return lastSeen4[uid] = Date.now();
+        break;   
+    }        
 }
 
 
-//checks if a person is afk or not
-isAfk = function (userId, num)
-{
-    var last = lastSeen[userId];
+
+//whichFunction represents which justSaw object do you want to access
+//num is the time in minutes till afk timeout
+//userid is the person's userid
+global.isAfk = function (userId, num, whichFunction)
+{    
+    //which last seen object to use?
+    switch(whichFunction)
+    {
+    case 'isAfk':
+        var last = lastSeen[userId];
+        break;
+    case 'isAfk1':
+        var last = lastSeen1[userId];
+        break;
+    case 'isAfk2':
+        var last = lastSeen2[userId];
+        break;
+    case 'isAfk3':
+        var last = lastSeen3[userId];
+        break;
+    case 'isAfk4':
+        var last = lastSeen4[userId];
+        break;
+    }
+        
     var age_ms = Date.now() - last;
     var age_m = Math.floor(age_ms / 1000 / 60);
     if (age_m >= num)
@@ -214,67 +230,16 @@ isAfk = function (userId, num)
     return false;
 };
 
-//checks if a person is afk or not
-isAfk1 = function (userId, num)
-{
-    var last = lastSeen1[userId];
-    var age_ms = Date.now() - last;
-    var age_m = Math.floor(age_ms / 1000 / 60);
-    if (age_m >= num)
-    {
-        return true;
-    }
-    return false;
-};
-
-//checks if a person is afk or not
-isAfk2 = function (userId, num)
-{
-    var last = lastSeen2[userId];
-    var age_ms = Date.now() - last;
-    var age_m = Math.floor(age_ms / 1000 / 60);
-    if (age_m >= num)
-    {
-        return true;
-    }
-    return false;
-};
-
-//checks if a person is afk or not
-isAfk3 = function (userId, num)
-{
-    var last = lastSeen3[userId];
-    var age_ms = Date.now() - last;
-    var age_m = Math.floor(age_ms / 1000 / 60);
-    if (age_m >= num)
-    {
-        return true;
-    }
-    return false;
-};
-
-//checks if a person is afk or not
-isAfk4 = function (userId, num)
-{
-    var last = lastSeen4[userId];
-    var age_ms = Date.now() - last;
-    var age_m = Math.floor(age_ms / 1000 / 60);
-    if (age_m >= num)
-    {
-        return true;
-    }
-    return false;
-};
 
 //removes afk dj's after afklimit is up.
-afkCheck = function ()
+global.afkCheck = function ()
 {
     for (var i = 0; i < currentDjs.length; i++)
     {
         afker = currentDjs[i]; //Pick a DJ
         var isAfkMaster = masterIds.indexOf(afker); //master ids check
         var whatIsAfkerName = theUsersList.indexOf(afker) + 1;
-        if ((isAfk1(afker, (afkLimit - 5))) && AFK === true)
+        if ((isAfk(afker, (afkLimit - 5), 'isAfk1')) && AFK === true)
         {
             if (afker != USERID && isAfkMaster == -1)
             {
@@ -286,10 +251,10 @@ afkCheck = function ()
                 {
                     bot.pm('you have 5 minutes left of afk, chat or awesome please.', afker);
                 }
-                justSaw1(afker);
+                justSaw(afker, 'justSaw1');
             }
         }
-        if ((isAfk2(afker, (afkLimit - 1))) && AFK === true)
+        if ((isAfk(afker, (afkLimit - 1), 'isAfk2')) && AFK === true)
         {
             if (afker != USERID && isAfkMaster == -1)
             {
@@ -301,10 +266,10 @@ afkCheck = function ()
                 {
                     bot.pm('you have 1 minute left of afk, chat or awesome please.', afker);
                 }
-                justSaw2(afker);
+                justSaw(afker, 'justSaw2');
             }
         }
-        if ((isAfk(afker, afkLimit)) && AFK === true)
+        if ((isAfk(afker, afkLimit, 'isAfk')) && AFK === true)
         { //if Dj is afk then	   
             if (afker != USERID && isAfkMaster == -1) //checks to see if afker is a mod or a bot or the current dj, if they are is does not kick them.
             {
@@ -318,9 +283,9 @@ afkCheck = function ()
                     {
                         bot.pm('you are over the afk limit of ' + afkLimit + ' minutes.', afker);
                     }
-                    justSaw1(afker);
-                    justSaw2(afker);
-                    justSaw(afker);
+                    justSaw(afker, 'justSaw1');
+                    justSaw(afker, 'justSaw2');
+                    justSaw(afker, 'justSaw');
                     bot.remDj(afker); //remove them	
                 }
             }
@@ -340,16 +305,16 @@ roomAfkCheck = function ()
         var afker2 = userIds[i]; //Pick a DJ
         var isAfkMod = modList.indexOf(afker2);
         var isDj = currentDjs.indexOf(afker2);
-        if ((isAfk3(afker2, (roomafkLimit - 1))) && roomAFK === true)
+        if ((isAfk(afker2, (roomafkLimit - 1), 'isAfk3')) && roomAFK === true)
         {
 
             if (afker2 != USERID && isDj == -1 && isAfkMod == -1)
             {
                 bot.pm('you have 1 minute left of afk, chat or awesome please.', afker2);
-                justSaw3(afker2);
+                justSaw(afker2, 'justSaw3');
             }
         }
-        if ((isAfk4(afker2, roomafkLimit)) && roomAFK === true)
+        if ((isAfk(afker2, roomafkLimit, 'isAfk4')) && roomAFK === true)
         { //if person is afk then	   
             if (afker2 != USERID && isAfkMod == -1) //checks to see if afker is a mod or a bot or a dj, if they are is does not kick them.
             {
@@ -357,8 +322,8 @@ roomAfkCheck = function ()
                 {
                     bot.pm('you are over the afk limit of ' + roomafkLimit + ' minutes.', afker2);
                     bot.boot(afker2, 'you are over the afk limit');
-                    justSaw3(afker2);
-                    justSaw4(afker2);
+                    justSaw(afker2, 'justSaw3');
+                    justSaw(afker2, 'justSaw4');
                 }
             }
         }
@@ -368,7 +333,7 @@ roomAfkCheck = function ()
 setInterval(roomAfkCheck, 5000) //This repeats the check every five seconds.
 
 
-
+//this function handles removing people from the queue after holding their spot open for a certain amount of time
 queueCheck15 = function ()
 {
     //if queue is turned on once someone leaves the stage the first person
@@ -774,11 +739,11 @@ bot.on('speak', function (data)
     //updates the afk position of the speaker.
     if (AFK === true || roomAFK === true)
     {
-        justSaw(data.userid);
-        justSaw1(data.userid);
-        justSaw2(data.userid);
-        justSaw3(data.userid);
-        justSaw4(data.userid);
+        justSaw(data.userid, 'justSaw');
+        justSaw(data.userid, 'justSaw1');
+        justSaw(data.userid, 'justSaw2');
+        justSaw(data.userid, 'justSaw3');
+        justSaw(data.userid, 'justSaw4');
     }
 
 
@@ -1161,9 +1126,9 @@ bot.on('speak', function (data)
         bot.speak('the afk list is now active.');
         for (var z = 0; z < currentDjs.length; z++)
         {
-            justSaw(currentDjs[z]);
-            justSaw1(currentDjs[z]);
-            justSaw2(currentDjs[z]);
+            justSaw(currentDjs[z], 'justSaw');
+            justSaw(currentDjs[z], 'justSaw1');
+            justSaw(currentDjs[z], 'justSaw2');
         }
     }
     else if (text.match(/^\/afkoff/) && condition === true)
@@ -1180,8 +1145,8 @@ bot.on('speak', function (data)
             var isDj2 = currentDjs.indexOf(userIds[zh])
             if (isDj2 == -1)
             {
-                justSaw3(userIds[zh]);
-                justSaw4(userIds[zh]);
+                justSaw(userIds[zh], 'justSaw3');
+                justSaw(userIds[zh], 'justSaw4');
             }
         }
     }
@@ -2199,11 +2164,11 @@ bot.on('update_votes', function (data)
 {
     if (AFK === true || roomAFK === true)
     {
-        justSaw(data.room.metadata.votelog[0][0]);
-        justSaw1(data.room.metadata.votelog[0][0]);
-        justSaw2(data.room.metadata.votelog[0][0]);
-        justSaw3(data.room.metadata.votelog[0][0]);
-        justSaw4(data.room.metadata.votelog[0][0]);
+        justSaw(data.room.metadata.votelog[0][0], 'justSaw');
+        justSaw(data.room.metadata.votelog[0][0], 'justSaw1');
+        justSaw(data.room.metadata.votelog[0][0], 'justSaw2');
+        justSaw(data.room.metadata.votelog[0][0], 'justSaw3');
+        justSaw(data.room.metadata.votelog[0][0], 'justSaw4');
     }
 
 
@@ -2243,11 +2208,11 @@ bot.on('snagged', function (data)
 {
     if (AFK === true || roomAFK === true)
     {
-        justSaw(data.userid);
-        justSaw1(data.userid);
-        justSaw2(data.userid);
-        justSaw3(data.userid);
-        justSaw4(data.userid);
+        justSaw(data.userid, 'justSaw');
+        justSaw(data.userid, 'justSaw1');
+        justSaw(data.userid, 'justSaw2');
+        justSaw(data.userid, 'justSaw3');
+        justSaw(data.userid, 'justSaw4');
     }
 
     whoSnagged += 1;
@@ -2341,11 +2306,11 @@ bot.on('add_dj', function (data)
     //updates the afk position of the person who joins the stage.
     if (AFK === true || roomAFK === true)
     {
-        justSaw(data.user[0].userid);
-        justSaw1(data.user[0].userid);
-        justSaw2(data.user[0].userid);
-        justSaw3(data.user[0].userid);
-        justSaw4(data.user[0].userid);
+        justSaw(data.user[0].userid, 'justSaw');
+        justSaw(data.user[0].userid, 'justSaw1');
+        justSaw(data.user[0].userid, 'justSaw2');
+        justSaw(data.user[0].userid, 'justSaw3');
+        justSaw(data.user[0].userid, 'justSaw4');
     }
 
 
@@ -3157,8 +3122,8 @@ bot.on('pmmed', function (data)
             var isDj2 = currentDjs.indexOf(userIds[zh])
             if (isDj2 == -1)
             {
-                justSaw3(userIds[zh]);
-                justSaw4(userIds[zh]);
+                justSaw(userIds[zh], 'justSaw3');
+                justSaw(userIds[zh], 'justSaw4');
             }
         }
     }
@@ -3173,9 +3138,9 @@ bot.on('pmmed', function (data)
         bot.pm('the afk list is now active.', data.senderid);
         for (var z = 0; z < currentDjs.length; z++)
         {
-            justSaw(currentDjs[z]);
-            justSaw1(currentDjs[z]);
-            justSaw2(currentDjs[z]);
+            justSaw(currentDjs[z], 'justSaw');
+            justSaw(currentDjs[z], 'justSaw1');
+            justSaw(currentDjs[z], 'justSaw2');
         }
     }
     else if (text.match(/^\/autodj$/) && condition === true && isInRoom === true)
@@ -3867,9 +3832,9 @@ bot.on('roomChanged', function (data)
         djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
             nbSong: 0
         };
-        justSaw(data.room.metadata.djs[iop]); //initialize dj afk count
-        justSaw1(data.room.metadata.djs[iop]);
-        justSaw2(data.room.metadata.djs[iop]);
+        justSaw(data.room.metadata.djs[iop], 'justSaw'); //initialize dj afk count
+        justSaw(data.room.metadata.djs[iop], 'justSaw1');
+        justSaw(data.room.metadata.djs[iop], 'justSaw2');
     }
 
 
@@ -3914,8 +3879,8 @@ bot.on('roomChanged', function (data)
         people[userIds[z]] = {
             spamCount: 0
         };
-        justSaw3(userIds[z]);
-        justSaw4(userIds[z]);
+        justSaw(userIds[z], 'justSaw3');
+        justSaw(userIds[z], 'justSaw4');
     }
 
 
@@ -4061,8 +4026,8 @@ bot.on('registered', function (data)
     //puts people who join the room on the global afk list
     if (roomAFK === true)
     {
-        justSaw3(data.user[0].userid);
-        justSaw4(data.user[0].userid);
+        justSaw(data.user[0].userid, 'justSaw3');
+        justSaw(data.user[0].userid, 'justSaw4');
     }
 
 
