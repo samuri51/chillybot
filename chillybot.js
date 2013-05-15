@@ -2208,7 +2208,11 @@ bot.on('update_votes', function (data)
             }
             if (!found)
             {
-                bot.playlistAdd(getSong, -1);
+                bot.playlistAdd(getSong, -1); //add song to the end of the playlist                
+                var tempSongHolder = {
+                    _id: getSong
+                };
+                thisHoldsThePlaylist.push(tempSongHolder);                
                 bot.snag();
             }
         }
