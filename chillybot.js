@@ -2346,6 +2346,10 @@ bot.on('add_dj', function (data)
             bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
         }
     }
+    else if(queue === true && ifUser !== -1 && data.user[0].name !== queueName[0])
+    {
+        bot.pm('sorry, but you are not first in queue. please wait your turn.', data.user[0].userid);
+    }
 
 
 
