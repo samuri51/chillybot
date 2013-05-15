@@ -134,6 +134,7 @@ var ttRoomName = null;
 var THEME = false;
 var whatIsTheme = null;
 var messageCounter = 0; //this is for the array of messages
+ALLREADYCALLED = false; //resets votesnagging so that it can be called again
 
 global.modpm = []; //for modpm
 global.warnme = [];
@@ -598,6 +599,7 @@ bot.on('newsong', function (data)
     whoSnagged = 0;
     upVotes = 0;
     downVotes = 0;
+    ALLREADYCALLED = false; //resets votesnagging so that it can be called again
 
 
     //procedure for getting song tags
@@ -2180,8 +2182,10 @@ bot.on('update_votes', function (data)
     //this is for /autosnag, automatically adds songs that get over the awesome threshold
     //thanks to alain gilbert for playlist pre - testing, snag animation only when song not
     //already in playlist
-    if (autoSnag === true && snagSong === false && upVotes >= howManyVotes)
+    if (autoSnag === true && snagSong === false && upVotes >= howManyVotes && ALLREADYCALLED === false)
     {
+        ALLREADYCALLED = true; //this makes it so that it can only be called once per song
+    
         bot.playlistAll(function (playlist)
         {
             var found = false;
