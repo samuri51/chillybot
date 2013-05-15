@@ -1874,6 +1874,7 @@ bot.on('speak', function (data)
         var list10 = currentDjs.indexOf(data.userid)
         var checkStageList = stageList.indexOf(data.userid);
         var checkManualStageList = bannedFromStage.indexOf(data.userid);
+        //if not in the queue already, not already a dj, not banned from stage
         if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
         {
             queueList.push(data.name, data.userid);
@@ -1891,6 +1892,18 @@ bot.on('speak', function (data)
                 }
             }
             bot.speak(temp91);
+        }        
+        else if(list3 != -1) //if already in queue
+        {
+            bot.pm('sorry i can\'t add you to the queue because you are already in the queue!', data.userid);        
+        }
+        else if(checkStageList != -1 || checkManualStageList != -1) //if banned from stage
+        {
+            bot.pm('sorry i can\'t add you to the queue because you are currently banned from djing', data.userid);        
+        }
+        else if(list10 !== -1) //if already on stage
+        {
+            bot.pm('you are already djing!', data.userid);
         }
     }
     else if (text.match(/^\/queueOn$/) && condition === true)
@@ -2871,6 +2884,18 @@ bot.on('pmmed', function (data)
                     }
                 }
                 bot.speak(temp91);
+            }
+            else if(list3 != -1) //if already in queue
+            {
+                bot.pm('sorry i can\'t add you to the queue because you are already in the queue!', data.senderid);        
+            }
+            else if(checkStageList != -1 || checkManualStageList != -1) //if banned from stage
+            {
+                bot.pm('sorry i can\'t add you to the queue because you are currently banned from djing', data.senderid);        
+            }
+            else if(list10 !== -1) //if already on stage
+            {
+                bot.pm('you are already djing!', data.senderid);
             }
         });
     }
