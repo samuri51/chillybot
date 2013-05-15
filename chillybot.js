@@ -134,7 +134,8 @@ var ttRoomName = null;
 var THEME = false;
 var whatIsTheme = null;
 var messageCounter = 0; //this is for the array of messages
-ALLREADYCALLED = false; //resets votesnagging so that it can be called again
+var ALLREADYCALLED = false; //resets votesnagging so that it can be called again
+var thisHoldsThePlaylist = null; //holds a copy of the playlist
 
 global.modpm = []; //for modpm
 global.warnme = [];
@@ -174,8 +175,8 @@ bot.listen(randomPort, '127.0.0.1');
 
 //whichFunction represents which justSaw object do you want to access
 global.justSaw = function (uid, whichFunction)
-{    
-    switch(whichFunction)
+{
+    switch (whichFunction)
     {
     case 'justSaw':
         return lastSeen[uid] = Date.now();
@@ -191,8 +192,8 @@ global.justSaw = function (uid, whichFunction)
         break;
     case 'justSaw4':
         return lastSeen4[uid] = Date.now();
-        break;   
-    }        
+        break;
+    }
 }
 
 
@@ -201,9 +202,9 @@ global.justSaw = function (uid, whichFunction)
 //num is the time in minutes till afk timeout
 //userid is the person's userid
 global.isAfk = function (userId, num, whichFunction)
-{    
+{
     //which last seen object to use?
-    switch(whichFunction)
+    switch (whichFunction)
     {
     case 'isAfk':
         var last = lastSeen[userId];
@@ -221,7 +222,7 @@ global.isAfk = function (userId, num, whichFunction)
         var last = lastSeen4[userId];
         break;
     }
-        
+
     var age_ms = Date.now() - last;
     var age_m = Math.floor(age_ms / 1000 / 60);
     if (age_m >= num)
@@ -587,7 +588,6 @@ global.checkOnNewSong = function (data)
 
 
 
-
 //checks at the beggining of the song
 bot.on('newsong', function (data)
 {
@@ -608,19 +608,35 @@ bot.on('newsong', function (data)
     genre = data.room.metadata.current_song.metadata.genre;
     artist = data.room.metadata.current_song.metadata.artist;
     getSong = data.room.metadata.current_song._id;
-    
-    
+
+
     //set room description again in case it was changed
     detail = data.room.description;
 
-    
+
     //adds a song to the end of your bots queue
     if (snagSong === true)
     {
-        bot.playlistAll(function (playlist)
+        if (thisHoldsThePlaylist !== null)
         {
-            bot.playlistAdd(getSong, playlist.list.length);
-        });
+            var found = false;
+            for (var igh = 0; igh < thisHoldsThePlaylist.length; igh++)
+            {
+                if (thisHoldsThePlaylist[igh]._id == getSong)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                bot.playlistAdd(getSong, -1); //add song to the end of the playlist                    
+                var tempSongHolder = {
+                    _id: getSong
+                };
+                thisHoldsThePlaylist.push(tempSongHolder);
+            }
+        }
     }
 
 
@@ -690,17 +706,17 @@ bot.on('newsong', function (data)
 
     //look at function above, /inform, song length limit,stuck song detection
     checkOnNewSong(data);
-    
+
     //quality control check, if current dj's information is somehow wrong because
     //of some event not firing, remake currentDj's array
-    if(data.room.metadata.djcount !== currentDjs.length)
+    if (data.room.metadata.djcount !== currentDjs.length)
     {
         currentDjs = []; //reset current djs array
-    
-        for(var hjg = 0; hjg < data.room.metadata.djcount; hjg++)
+
+        for (var hjg = 0; hjg < data.room.metadata.djcount; hjg++)
         {
             currentDjs.push(data.room.metadata.djs[hjg]);
-        }    
+        }
     }
 });
 
@@ -751,46 +767,41 @@ bot.on('speak', function (data)
 
 
 
-
     if (text.match(/^\/autodj$/) && condition === true)
     {
         bot.addDj();
     }
     else if (text.match(/^\/playlist/))
     {
-        bot.playlistAll(function (playlist)
+        if (thisHoldsThePlaylist !== null)
         {
-            bot.speak('There are currently ' + playlist.list.length + ' songs in my playlist.');
-        });
+            bot.speak('There are currently ' + thisHoldsThePlaylist.length + ' songs in my playlist.');
+        }
     }
     else if (text.match(/^\/randomSong$/) && condition === true)
     {
         if (randomOnce != 1)
         {
-            bot.playlistAll(function (playlist)
+            var ez = 0;
+            bot.speak("Reorder initiated.");
+            ++randomOnce;
+            var reorder = setInterval(function ()
             {
-                var ez = 0;
-                bot.speak("Reorder initiated.");
-                ++randomOnce;
-                var reorder = setInterval(function ()
+                if (ez <= thisHoldsThePlaylist.length)
                 {
-                    if (ez <= playlist.list.length)
-                    {
-                        var nextId = Math.ceil(Math.random() * playlist.list.length);
-                        bot.playlistReorder(ez, nextId);
-                        console.log("Song " + ez + " changed.");
-                        ez++;
-                    }
-                    else
-                    {
-                        clearInterval(reorder);
-                        console.log("Reorder Ended");
-                        bot.speak("Reorder completed.");
-                        --randomOnce;
-                    }
-                }, 1000);
-
-            });
+                    var nextId = Math.ceil(Math.random() * thisHoldsThePlaylist);
+                    bot.playlistReorder(ez, nextId);
+                    console.log("Song " + ez + " changed.");
+                    ez++;
+                }
+                else
+                {
+                    clearInterval(reorder);
+                    console.log("Reorder Ended");
+                    bot.speak("Reorder completed.");
+                    --randomOnce;
+                }
+            }, 1000);
         }
         else
         {
@@ -1615,26 +1626,27 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/snag/) && condition === true)
     {
-        if (getSong !== null)
+        if (getSong !== null && thisHoldsThePlaylist !== null)
         {
-            bot.playlistAll(function (playlist)
+            var found = false;
+            for (var igh = 0; igh < thisHoldsThePlaylist.length; igh++)
             {
-                var found = false;
-                for (var igh = 0; igh < playlist.list.length; igh++)
+                if (thisHoldsThePlaylist[igh]._id == getSong)
                 {
-                    if (playlist.list[igh]._id == getSong)
-                    {
-                        found = true;
-                        bot.speak('I already have that song');
-                        break;
-                    }
+                    found = true;
+                    bot.speak('I already have that song');
+                    break;
                 }
-                if (!found)
-                {
-                    bot.playlistAdd(getSong, playlist.list.length);
-                    bot.speak('song added');
-                }
-            });
+            }
+            if (!found)
+            {
+                bot.playlistAdd(getSong, -1); //add song to the end of the playlist
+                bot.speak('song added');
+                var tempSongHolder = {
+                    _id: getSong
+                };
+                thisHoldsThePlaylist.push(tempSongHolder);
+            }
         }
         else
         {
@@ -1643,22 +1655,19 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/removesong$/) && condition === true)
     {
-        bot.playlistAll(function (playlist)
+        if (checkWhoIsDj == USERID)
         {
-            if (checkWhoIsDj == USERID)
-            {
-                var remove = playlist.list.length - 1;
-                bot.skip();
-                bot.playlistRemove(remove);
-                bot.speak('the last snagged song has been removed.');
-            }
-            else
-            {
-                var remove2 = playlist.list.length - 1;
-                bot.playlistRemove(remove2);
-                bot.speak('the last snagged song has been removed.');
-            }
-        })
+            bot.skip();
+            bot.playlistRemove(-1);
+            thisHoldsThePlaylist.splice(thisHoldsThePlaylist.length - 1, 1);
+            bot.speak('the last snagged song has been removed.');
+        }
+        else
+        {
+            thisHoldsThePlaylist.splice(thisHoldsThePlaylist.length - 1, 1);
+            bot.playlistRemove(-1);
+            bot.speak('the last snagged song has been removed.');
+        }
     }
     else if (text.match(/^\/queuewithnumbers$/))
     {
@@ -1893,7 +1902,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/whatsplaylimit/))
     {
-        if(PLAYLIMIT === true)
+        if (PLAYLIMIT === true)
         {
             bot.speak('the play limit is currently set to: ' + playLimit + ' songs.');
         }
@@ -1903,18 +1912,18 @@ bot.on('speak', function (data)
         }
     }
     else if (text.match(/^\/playLimitOn/) && condition === true)
-    {        
+    {
         var playLimitNumber = Number(data.text.slice(13)); //holds given number
-        
-        if(playLimitNumber != '') //if an additional arguement was given
+
+        if (playLimitNumber != '') //if an additional arguement was given
         {
-            if(!isNaN(playLimitNumber) && playLimitNumber > 0) //if parameter given is a number and greater than zero
-            {              
-                playLimit = Math.ceil(playLimitNumber);// round play limit to make sure its not a fraction
-                
-                bot.speak('the play limit is now active and has been set to ' + 
-                playLimit + ' songs. dj song counters have been reset.'); 
-                
+            if (!isNaN(playLimitNumber) && playLimitNumber > 0) //if parameter given is a number and greater than zero
+            {
+                playLimit = Math.ceil(playLimitNumber); // round play limit to make sure its not a fraction
+
+                bot.speak('the play limit is now active and has been set to ' +
+                    playLimit + ' songs. dj song counters have been reset.');
+
                 //reset song counters
                 for (var ig = 0; ig < currentDjs.length; ig++)
                 {
@@ -1922,22 +1931,22 @@ bot.on('speak', function (data)
                         nbSong: 0
                     };
                 }
-                
+
                 PLAYLIMIT = true; //mark playlimit as being on               
             }
             else
             {
                 bot.pm('invalid arguement given, the play limit must be set to an integer. ' +
-                'it can either be used as /playLimitOn or /playLimitOn #.', data.userid);
-                
+                    'it can either be used as /playLimitOn or /playLimitOn #.', data.userid);
+
                 PLAYLIMIT = false; // on failure turn it off
             }
         }
         else
         {
-            bot.speak('the play limit is now active and has been set to the default value of ' + 
-            defaultPlayLimit + ' songs. dj song counters have been reset.');
-            
+            bot.speak('the play limit is now active and has been set to the default value of ' +
+                defaultPlayLimit + ' songs. dj song counters have been reset.');
+
             playLimit = defaultPlayLimit; //set playlimit to default 
 
             //reset song counters
@@ -1947,9 +1956,9 @@ bot.on('speak', function (data)
                     nbSong: 0
                 };
             }
-            
+
             PLAYLIMIT = true; //mark playlimit as being on    
-        }        
+        }
     }
     else if (text.match(/^\/playLimitOff$/) && condition === true)
     {
@@ -2185,24 +2194,24 @@ bot.on('update_votes', function (data)
     if (autoSnag === true && snagSong === false && upVotes >= howManyVotes && ALLREADYCALLED === false)
     {
         ALLREADYCALLED = true; //this makes it so that it can only be called once per song
-    
-        bot.playlistAll(function (playlist)
+
+        if (thisHoldsThePlaylist !== null && getSong !== null)
         {
             var found = false;
-            for (var i = 0; i < playlist.list.length; i++)
+            for (var i = 0; i < thisHoldsThePlaylist.length; i++)
             {
-                if (playlist.list[i]._id == getSong)
+                if (thisHoldsThePlaylist[i]._id == getSong)
                 {
                     found = true;
                     break;
                 }
             }
-            if (!found && getSong !== null)
+            if (!found)
             {
-                bot.playlistAdd(getSong, playlist.list.length);
+                bot.playlistAdd(getSong, -1);
                 bot.snag();
             }
-        });
+        }
     }
 })
 
@@ -2431,7 +2440,6 @@ bot.on('add_dj', function (data)
     }
 
 })
-
 
 
 
@@ -2755,7 +2763,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/whatsplaylimit/) && isInRoom === true)
     {
-        if(PLAYLIMIT === true)
+        if (PLAYLIMIT === true)
         {
             bot.pm('the play limit is currently set to: ' + playLimit + ' songs.', data.senderid);
         }
@@ -2767,16 +2775,16 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/playLimitOn/) && condition === true && isInRoom === true)
     {
         var playLimitNumber = Number(data.text.slice(13)); //holds given number
-        
-        if(playLimitNumber != '') //if an additional arguement was given
+
+        if (playLimitNumber != '') //if an additional arguement was given
         {
-            if(!isNaN(playLimitNumber) && playLimitNumber > 0) //if parameter given is a number and greater than zero
-            {              
-                playLimit = Math.ceil(playLimitNumber);// round play limit to make sure its not a fraction
-                
-                bot.pm('the play limit is now active and has been set to ' + 
-                playLimit + ' songs. dj song counters have been reset.', data.senderid); 
-                
+            if (!isNaN(playLimitNumber) && playLimitNumber > 0) //if parameter given is a number and greater than zero
+            {
+                playLimit = Math.ceil(playLimitNumber); // round play limit to make sure its not a fraction
+
+                bot.pm('the play limit is now active and has been set to ' +
+                    playLimit + ' songs. dj song counters have been reset.', data.senderid);
+
                 //reset song counters
                 for (var ig = 0; ig < currentDjs.length; ig++)
                 {
@@ -2784,22 +2792,22 @@ bot.on('pmmed', function (data)
                         nbSong: 0
                     };
                 }
-                
+
                 PLAYLIMIT = true; //mark playlimit as being on               
             }
             else
             {
                 bot.pm('invalid arguement given, the play limit must be set to an integer. ' +
-                'it can either be used as /playLimitOn or /playLimitOn #.', data.senderid);
-                
+                    'it can either be used as /playLimitOn or /playLimitOn #.', data.senderid);
+
                 PLAYLIMIT = false; //on failure turn it off
             }
         }
         else
         {
-            bot.pm('the play limit is now active and has been set to the default value of ' + 
-            defaultPlayLimit + ' songs. dj song counters have been reset.', data.senderid);
-            
+            bot.pm('the play limit is now active and has been set to the default value of ' +
+                defaultPlayLimit + ' songs. dj song counters have been reset.', data.senderid);
+
             playLimit = defaultPlayLimit; //set playlimit to default 
 
             //reset song counters
@@ -2809,9 +2817,9 @@ bot.on('pmmed', function (data)
                     nbSong: 0
                 };
             }
-            
+
             PLAYLIMIT = true; //mark playlimit as being on    
-        }        
+        }
     }
     else if (text.match(/^\/playLimitOff$/) && condition === true && isInRoom === true)
     {
@@ -3074,10 +3082,10 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/playlist/) && condition === true && isInRoom === true)
     {
-        bot.playlistAll(function (playlist)
+        if (thisHoldsThePlaylist !== null)
         {
-            bot.pm('There are currently ' + playlist.list.length + ' songs in my playlist.', data.senderid);
-        });
+            bot.pm('There are currently ' + thisHoldsThePlaylist.length + ' songs in my playlist.', data.senderid);
+        }
     }
     else if (text.match(/^\/setTheme/) && condition === true && isInRoom === true)
     {
@@ -3277,29 +3285,26 @@ bot.on('pmmed', function (data)
     {
         if (randomOnce != 1)
         {
-            bot.playlistAll(function (playlist)
+            var ez = 0;
+            bot.pm("Reorder initiated.", data.senderid);
+            ++randomOnce;
+            var reorder = setInterval(function ()
             {
-                var ez = 0;
-                bot.pm("Reorder initiated.", data.senderid);
-                ++randomOnce;
-                var reorder = setInterval(function ()
+                if (ez <= thisHoldsThePlaylist.length)
                 {
-                    if (ez <= playlist.list.length)
-                    {
-                        var nextId = Math.ceil(Math.random() * playlist.list.length);
-                        bot.playlistReorder(ez, nextId);
-                        console.log("Song " + ez + " changed.");
-                        ez++;
-                    }
-                    else
-                    {
-                        clearInterval(reorder);
-                        console.log("Reorder Ended");
-                        bot.pm("Reorder completed.", data.senderid);
-                        --randomOnce;
-                    }
-                }, 1000);
-            });
+                    var nextId = Math.ceil(Math.random() * thisHoldsThePlaylist);
+                    bot.playlistReorder(ez, nextId);
+                    console.log("Song " + ez + " changed.");
+                    ez++;
+                }
+                else
+                {
+                    clearInterval(reorder);
+                    console.log("Reorder Ended");
+                    bot.pm("Reorder completed.", data.senderid);
+                    --randomOnce;
+                }
+            }, 1000);
         }
         else
         {
@@ -3652,26 +3657,27 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/snag/) && condition === true && isInRoom === true)
     {
-        if (getSong !== null)
+        if (getSong !== null && thisHoldsThePlaylist !== null)
         {
-            bot.playlistAll(function (playlist)
+            var found = false;
+            for (var igh = 0; igh < thisHoldsThePlaylist.length; igh++)
             {
-                var found = false;
-                for (var igh = 0; igh < playlist.list.length; igh++)
+                if (thisHoldsThePlaylist[igh]._id == getSong)
                 {
-                    if (playlist.list[igh]._id == getSong)
-                    {
-                        found = true;
-                        bot.pm('I already have that song', data.senderid);
-                        break;
-                    }
+                    found = true;
+                    bot.pm('I already have that song', data.senderid);
+                    break;
                 }
-                if (!found)
-                {
-                    bot.playlistAdd(getSong, playlist.list.length);
-                    bot.pm('song added', data.senderid);
-                }
-            });
+            }
+            if (!found)
+            {
+                bot.playlistAdd(getSong, -1); //add song to the end of the playlist
+                bot.pm('song added', data.senderid);
+                var tempSongHolder = {
+                    _id: getSong
+                };
+                thisHoldsThePlaylist.push(tempSongHolder);
+            }
         }
         else
         {
@@ -3694,22 +3700,19 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/removesong$/) && condition === true && isInRoom === true)
     {
-        bot.playlistAll(function (playlist)
+        if (checkWhoIsDj == USERID)
         {
-            if (checkWhoIsDj == USERID)
-            {
-                var remove5 = playlist.list.length - 1;
-                bot.skip();
-                bot.playlistRemove(remove5);
-                bot.pm('the last snagged song has been removed.', data.senderid);
-            }
-            else
-            {
-                var remove = playlist.list.length - 1;
-                bot.playlistRemove(remove);
-                bot.pm('the last snagged song has been removed.', data.senderid);
-            }
-        })
+            bot.skip();
+            bot.playlistRemove(-1);
+            thisHoldsThePlaylist.splice(thisHoldsThePlaylist.length - 1, 1);
+            bot.pm('the last snagged song has been removed.', data.senderid);
+        }
+        else
+        {
+            thisHoldsThePlaylist.splice(thisHoldsThePlaylist.length - 1, 1);
+            bot.playlistRemove(-1);
+            bot.pm('the last snagged song has been removed.', data.senderid);
+        }
     }
     else if (text.match('/username') && condition === true && isInRoom === true)
     {
@@ -3814,10 +3817,15 @@ bot.on('pmmed', function (data)
 
 
 
-
 //starts up when bot first enters the room
 bot.on('roomChanged', function (data)
 {
+    //load the playlist into memory
+    bot.playlistAll(function (callback)
+    {
+        thisHoldsThePlaylist = callback.list;
+    });
+
 
     //start the uptime
     beginTime = Date.now();
@@ -3866,10 +3874,10 @@ bot.on('roomChanged', function (data)
 
     //used to get user names and user id's
     var users = data.users;
+    var user;
     for (var i = 0; i < users.length; i++)
     {
-        var user = users[i];
-        user.lastActivity = user.loggedIn = new Date();
+        user = users[i];
         theUsersList.push(user.userid, user.name);
         userIds.push(user.userid);
     }
@@ -3895,8 +3903,6 @@ bot.on('roomChanged', function (data)
         myTime[userIds[zy]] = Date.now();
     }
 });
-
-
 
 
 
@@ -4050,15 +4056,12 @@ bot.on('registered', function (data)
 
 
 
-
-
 //updates the moderator list when a moderator is removed.
 bot.on('rem_moderator', function (data)
 {
     var test51 = modList.indexOf(data.userid);
     modList.splice(test51, 1);
 })
-
 
 
 
@@ -4076,8 +4079,6 @@ bot.on('new_moderator', function (data)
 
 
 
-
-
 //starts up when a user leaves the room
 bot.on('deregistered', function (data)
 {
@@ -4091,7 +4092,7 @@ bot.on('deregistered', function (data)
     delete timer[data.user[0].userid];
     delete myTime[data.user[0].userid];
 
-    
+
     //double check to make sure that if someone is on stage and they disconnect, that they are being removed
     //from the current Dj's array
     var checkIfStillInDjArray = currentDjs.indexOf(data.user[0].userid);
@@ -4100,7 +4101,7 @@ bot.on('deregistered', function (data)
         currentDjs.splice(checkIfStillInDjArray, 1);
     }
 
-    
+
     //removes people who leave the room from the afk list
     if (afkPeople.length !== 0)
     {
