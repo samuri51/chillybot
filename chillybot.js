@@ -3761,23 +3761,77 @@ bot.on('pmmed', function (data)
         var tempArray = bootName.split(" ");
         var reason = "";
         var whatIsTheirUserid = theUsersList.indexOf(tempArray[1]);
-
-        if (tempArray.length > 2 && whatIsTheirUserid != -1)
+        var theirName = ""; //holds the person's name
+        var isNameValid; //if second param is int value this is used to hold name index        
+        
+        
+        //if second arg is a number and that number is not a name of someone in the room
+        //then that number represents the word length of the name given, which means
+        //that they are going to print a message with the boot command
+        if(!isNaN(tempArray[1]) && whatIsTheirUserid === -1)
+        {
+            //if arg given will not produce index of bounds error
+            if(tempArray[1] < tempArray.length - 1)
+            {                
+                for(var gj = 2; gj <= (2 + Math.round(tempArray[1])) - 1; gj++)
+                {
+                    theirName += tempArray[gj] + " ";
+                }                
+               
+                isNameValid = theUsersList.indexOf(theirName.trim()); //find the index
+                
+                //if the name you provided was valid
+                if(isNameValid !== -1)
+                {
+                    //get the message                
+                    for(var gyj = 2 + Math.round(tempArray[1]); gyj < tempArray.length; gyj++)
+                    {
+                        reason += tempArray[gyj] + " ";
+                    }      
+                   
+                    
+                    //if their name is multi word, then a number must be given in order
+                    //to know when their name ends and their message begins, however
+                    //this command can be used with a multi name word and no message
+                    //in which case there would be no reason parameter                   
+                    if(reason !== "")
+                    {
+                        bot.boot(theUsersList[isNameValid - 1], reason);
+                    }
+                    else
+                    {
+                        bot.boot(theUsersList[isNameValid - 1]);
+                    }
+                }
+                else
+                {
+                    bot.pm('sorry but the name you provided was not found in the room', data.senderid);                
+                }
+            }
+            else
+            {
+                bot.pm('error, the number provided must be the number of words that make up the person\'s name', data.senderid);
+            }
+        }//if their name is just 1 single word and a message is given
+        //it comes to here
+        else if(tempArray.length > 2 && whatIsTheirUserid !== -1)
         {
             for (var ikp = 2; ikp < tempArray.length; ikp++)
             {
                 reason += tempArray[ikp] + " ";
-            }
-
-            bot.boot(theUsersList[whatIsTheirUserid - 1], reason);
-        }
-        else if (whatIsTheirUserid != -1)
-        {
+            }           
+               
+            bot.boot(theUsersList[whatIsTheirUserid - 1], reason);        
+        }     
+        //if their name is a single word and no message is given it comes to here
+        else if (whatIsTheirUserid !== -1)
+        {          
             bot.boot(theUsersList[whatIsTheirUserid - 1]);
         }
         else
         {
-            bot.pm('error, that user was not found in the room.', data.senderid);
+            bot.pm('error, that user was not found in the room. multi word names must be specified in the command usage, example: /boot 3 first middle last.' +
+            ' if the name is only one word long then you do not need to specify its length', data.senderid);
         }
     }
     else if (text.match(/^\/afk/) && isInRoom === true)
