@@ -101,75 +101,76 @@ global.eventMessages = ['hello there', //enter your different event messages her
 
 /************************************EndSetUp**********************************************************************/
 
+//do not change the values of any of the global variables below unless you know what you are doing, the discriptions given are for reference only
+
 var defaultPlayLimit = playLimit; //saves the default value for the play limit
 var spamLimit = 3; //number of times a user can spam being kicked off the stage within 10 secs
-var myId = null;
-var detail = null;
-var current = null;
-var name = null;
-var flag = null;
-var dj = null;
-var condition = null;
-var index = null;
-var song = null;
-var album = null;
-var genre = null;
-var skipOn = null;
-var snagSong = false;
-var checkWhoIsDj;
-var randomOnce = 0;
-var voteCountSkip = 0;
-var votesLeft = HowManyVotesToSkip;
-var sayOnce = true;
-var artist = null;
-var getSong = null;
-var informTimer = null;
-var upVotes = null;
-var downVotes = null;
-var whoSnagged = 0;
-var beginTime = null;
-var endTime = null;
-var roomName = null;
-var ttRoomName = null;
-var THEME = false;
-var whatIsTheme = null;
-var messageCounter = 0; //this is for the array of messages
+var myId = null; //the userid of the person using the /fanme command, speak event only
+var detail = null; //the discription given in the "room" tab of the room that the bot is in
+var current = null; //the number of dj's on stage, gets reset every song
+var name = null; //the name of the person using the person who activated the speak event
+var dj = null; //the name of the currently playing dj
+var condition = null; //is the person using a command a moderator? true or false
+var index = null; //the index returned when using unban commands
+var song = null; //the name of the current song
+var album = null; //the album name of the current song
+var genre = null; //the genre of the current song
+var skipOn = null; //if true causes the bot to skip every song it plays, toggled on and off by commands
+var snagSong = false; //if true causes the bot to add every song that plays to its queue
+var checkWhoIsDj = null; //the userid of the currently playing dj
+var randomOnce = 0; //a flag used to check if the /randomSong command has already been activated, 0 is no, 1 is yes
+var voteCountSkip = 0; //the current amount of votes for a song skip, gets reset every song
+var votesLeft = HowManyVotesToSkip; //a countdown of the amount of votes needed till a song gets skipped
+var sayOnce = true; //makes it so that the queue timeout can only be used once per per person, stops the bot from spamming
+var artist = null; //the artist name of the currently playing song
+var getSong = null; //the id3 tag id of the currently playing song
+var informTimer = null; //holds the timeout for the /inform command, null lets it know that it hasn't already been set
+var upVotes = null; //the amount of upvotes or "awesome's" that the currently playing song has recieved
+var downVotes = null; //the amount of downvotes or "lame's" that the currently playing song has recieved
+var whoSnagged = 0; //the amount of people who have added the currently playing song to their dj queue
+var beginTime = null; //the current time in milliseconds when the bot has started, used for the /uptime
+var endTime = null; //the current time in milliseconds when the /uptime is actually used
+var roomName = null; //the name of the room, example "straight chillin" would be the format for the straight chillin room...
+var ttRoomName = null; //the url extension of the room name, example "straight_chillin16" would be the format
+var THEME = false; //has a current theme been set? true or false. handled by commands
+var whatIsTheme = null; //this holds a string which is set by the /setTheme command
+var messageCounter = 0; //this is for the array of messages, it lets it know which message it is currently on, resets to 0 after cycling through all of them
 var ALLREADYCALLED = false; //resets votesnagging so that it can be called again
 var thisHoldsThePlaylist = null; //holds a copy of the playlist
 
-global.modpm = []; //for modpm
-global.warnme = [];
-global.timer = [];
-global.greetingTimer = [];
-global.djs20 = [];
-global.people = [];
-global.lastSeen = {};
-global.lastSeen1 = {};
-global.lastSeen2 = {};
-global.lastSeen3 = {};
-global.lastSeen4 = {};
-global.afkPeople = [];
-global.blackList = [];
-global.stageList = [];
-global.userIds = [];
-global.checkVotes = [];
-global.theUsersList = [];
-global.modList = [];
-global.escortList = [];
-global.currentDjs = [];
-global.queueList = [];
-global.queueName = [];
-global.myTime = [];
-global.curSongWatchdog = null;
-global.takedownTimer = null;
-global.lastdj = null;
-global.checkLast = null;
-global.songLimitTimer = null;
-global.beginTimer = null;
+global.modpm = []; //holds the userid's of everyone in the /modpm feature
+global.warnme = []; //holds the userid's of everyone using the /warnme feature
+global.timer = []; //holds the timeout of everyone who has been spamming the stage, resets their spam count if their timer completes
+global.greetingTimer = []; //holds the timeout for people that join the room, if someone rejoins before their timeout completes their timer is reset
+global.djs20 = []; //holds the song count that each of the dj's on stage have played
+global.people = []; //holds the userid's of everyone who is kicked off stage for the spam limit
+global.lastSeen = {}; //holds a date object to be used for the dj afk timer, there are different ones because they have different timeouts
+global.lastSeen1 = {}; //holds a date object to be used for the dj afk timer
+global.lastSeen2 = {}; //holds a date object to be used for the dj afk timer
+global.lastSeen3 = {}; //holds a date object to be used for the audience afk limit
+global.lastSeen4 = {}; //holds a date object to be used for the audience afk limit
+global.afkPeople = []; //holds the userid of everyone who has used the /afk command
+global.blackList = []; //holds the userid of everyone who is in the command based banned from the room list
+global.stageList = []; //holds the userid of everyone who is in the command based banned from stage list
+global.userIds = []; //holds the userid's of everyone who is in the room
+global.checkVotes = []; //holds the userid's of everyone who has voted for the currently playing song to be skipped, is cleared every song
+global.theUsersList = []; //holds the name and userid of everyone in the room
+global.modList = []; //holds the userid of everyone who is a moderator in the room
+global.escortList = []; //holds the userid of everyone who has used the /escortme command, auto removed when the person leaves the stage
+global.currentDjs = []; //holds the userid of all the dj's who are on stage currently
+global.queueList = []; //holds the name and userid of everyone in the queue
+global.queueName = []; //holds just the name of everyone who is in the queue
+global.myTime = []; //holds a date object for everyone in the room, which represents the time when they joined the room, resets every time the person rejoins
+global.curSongWatchdog = null; //used to hold the timer for stuck songs
+global.takedownTimer = null; //used to hold the timer that fires after curSongWatchDog which represents the time a person with a stuck song has left to skip their song
+global.lastdj = null; //holds the userid of the currently playing dj
+global.checkLast = null; //the index of the currently playing dj's userid in the theUsersList array
+global.songLimitTimer = null; //holds the timer used to remove a dj off stage if they don't skip their song in time, and their song has exceeded the max allowed song time
+global.beginTimer = null; //holds the timer the auto removes dj's from the queue if they do not get on stage within the allowed time period
 
-var randomPort = Math.ceil(Math.random() * 10000 + 6000);
-var bot = new Bot(AUTH, USERID, ROOMID);
-bot.listen(randomPort, '127.0.0.1');
+var randomPort = Math.ceil(Math.random() * 10000 + 6000); //a random port to the join the room on
+var bot = new Bot(AUTH, USERID, ROOMID); //initializes the bot
+bot.listen(randomPort, '127.0.0.1'); //needed if running on a server
 
 
 
@@ -1338,16 +1339,27 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/inform$/) && condition === true)
     {
-        if (informTimer === null)
+        if(checkWhoIsDj !== null)
         {
-            var checkDjsName = theUsersList.indexOf(lastdj) + 1;
-            bot.speak('@' + theUsersList[checkDjsName] + ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
-            informTimer = setTimeout(function ()
+            if (informTimer === null)
             {
-                bot.pm('you took too long to skip your song', lastdj);
-                bot.remDj(lastdj);
-                informTimer = null;
-            }, 20 * 1000);
+                var checkDjsName = theUsersList.indexOf(lastdj) + 1;
+                bot.speak('@' + theUsersList[checkDjsName] + ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
+                informTimer = setTimeout(function ()
+                {
+                    bot.pm('you took too long to skip your song', lastdj);
+                    bot.remDj(lastdj);
+                    informTimer = null;
+                }, 20 * 1000);
+            }     
+            else
+            {
+                bot.pm('the /inform timer has already been activated, it may be used only once per song', data.userid);
+            }
+        }
+        else
+        {
+            bot.pm('you must wait one song since the bot has started to use that command', data.userid);        
         }
     }
     else if (text.match('/cheers'))
@@ -3719,16 +3731,27 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/inform$/) && condition === true && isInRoom === true)
     {
-        if (informTimer === null)
+        if(checkWhoIsDj !== null)
         {
-            var checkDjsName = theUsersList.indexOf(lastdj) + 1;
-            bot.speak('@' + theUsersList[checkDjsName] + ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
-            informTimer = setTimeout(function ()
+            if (informTimer === null)
             {
-                bot.pm('you took too long to skip your song', lastdj);
-                bot.remDj(lastdj);
-                informTimer = null;
-            }, 20 * 1000);
+                var checkDjsName = theUsersList.indexOf(lastdj) + 1;
+                bot.speak('@' + theUsersList[checkDjsName] + ' your song is not the appropriate genre for this room, please skip or you will be removed in 20 seconds');
+                informTimer = setTimeout(function ()
+                {
+                    bot.pm('you took too long to skip your song', lastdj);
+                    bot.remDj(lastdj);
+                    informTimer = null;
+                }, 20 * 1000);
+            }
+            else
+            {
+                bot.pm('the /inform timer has already been activated, it may be used only once per song', data.senderid);
+            }
+        }
+        else
+        {
+            bot.pm('you must wait one song since the bot has started to use that command', data.senderid);        
         }
     }
     else if (text.match(/^\/removesong$/) && condition === true && isInRoom === true)
