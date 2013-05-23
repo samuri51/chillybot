@@ -1110,28 +1110,33 @@ bot.on('speak', function (data)
         voteCountSkip = 0;
         votesLeft = HowManyVotesToSkip;
     }
-    else if (text.match(/^\/skip$/) && voteSkip === true)
+    else if (text.match(/^\/skip$/) && voteSkip === true) //if command matches and voteskipping is enabled
     {
-        var checkIfOnList = checkVotes.indexOf(data.userid);
-        var checkIfMaster = masterIds.indexOf(lastdj); //master id's list      
+        var checkIfOnList = checkVotes.indexOf(data.userid); //check if the person using the command has already voted
+        var checkIfMaster = masterIds.indexOf(lastdj); //is the currently playing dj on the master id's list?
 
-        if (checkIfOnList == -1 && data.userid != USERID)
+        if (checkIfOnList == -1 && data.userid != USERID) //if command user has not voted and command user is not the bot
         {
-            voteCountSkip += 1;
-            votesLeft -= 1;
-            checkVotes.unshift(data.userid);
+            voteCountSkip += 1; //add one to the total count of votes for the current song to be skipped
+            votesLeft -= 1; //decrement votes left by one (the votes remaining till the song will be skipped)
+            checkVotes.unshift(data.userid); //add them to an array to make sure that they can't vote again this song
 
-            var findLastDj = theUsersList.indexOf(lastdj);
-            if (votesLeft !== 0 && checkIfMaster == -1)
+            var findLastDj = theUsersList.indexOf(lastdj); //the index of the currently playing dj's userid in the theUser's list
+            if (votesLeft !== 0 && checkIfMaster == -1) //if votesLeft has not reached zero and the current dj is not on the master id's list
             {
-                bot.speak("Current Votes for a song skip: " + voteCountSkip +
+                //the bot will say the following
+                bot.speak("Current Votes for a song skip: " + voteCountSkip + 
                     " Votes needed to skip the song: " + HowManyVotesToSkip);
             }
-            if (votesLeft === 0 && checkIfMaster == -1 && !isNaN(HowManyVotesToSkip))
-            {
+            if (votesLeft === 0 && checkIfMaster == -1 && !isNaN(HowManyVotesToSkip)) //if there are no votes left and the current dj is not on the master list and the 
+            {                                                                           //the amount of votes set was a valid number
                 bot.speak("@" + theUsersList[findLastDj + 1] + " you have been voted off stage");
-                bot.remDj(lastdj);
+                bot.remDj(lastdj); //remove the current dj and display the above message
             }
+        }
+        else //else the command user has already voted
+        {
+            bot.pm('sorry but you have already voted, only one vote per person per song is allowed', data.userid);
         }
     }
     else if (text.match(/^\/afkon/) && condition === true)
