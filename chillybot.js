@@ -136,6 +136,10 @@ var messageCounter = 0; //this is for the array of messages, it lets it know whi
 var ALLREADYCALLED = false; //resets votesnagging so that it can be called again
 var thisHoldsThePlaylist = null; //holds a copy of the playlist
 var netwatchdogTimer = null; // Used to detect internet connection dropping out
+var checkActivity = Date.now();
+var attemptToReconnect = null; //used for reconnecting to the bots room if its not in there (only works if internet connection is working)
+var returnToRoom = true; //used to toggle on and off the bot reconnecting to its room(it toggles off when theres no internet connection because it only works when its connected to turntable.fm)
+var wserrorTimeout = null; //this is for the setTimeout in ws error
 
 global.modpm = []; //holds the userid's of everyone in the /modpm feature
 global.warnme = []; //holds the userid's of everyone using the /warnme feature
@@ -173,14 +177,22 @@ bot.listen(randomPort, '127.0.0.1'); //needed if running on a server
 
 
 
-//this code thanks to dubbytt of turntable.fm
 bot.on('wserror', function (data)
-{ // Loss of connection detected, takes about 20 seconds
-    console.log(data);
-    setTimeout(function ()
+{ // Loss of connection detected, takes about 20 seconds     
+    if(wserrorTimeout === null)
     {
-        startWatchdog();
-    }, 10 * 1000); // give the bot 10 seconds to fully fail before attempting to reconnect
+        wserrorTimeout = setTimeout(function ()
+        {
+            console.log(data);
+            if(attemptToReconnect !== null)
+            {            
+                clearInterval(attemptToReconnect);
+                attemptToReconnect = null;
+            }
+            returnToRoom = false;
+            startWatchdog();
+        }, 10 * 1000); // give the bot 10 seconds to fully fail before attempting to reconnect
+    }
 });
 
 
@@ -188,9 +200,21 @@ bot.on('wserror', function (data)
 bot.on('alive', function (data)
 { // Reset the watchdog timer if bot is alive
     if (netwatchdogTimer != null)
+    {        
+        console.log("connection with turntable.fm is back!");              
+        clearInterval(netwatchdogTimer);
+        netwatchdogTimer = null;        
+    }
+    
+    if(wserrorTimeout != null)
     {
-        clearTimeout(netwatchdogTimer);
-        netwatchdogTimer = null;
+        clearTimeout(wserrorTimeout);
+        wserrorTimeout = null;
+    }
+    
+    if(returnToRoom === false)
+    {
+        returnToRoom = true;
     }
 });
 
@@ -206,14 +230,53 @@ function startWatchdog()
             bot.roomRegister(ROOMID, function (data)
             {
                 if (data.success === true)
-                {
-                    console.log("connection with turntable.fm is back!");
+                {                    
                     clearInterval(netwatchdogTimer);
+                    returnToRoom = true;
                 }
             });
         }, 10 * 1000); // Try to log back in every 10 seconds
     }
 }
+
+
+
+var checkIfConnected = function ()
+{ 
+    if(returnToRoom === true) //only use this if the recovery code for wserror did not work
+    {
+        if(attemptToReconnect === null) //if a reconnection attempt is already in progress, do not attempt it
+        {
+            var currentActivity = (Date.now() - checkActivity) / 1000 / 60;
+        
+            if (currentActivity > 30) //if greater than 30 minutes of no talking
+            {        
+                bot.speak('ping', function (callback) //attempt to talk
+                {
+                    if (callback.success === false) //if it fails
+                    {                    
+                        attemptToReconnect = setInterval(function()
+                        {            
+                            console.log('it looks like your bot is not in it\'s room. attempting to reconnect now....');
+                            bot.roomRegister(ROOMID, function (data)
+                            {
+                                if(data.success === true)
+                                {
+                                    clearInterval(attemptToReconnect);
+                                    attemptToReconnect = null;
+                                    console.log('the bot has reconnected to the room'+
+                                    'specified by your choosen roomid');
+                                }
+                            });
+                        }, 1000 * 10);                   
+                    }
+                });
+            }
+        } 
+    }  
+};
+
+setInterval(checkIfConnected, 5000);
 
 
 
@@ -785,7 +848,8 @@ bot.on('speak', function (data)
     // Get the data
     var text = data.text;
     //name of person doing the command.
-    name = data.name;
+    name = data.name;    
+    checkActivity = Date.now(); //update when someone says something
 
     //checks to see if the speaker is a moderator or not.
     var modIndex = modList.indexOf(data.userid);
@@ -3977,93 +4041,100 @@ bot.on('pmmed', function (data)
 //starts up when bot first enters the room
 bot.on('roomChanged', function (data)
 {
-    //reset arrays in case this was triggered by the bot restarting   
-    escortList = [];
-    theUsersList = [];
-    modList = [];
-    currentDjs = [];
-    userIds = [];
-    queueList = [];
-    queueName = [];
-
-
-    //load the playlist into memory
-    bot.playlistAll(function (callback)
+    try
     {
-        thisHoldsThePlaylist = callback.list;
-    });
+        //reset arrays in case this was triggered by the bot restarting   
+        escortList = [];
+        theUsersList = [];
+        modList = [];
+        currentDjs = [];
+        userIds = [];
+        queueList = [];
+        queueName = [];
 
 
-    //only set begintime if it has not already been set
-    if (beginTime === null)
-    { //this is for /uptime
-        beginTime = Date.now();
+        //load the playlist into memory
+        bot.playlistAll(function (callback)
+        {
+            thisHoldsThePlaylist = callback.list;
+        });
+
+
+        //only set begintime if it has not already been set
+        if (beginTime === null)
+        { //this is for /uptime
+            beginTime = Date.now();
+        }
+
+
+        //gets your rooms name and shortcut
+        roomName = data.room.name;
+        ttRoomName = data.room.shortcut;
+
+
+
+        //finds out who the currently playing dj's are.    
+        for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
+        {
+            currentDjs.push(data.room.metadata.djs[iop]);
+            djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
+                nbSong: 0
+            };
+            justSaw(data.room.metadata.djs[iop], 'justSaw'); //initialize dj afk count
+            justSaw(data.room.metadata.djs[iop], 'justSaw1');
+            justSaw(data.room.metadata.djs[iop], 'justSaw2');
+        }
+
+
+
+        //set modlist to list of moderators
+        //modList = data.room.metadata.moderator_id;
+        for (var ihp = 0; ihp < data.room.metadata.moderator_id.length; ihp++)
+        {
+            modList.push(data.room.metadata.moderator_id[ihp]);
+        }
+
+
+
+        //used to get room description
+        detail = data.room.description;
+
+
+
+        //used to get user names and user id's
+        var users = data.users;
+        var user;
+        for (var i = 0; i < users.length; i++)
+        {
+            user = users[i];
+            theUsersList.push(user.userid, user.name);
+            userIds.push(user.userid);
+        }
+
+
+
+        //sets everyones spam count to zero	
+        //puts people on the global afk list when it joins the room	
+        for (var z = 0; z < userIds.length; z++)
+        {
+            people[userIds[z]] = {
+                spamCount: 0
+            };
+            justSaw(userIds[z], 'justSaw3');
+            justSaw(userIds[z], 'justSaw4');
+        }
+
+
+
+        //starts time in room for everyone currently in the room
+        for (var zy = 0; zy < userIds.length; zy++)
+        {
+            myTime[userIds[zy]] = Date.now();
+        }
     }
-
-
-    //gets your rooms name and shortcut
-    roomName = data.room.name;
-    ttRoomName = data.room.shortcut;
-
-
-
-    //finds out who the currently playing dj's are.    
-    for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
+    catch(err)
     {
-        currentDjs.push(data.room.metadata.djs[iop]);
-        djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
-            nbSong: 0
-        };
-        justSaw(data.room.metadata.djs[iop], 'justSaw'); //initialize dj afk count
-        justSaw(data.room.metadata.djs[iop], 'justSaw1');
-        justSaw(data.room.metadata.djs[iop], 'justSaw2');
-    }
-
-
-
-    //set modlist to list of moderators
-    //modList = data.room.metadata.moderator_id;
-    for (var ihp = 0; ihp < data.room.metadata.moderator_id.length; ihp++)
-    {
-        modList.push(data.room.metadata.moderator_id[ihp]);
-    }
-
-
-
-    //used to get room description
-    detail = data.room.description;
-
-
-
-    //used to get user names and user id's
-    var users = data.users;
-    var user;
-    for (var i = 0; i < users.length; i++)
-    {
-        user = users[i];
-        theUsersList.push(user.userid, user.name);
-        userIds.push(user.userid);
-    }
-
-
-
-    //sets everyones spam count to zero	
-    //puts people on the global afk list when it joins the room	
-    for (var z = 0; z < userIds.length; z++)
-    {
-        people[userIds[z]] = {
-            spamCount: 0
-        };
-        justSaw(userIds[z], 'justSaw3');
-        justSaw(userIds[z], 'justSaw4');
-    }
-
-
-
-    //starts time in room for everyone currently in the room
-    for (var zy = 0; zy < userIds.length; zy++)
-    {
-        myTime[userIds[zy]] = Date.now();
+        console.log('unable to join the room the room due to: ' + err);
     }
 });
 
