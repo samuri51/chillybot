@@ -10,8 +10,6 @@
 
 
 /*******************************BeginSetUp*****************************************************************************/
-
-
 var Bot = require('ttapi');
 var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
@@ -93,7 +91,7 @@ var EVENTMESSAGE = false; //this disables / enables event message on startup - t
 global.eventMessages = ['hello there', //enter your different event messages here, any messages that you want repeated
 
     'message 2' +
-        ' this is an example message, multiple lines should be separate strings added together',
+    ' this is an example message, multiple lines should be separate strings added together',
 
     'this is a test'
 ];
@@ -176,38 +174,45 @@ bot.listen(randomPort, '127.0.0.1'); //needed if running on a server
 
 
 //this code thanks to dubbytt of turntable.fm
-bot.on('wserror', function (data) { // Loss of connection detected, takes about 20 seconds
+bot.on('wserror', function (data)
+{ // Loss of connection detected, takes about 20 seconds
     console.log(data);
-    setTimeout(function () {
-    startWatchdog();
-  }, 10 * 1000); // give the bot 10 seconds to fully fail before attempting to reconnect
+    setTimeout(function ()
+    {
+        startWatchdog();
+    }, 10 * 1000); // give the bot 10 seconds to fully fail before attempting to reconnect
 });
 
 
 
-bot.on('alive', function (data) { // Reset the watchdog timer if bot is alive
-  if (netwatchdogTimer != null) {
-    clearTimeout(netwatchdogTimer);
-    netwatchdogTimer = null;
-  }
+bot.on('alive', function (data)
+{ // Reset the watchdog timer if bot is alive
+    if (netwatchdogTimer != null)
+    {
+        clearTimeout(netwatchdogTimer);
+        netwatchdogTimer = null;
+    }
 });
 
 
 
-function startWatchdog() { // Start the watchdog timer
-  if (netwatchdogTimer == null) {
-    netwatchdogTimer = setInterval(function () {
-      console.log("connection with turntable.fm lost, now waiting for connection to come back");
-      bot.roomRegister(ROOMID, function(data)
-      {
-        if(data.success === true)
+function startWatchdog()
+{ // Start the watchdog timer
+    if (netwatchdogTimer == null)
+    {
+        netwatchdogTimer = setInterval(function ()
         {
-            console.log("connection with turntable.fm is back!");
-            clearInterval(netwatchdogTimer);
-        }
-      });
-    }, 10 * 1000); // Try to log back in every 10 seconds
-  }
+            console.log("connection with turntable.fm lost, now waiting for connection to come back");
+            bot.roomRegister(ROOMID, function (data)
+            {
+                if (data.success === true)
+                {
+                    console.log("connection with turntable.fm is back!");
+                    clearInterval(netwatchdogTimer);
+                }
+            });
+        }, 10 * 1000); // Try to log back in every 10 seconds
+    }
 }
 
 
@@ -756,7 +761,7 @@ bot.on('newsong', function (data)
         {
             currentDjs.push(data.room.metadata.djs[hjg]);
         }
-    }   
+    }
 });
 
 
@@ -1163,11 +1168,11 @@ bot.on('speak', function (data)
             if (votesLeft !== 0 && checkIfMaster == -1) //if votesLeft has not reached zero and the current dj is not on the master id's list
             {
                 //the bot will say the following
-                bot.speak("Current Votes for a song skip: " + voteCountSkip + 
+                bot.speak("Current Votes for a song skip: " + voteCountSkip +
                     " Votes needed to skip the song: " + HowManyVotesToSkip);
             }
             if (votesLeft === 0 && checkIfMaster == -1 && !isNaN(HowManyVotesToSkip)) //if there are no votes left and the current dj is not on the master list and the 
-            {                                                                           //the amount of votes set was a valid number
+            { //the amount of votes set was a valid number
                 bot.speak("@" + theUsersList[findLastDj + 1] + " you have been voted off stage");
                 bot.remDj(lastdj); //remove the current dj and display the above message
             }
@@ -1382,7 +1387,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/inform$/) && condition === true)
     {
-        if(checkWhoIsDj !== null)
+        if (checkWhoIsDj !== null)
         {
             if (informTimer === null)
             {
@@ -1394,7 +1399,7 @@ bot.on('speak', function (data)
                     bot.remDj(lastdj);
                     informTimer = null;
                 }, 20 * 1000);
-            }     
+            }
             else
             {
                 bot.pm('the /inform timer has already been activated, it may be used only once per song', data.userid);
@@ -1402,7 +1407,7 @@ bot.on('speak', function (data)
         }
         else
         {
-            bot.pm('you must wait one song since the bot has started to use that command', data.userid);        
+            bot.pm('you must wait one song since the bot has started to use that command', data.userid);
         }
     }
     else if (text.match('/cheers'))
@@ -1947,16 +1952,16 @@ bot.on('speak', function (data)
                 }
             }
             bot.speak(temp91);
-        }        
-        else if(list3 != -1) //if already in queue
-        {
-            bot.pm('sorry i can\'t add you to the queue because you are already in the queue!', data.userid);        
         }
-        else if(checkStageList != -1 || checkManualStageList != -1) //if banned from stage
+        else if (list3 != -1) //if already in queue
         {
-            bot.pm('sorry i can\'t add you to the queue because you are currently banned from djing', data.userid);        
+            bot.pm('sorry i can\'t add you to the queue because you are already in the queue!', data.userid);
         }
-        else if(list10 !== -1) //if already on stage
+        else if (checkStageList != -1 || checkManualStageList != -1) //if banned from stage
+        {
+            bot.pm('sorry i can\'t add you to the queue because you are currently banned from djing', data.userid);
+        }
+        else if (list10 !== -1) //if already on stage
         {
             bot.pm('you are already djing!', data.userid);
         }
@@ -2280,7 +2285,7 @@ bot.on('update_votes', function (data)
                 var tempSongHolder = {
                     _id: getSong
                 };
-                thisHoldsThePlaylist.push(tempSongHolder);                
+                thisHoldsThePlaylist.push(tempSongHolder);
                 bot.snag();
             }
         }
@@ -2418,7 +2423,7 @@ bot.on('add_dj', function (data)
             bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
         }
     }
-    else if(queue === true && ifUser2 !== -1 && data.user[0].name !== queueName[0])
+    else if (queue === true && ifUser2 !== -1 && data.user[0].name !== queueName[0])
     {
         bot.pm('sorry, but you are not first in queue. please wait your turn.', data.user[0].userid);
     }
@@ -2427,7 +2432,7 @@ bot.on('add_dj', function (data)
 
     //removes a user from the queue list when they join the stage.
     if (queue === true)
-    {        
+    {
         var firstOnly = queueList.indexOf(data.user[0].userid);
         var queueListLength = queueList.length;
         if (firstOnly != 1 && queueListLength !== 0)
@@ -2939,15 +2944,15 @@ bot.on('pmmed', function (data)
                 }
                 bot.speak(temp91);
             }
-            else if(list3 != -1) //if already in queue
+            else if (list3 != -1) //if already in queue
             {
-                bot.pm('sorry i can\'t add you to the queue because you are already in the queue!', data.senderid);        
+                bot.pm('sorry i can\'t add you to the queue because you are already in the queue!', data.senderid);
             }
-            else if(checkStageList != -1 || checkManualStageList != -1) //if banned from stage
+            else if (checkStageList != -1 || checkManualStageList != -1) //if banned from stage
             {
-                bot.pm('sorry i can\'t add you to the queue because you are currently banned from djing', data.senderid);        
+                bot.pm('sorry i can\'t add you to the queue because you are currently banned from djing', data.senderid);
             }
-            else if(list10 !== -1) //if already on stage
+            else if (list10 !== -1) //if already on stage
             {
                 bot.pm('you are already djing!', data.senderid);
             }
@@ -3773,7 +3778,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/inform$/) && condition === true && isInRoom === true)
     {
-        if(checkWhoIsDj !== null)
+        if (checkWhoIsDj !== null)
         {
             if (informTimer === null)
             {
@@ -3793,7 +3798,7 @@ bot.on('pmmed', function (data)
         }
         else
         {
-            bot.pm('you must wait one song since the bot has started to use that command', data.senderid);        
+            bot.pm('you must wait one song since the bot has started to use that command', data.senderid);
         }
     }
     else if (text.match(/^\/removesong$/) && condition === true && isInRoom === true)
@@ -3828,38 +3833,38 @@ bot.on('pmmed', function (data)
         var whatIsTheirUserid = theUsersList.indexOf(tempArray[1]);
         var theirName = ""; //holds the person's name
         var isNameValid; //if second param is int value this is used to hold name index        
-        
-        
+
+
         //if second arg is a number and that number is not a name of someone in the room
         //then that number represents the word length of the name given, which means
         //that they are going to print a message with the boot command
-        if(!isNaN(tempArray[1]) && whatIsTheirUserid === -1)
+        if (!isNaN(tempArray[1]) && whatIsTheirUserid === -1)
         {
             //if arg given will not produce index of bounds error
-            if(tempArray[1] < tempArray.length - 1)
-            {                
-                for(var gj = 2; gj <= (2 + Math.round(tempArray[1])) - 1; gj++)
+            if (tempArray[1] < tempArray.length - 1)
+            {
+                for (var gj = 2; gj <= (2 + Math.round(tempArray[1])) - 1; gj++)
                 {
                     theirName += tempArray[gj] + " ";
-                }                
-               
+                }
+
                 isNameValid = theUsersList.indexOf(theirName.trim()); //find the index
-                
+
                 //if the name you provided was valid
-                if(isNameValid !== -1)
+                if (isNameValid !== -1)
                 {
                     //get the message                
-                    for(var gyj = 2 + Math.round(tempArray[1]); gyj < tempArray.length; gyj++)
+                    for (var gyj = 2 + Math.round(tempArray[1]); gyj < tempArray.length; gyj++)
                     {
                         reason += tempArray[gyj] + " ";
-                    }      
-                   
-                    
+                    }
+
+
                     //if their name is multi word, then a number must be given in order
                     //to know when their name ends and their message begins, however
                     //this command can be used with a multi name word and no message
                     //in which case there would be no reason parameter                   
-                    if(reason !== "")
+                    if (reason !== "")
                     {
                         bot.boot(theUsersList[isNameValid - 1], reason);
                     }
@@ -3870,33 +3875,33 @@ bot.on('pmmed', function (data)
                 }
                 else
                 {
-                    bot.pm('sorry but the name you provided was not found in the room', data.senderid);                
+                    bot.pm('sorry but the name you provided was not found in the room', data.senderid);
                 }
             }
             else
             {
                 bot.pm('error, the number provided must be the number of words that make up the person\'s name', data.senderid);
             }
-        }//if their name is just 1 single word and a message is given
+        } //if their name is just 1 single word and a message is given
         //it comes to here
-        else if(tempArray.length > 2 && whatIsTheirUserid !== -1)
+        else if (tempArray.length > 2 && whatIsTheirUserid !== -1)
         {
             for (var ikp = 2; ikp < tempArray.length; ikp++)
             {
                 reason += tempArray[ikp] + " ";
-            }           
-               
-            bot.boot(theUsersList[whatIsTheirUserid - 1], reason);        
-        }     
+            }
+
+            bot.boot(theUsersList[whatIsTheirUserid - 1], reason);
+        }
         //if their name is a single word and no message is given it comes to here
         else if (whatIsTheirUserid !== -1)
-        {          
+        {
             bot.boot(theUsersList[whatIsTheirUserid - 1]);
         }
         else
         {
             bot.pm('error, that user was not found in the room. multi word names must be specified in the command usage, example: /boot 3 first middle last.' +
-            ' if the name is only one word long then you do not need to specify its length', data.senderid);
+                ' if the name is only one word long then you do not need to specify its length', data.senderid);
         }
     }
     else if (text.match(/^\/afk/) && isInRoom === true)
@@ -3990,10 +3995,10 @@ bot.on('roomChanged', function (data)
 
 
     //only set begintime if it has not already been set
-    if(beginTime === null)
-    {//this is for /uptime
+    if (beginTime === null)
+    { //this is for /uptime
         beginTime = Date.now();
-    }  
+    }
 
 
     //gets your rooms name and shortcut
@@ -4004,15 +4009,15 @@ bot.on('roomChanged', function (data)
 
     //finds out who the currently playing dj's are.    
     for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
-    {           
-        currentDjs.push(data.room.metadata.djs[iop]);       
+    {
+        currentDjs.push(data.room.metadata.djs[iop]);
         djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
             nbSong: 0
         };
         justSaw(data.room.metadata.djs[iop], 'justSaw'); //initialize dj afk count
         justSaw(data.room.metadata.djs[iop], 'justSaw1');
         justSaw(data.room.metadata.djs[iop], 'justSaw2');
-    }    
+    }
 
 
 
@@ -4213,43 +4218,44 @@ bot.on('registered', function (data)
 
 
 
-bot.on('update_user', function (data) {
+bot.on('update_user', function (data)
+{
     var oldname = ''; //holds users old name if exists
     var queueNamePosition;
     var queueListPosition;
-    var afkPeoplePosition;    
-    
+    var afkPeoplePosition;
+
     //when when person updates their profile
     //and their name is not found in the users list then they must have changed
     //their name   
-    if(theUsersList.indexOf(data.name) === -1) 
+    if (theUsersList.indexOf(data.name) === -1)
     {
         var nameIndex = theUsersList.indexOf(data.userid);
-        if(nameIndex !== -1) //if their userid was found in theUsersList
+        if (nameIndex !== -1) //if their userid was found in theUsersList
         {
             oldname = theUsersList[nameIndex + 1];
             queueNamePosition = queueName.indexOf(oldname);
             queueListPosition = queueList.indexOf(oldname);
             afkPeoplePosition = afkPeople.indexOf(oldname);
-            theUsersList[nameIndex + 1] = data.name;            
+            theUsersList[nameIndex + 1] = data.name;
         }
     }
-    
-    
-    if(queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
-    {        
-        queueName[queueNamePosition] = data.name;        
+
+
+    if (queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
+    {
+        queueName[queueNamePosition] = data.name;
     }
-    
-    if(queueListPosition !== -1) //this is also for the queue
+
+    if (queueListPosition !== -1) //this is also for the queue
     {
         queueList[queueListPosition] = data.name;
     }
-    
-    if(afkPeoplePosition !== -1) //this checks the afk list
+
+    if (afkPeoplePosition !== -1) //this checks the afk list
     {
         afkPeople[afkPeoplePosition] = data.name;
-    }    
+    }
 })
 
 
