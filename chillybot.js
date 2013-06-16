@@ -5,7 +5,7 @@
 	credits: a big thanks to the people at the turntable api for all the input they gave
 	me on the script. also a thanks to MikeWillis for his awesome song randomize algorithm.
 	and a credit to alaingilbert for his help and the afk timer pattern. thanks to DubbyTT also for 
-	the song skipping algorithm.
+	the song skipping algorithm and the auto reconnecting when turntable goes down
 */
 
 
@@ -13,9 +13,9 @@
 
 
 var Bot = require('ttapi');
-var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
-var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
-var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
+var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
+var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
+var ROOMID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the roomid of the room you want the bot to go to here.
 var playLimit = 4; //set the playlimit here (default 4 songs)
 var songLengthLimit = 10.0; //set song limit in minutes
 var afkLimit = 20; //set the afk limit in minutes here
@@ -137,6 +137,7 @@ var whatIsTheme = null; //this holds a string which is set by the /setTheme comm
 var messageCounter = 0; //this is for the array of messages, it lets it know which message it is currently on, resets to 0 after cycling through all of them
 var ALLREADYCALLED = false; //resets votesnagging so that it can be called again
 var thisHoldsThePlaylist = null; //holds a copy of the playlist
+var netwatchdogTimer = null; // Used to detect internet connection dropping out
 
 global.modpm = []; //holds the userid's of everyone in the /modpm feature
 global.warnme = []; //holds the userid's of everyone using the /warnme feature
@@ -171,6 +172,43 @@ global.beginTimer = null; //holds the timer the auto removes dj's from the queue
 var randomPort = Math.ceil(Math.random() * 10000 + 6000); //a random port to the join the room on
 var bot = new Bot(AUTH, USERID, ROOMID); //initializes the bot
 bot.listen(randomPort, '127.0.0.1'); //needed if running on a server
+
+
+
+//this code thanks to dubbytt of turntable.fm
+bot.on('wserror', function (data) { // Loss of connection detected, takes about 20 seconds
+    console.log(data);
+    setTimeout(function () {
+    startWatchdog();
+  }, 10 * 1000); // give the bot 10 seconds to fully fail before attempting to reconnect
+});
+
+
+
+bot.on('alive', function (data) { // Reset the watchdog timer if bot is alive
+  if (netwatchdogTimer != null) {
+    clearTimeout(netwatchdogTimer);
+    netwatchdogTimer = null;
+  }
+});
+
+
+
+function startWatchdog() { // Start the watchdog timer
+  if (netwatchdogTimer == null) {
+    netwatchdogTimer = setInterval(function () {
+      console.log("connection with turntable.fm lost, now waiting for connection to come back");
+      bot.roomRegister(ROOMID, function(data)
+      {
+        if(data.success === true)
+        {
+            console.log("connection with turntable.fm is back!");
+            clearInterval(netwatchdogTimer);
+        }
+      });
+    }, 10 * 1000); // Try to log back in every 10 seconds
+  }
+}
 
 
 
@@ -718,7 +756,7 @@ bot.on('newsong', function (data)
         {
             currentDjs.push(data.room.metadata.djs[hjg]);
         }
-    }
+    }   
 });
 
 
@@ -2389,8 +2427,7 @@ bot.on('add_dj', function (data)
 
     //removes a user from the queue list when they join the stage.
     if (queue === true)
-    {
-        //var ifUser = queueList.indexOf(data.user[0].userid);
+    {        
         var firstOnly = queueList.indexOf(data.user[0].userid);
         var queueListLength = queueList.length;
         if (firstOnly != 1 && queueListLength !== 0)
@@ -3935,6 +3972,16 @@ bot.on('pmmed', function (data)
 //starts up when bot first enters the room
 bot.on('roomChanged', function (data)
 {
+    //reset arrays in case this was triggered by the bot restarting   
+    escortList = [];
+    theUsersList = [];
+    modList = [];
+    currentDjs = [];
+    userIds = [];
+    queueList = [];
+    queueName = [];
+
+
     //load the playlist into memory
     bot.playlistAll(function (callback)
     {
@@ -3942,8 +3989,11 @@ bot.on('roomChanged', function (data)
     });
 
 
-    //start the uptime
-    beginTime = Date.now();
+    //only set begintime if it has not already been set
+    if(beginTime === null)
+    {//this is for /uptime
+        beginTime = Date.now();
+    }  
 
 
     //gets your rooms name and shortcut
@@ -3954,22 +4004,15 @@ bot.on('roomChanged', function (data)
 
     //finds out who the currently playing dj's are.    
     for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
-    {
-        currentDjs.push(data.room.metadata.djs[iop]);
+    {           
+        currentDjs.push(data.room.metadata.djs[iop]);       
         djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
             nbSong: 0
         };
         justSaw(data.room.metadata.djs[iop], 'justSaw'); //initialize dj afk count
         justSaw(data.room.metadata.djs[iop], 'justSaw1');
         justSaw(data.room.metadata.djs[iop], 'justSaw2');
-    }
-
-
-
-    //list of escorts, users, and moderators is reset    
-    escortList = [];
-    theUsersList = [];
-    modList = [];
+    }    
 
 
 
@@ -4170,6 +4213,46 @@ bot.on('registered', function (data)
 
 
 
+bot.on('update_user', function (data) {
+    var oldname = ''; //holds users old name if exists
+    var queueNamePosition;
+    var queueListPosition;
+    var afkPeoplePosition;    
+    
+    //when when person updates their profile
+    //and their name is not found in the users list then they must have changed
+    //their name   
+    if(theUsersList.indexOf(data.name) === -1) 
+    {
+        var nameIndex = theUsersList.indexOf(data.userid);
+        if(nameIndex !== -1) //if their userid was found in theUsersList
+        {
+            oldname = theUsersList[nameIndex + 1];
+            queueNamePosition = queueName.indexOf(oldname);
+            queueListPosition = queueList.indexOf(oldname);
+            afkPeoplePosition = afkPeople.indexOf(oldname);
+            theUsersList[nameIndex + 1] = data.name;            
+        }
+    }
+    
+    
+    if(queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
+    {        
+        queueName[queueNamePosition] = data.name;        
+    }
+    
+    if(queueListPosition !== -1) //this is also for the queue
+    {
+        queueList[queueListPosition] = data.name;
+    }
+    
+    if(afkPeoplePosition !== -1) //this checks the afk list
+    {
+        afkPeople[afkPeoplePosition] = data.name;
+    }    
+})
+
+
 
 //updates the moderator list when a moderator is removed.
 bot.on('rem_moderator', function (data)
@@ -4177,7 +4260,6 @@ bot.on('rem_moderator', function (data)
     var test51 = modList.indexOf(data.userid);
     modList.splice(test51, 1);
 })
-
 
 
 
@@ -4190,7 +4272,6 @@ bot.on('new_moderator', function (data)
         modList.push(data.userid);
     }
 })
-
 
 
 
