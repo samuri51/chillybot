@@ -140,6 +140,7 @@ var checkActivity = Date.now();
 var attemptToReconnect = null; //used for reconnecting to the bots room if its not in there (only works if internet connection is working)
 var returnToRoom = true; //used to toggle on and off the bot reconnecting to its room(it toggles off when theres no internet connection because it only works when its connected to turntable.fm)
 var wserrorTimeout = null; //this is for the setTimeout in ws error
+var errorMessage = null; //the error message you get when trying to connect to the room
 
 global.modpm = []; //holds the userid's of everyone in the /modpm feature
 global.warnme = []; //holds the userid's of everyone using the /warnme feature
@@ -230,9 +231,17 @@ function startWatchdog()
             bot.roomRegister(ROOMID, function (data)
             {
                 if (data.success === true)
-                {                    
+                {                   
+                    errorMessage = null;
                     clearInterval(netwatchdogTimer);
                     returnToRoom = true;
+                }
+                else
+                {                    
+                    if(errorMessage === null && typeof data.err === 'string')
+                    {
+                        errorMessage = data.err;
+                    }
                 }
             });
         }, 10 * 1000); // Try to log back in every 10 seconds
@@ -259,13 +268,21 @@ var checkIfConnected = function ()
                         {            
                             console.log('it looks like your bot is not in it\'s room. attempting to reconnect now....');
                             bot.roomRegister(ROOMID, function (data)
-                            {
+                            {                                
                                 if(data.success === true)
                                 {
+                                    errorMessage = null;
                                     clearInterval(attemptToReconnect);
                                     attemptToReconnect = null;
                                     console.log('the bot has reconnected to the room'+
                                     'specified by your choosen roomid');
+                                }
+                                else
+                                {                                   
+                                    if(errorMessage === null && typeof data.err === 'string')
+                                    {                                        
+                                        errorMessage = data.err;
+                                    }
                                 }
                             });
                         }, 1000 * 10);                   
@@ -4134,7 +4151,14 @@ bot.on('roomChanged', function (data)
     }
     catch(err)
     {
-        console.log('unable to join the room the room due to: ' + err);
+        if(typeof errorMessage === 'string')
+        {
+            console.log('unable to join the room the room due to: ' + errorMessage);
+        }
+        else
+        {
+            console.log('unable to join the room the room due to: ' + err);
+        }        
     }
 });
 
