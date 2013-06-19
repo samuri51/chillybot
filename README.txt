@@ -20,9 +20,7 @@ ability to toggle just about everything
 very easy to use! entirely script based just download node, run the script and your off!
 
 *now with the ability to automatically reconnect to your turntable room after losing internet connection!
-*simply find where you installed your ttapi file from npm install ttapi below and replace the bot.js file in there
-*with the bot.js file found on this repo
-
+*simply install the latest version of ttapi to do it!
 
 For a full list of commands, please consult the commands.txt file(does not contain all features, just commands).
 
