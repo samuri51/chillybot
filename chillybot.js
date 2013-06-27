@@ -178,7 +178,7 @@ bot.listen(randomPort, '127.0.0.1'); //needed if running on a server
 
 
 
-bot.on('wserror', function (data)
+bot.on('disconnected', function (data)
 { // Loss of connection detected, takes about 20 seconds     
     if(wserrorTimeout === null)
     {
@@ -274,7 +274,7 @@ var checkIfConnected = function ()
                                     errorMessage = null;
                                     clearInterval(attemptToReconnect);
                                     attemptToReconnect = null;
-                                    console.log('the bot has reconnected to the room'+
+                                    console.log('the bot has reconnected to the room '+
                                     'specified by your choosen roomid');
                                 }
                                 else
