@@ -41,6 +41,12 @@ var roomJoinMessage = ''; //the message users will see when they join the room, 
 //example of how to use this, var roomJoinMessage = 'your message goes here';
 
 
+//these variables are for enabling / disabling the banned artist / song matching
+//they correspond to the bannedArtist array below which is where you put both artists and songs regardless or which you are attempting to match for
+//if they are both set to false no attempt to match will occur
+var matchArtists = true; //set this true to enable banned artist matching
+var matchSongs = true; //set this true to enable banned song matching
+
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed. 
 global.bannedArtists = [/\b(dj tiesto|skrillex|lil wayne|t-pain|tpain|katy perry|eminem)\b/i, //banned artist / song list (make sure to escape any special characters
@@ -815,16 +821,47 @@ bot.on('newsong', function (data)
     {
         for (var j = 0; j < bannedArtists.length; j++)
         {
-            if (artist.match(bannedArtists[j])|| song.match(bannedArtists[j]))
+            //if matching is enabled for both songs and artists
+            if(matchArtists && matchSongs)
             {
-                if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
+                if (artist.match(bannedArtists[j])|| song.match(bannedArtists[j]))
                 {
-                    var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
-                    bot.remDj(checkWhoIsDj);
-                    bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
-                    break;
+                    if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
+                    {
+                        var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
+                        bot.remDj(checkWhoIsDj);
+                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
+                        break;
+                    }
                 }
             }
+            else if(matchArtists) //if just artist matching is enabled
+            {
+                if (artist.match(bannedArtists[j]))
+                {
+                    if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
+                    {
+                        var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
+                        bot.remDj(checkWhoIsDj);
+                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
+                        break;
+                    }
+                }
+            
+            }
+            else if(matchSongs) //if just song matching is enabled
+            {
+                if(song.match(bannedArtists[j]))
+                {
+                    if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
+                    {
+                        var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
+                        bot.remDj(checkWhoIsDj);
+                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
+                        break;
+                    }                
+                }
+            }            
         }
     }
 
