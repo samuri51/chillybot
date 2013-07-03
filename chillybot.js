@@ -42,10 +42,12 @@ var roomJoinMessage = ''; //the message users will see when they join the room, 
 
 
 //note that anything added to the script manually will have to be removed from the script manually
-//all the values currently in these arrays are examples and can be removed.
-global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain', 'tpain', 'katy perry', 'eminem', 'porter robinson', //banned artist / song list
-    'gorgoroth', 'justin bieber', 'deadmau5', 'rick roll', 'nosia', 'infected mushroom', 'never gonna give you up', 'rick astley', 'spongebob squarepants'
-];
+//all the values currently in these arrays are examples and can be removed. 
+global.bannedArtists = [/\b(dj tiesto|skrillex|lil wayne|t-pain|tpain|katy perry|eminem)\b/i, //banned artist / song list (make sure to escape any special characters
+/\b(porter robinson|gorgoroth|justin bieber|deadmau5|rick roll)\b/i,                          //with a backslash, example * should be \* in your regex expression
+/\b(nosia|infected mushroom|never gonna give you up)\b/i,                                     //to add more artists simply follow the pattern given, you can also
+/\b(rick astley|spongebob squarepants|usher)\b/i];                                            //copy paste lines and replace the artist or song names
+
 global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe']; //banned users list, put userids in string form here for permanent banning(put their name after their userid to tell who is banned).
 global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe']; //put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
 
@@ -669,13 +671,11 @@ global.checkOnNewSong = function (data)
     // Set this after processing things from last timer calls
     lastdj = data.room.metadata.current_dj;
     checkLast = theUsersList.indexOf(lastdj);
-    var masterIndex = masterIds.indexOf(lastdj); //master id's check
+    var masterIndex = masterIds.indexOf(lastdj); //master id's check   
 
-
-
+    
 
     // Set a new watchdog timer for the current song.
-
     curSongWatchdog = setTimeout(function ()
     {
         curSongWatchdog = null;
@@ -686,7 +686,7 @@ global.checkOnNewSong = function (data)
             takedownTimer = null;
             bot.remDj(lastdj); // Remove Saved DJ from last newsong call
         }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
-    }, (length + 10) * 1000); // Timer expires 10 seconds after the end of the song, if not cleared by a newsong
+    }, (length + 10) * 1000); //Timer expires 10 seconds after the end of the song, if not cleared by a newsong
 
 
 
@@ -697,7 +697,7 @@ global.checkOnNewSong = function (data)
         {
             if (LIMIT === true)
             {
-                bot.speak("@" + theUsersList[checkLast + 1] + ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
+                bot.speak("@" + theUsersList[checkLast + 1]+ ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
                 //START THE 20 SEC TIMER
                 songLimitTimer = setTimeout(function ()
                 {
@@ -815,7 +815,7 @@ bot.on('newsong', function (data)
     {
         for (var j = 0; j < bannedArtists.length; j++)
         {
-            if (artist.toLowerCase().indexOf(bannedArtists[j].toLowerCase()) !== -1 || song.toLowerCase().indexOf(bannedArtists[j].toLowerCase()) !== -1)
+            if (artist.match(bannedArtists[j])|| song.match(bannedArtists[j]))
             {
                 if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
                 {
@@ -4332,25 +4332,24 @@ bot.on('update_user', function (data)
             queueNamePosition = queueName.indexOf(oldname);
             queueListPosition = queueList.indexOf(oldname);
             afkPeoplePosition = afkPeople.indexOf(oldname);
-            theUsersList[nameIndex + 1] = data.name;
+            theUsersList[nameIndex + 1] = data.name;            
+            
+            if (queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
+            {
+                queueName[queueNamePosition] = data.name;
+            }
+
+            if (queueListPosition !== -1) //this is also for the queue
+            {
+                queueList[queueListPosition] = data.name;
+            }
+
+            if (afkPeoplePosition !== -1) //this checks the afk list
+            {
+                afkPeople[afkPeoplePosition] = data.name;
+            }
         }
-    }
-
-
-    if (queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
-    {
-        queueName[queueNamePosition] = data.name;
-    }
-
-    if (queueListPosition !== -1) //this is also for the queue
-    {
-        queueList[queueListPosition] = data.name;
-    }
-
-    if (afkPeoplePosition !== -1) //this checks the afk list
-    {
-        afkPeople[afkPeoplePosition] = data.name;
-    }
+    }   
 })
 
 
