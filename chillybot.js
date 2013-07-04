@@ -176,7 +176,6 @@ global.myTime = []; //holds a date object for everyone in the room, which repres
 global.curSongWatchdog = null; //used to hold the timer for stuck songs
 global.takedownTimer = null; //used to hold the timer that fires after curSongWatchDog which represents the time a person with a stuck song has left to skip their song
 global.lastdj = null; //holds the userid of the currently playing dj
-global.checkLast = null; //the index of the currently playing dj's userid in the theUsersList array
 global.songLimitTimer = null; //holds the timer used to remove a dj off stage if they don't skip their song in time, and their song has exceeded the max allowed song time
 global.beginTimer = null; //holds the timer the auto removes dj's from the queue if they do not get on stage within the allowed time period
 
@@ -637,7 +636,7 @@ global.checkOnNewSong = function (data)
     {
         clearTimeout(informTimer);
         informTimer = null;
-        bot.speak("@" + theUsersList[checkLast + 1] + ", Thanks buddy ;-)");
+        bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
     }
 
 
@@ -648,7 +647,7 @@ global.checkOnNewSong = function (data)
     {
         clearTimeout(songLimitTimer);
         songLimitTimer = null;
-        bot.speak("@" + theUsersList[checkLast + 1] + ", Thanks buddy ;-)");
+        bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
     }
 
 
@@ -669,14 +668,13 @@ global.checkOnNewSong = function (data)
     {
         clearTimeout(takedownTimer);
         takedownTimer = null;
-        bot.speak("@" + theUsersList[checkLast + 1] + ", Thanks buddy ;-)");
+        bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
     }
 
 
 
     // Set this after processing things from last timer calls
-    lastdj = data.room.metadata.current_dj;
-    checkLast = theUsersList.indexOf(lastdj);
+    lastdj = data.room.metadata.current_dj;   
     var masterIndex = masterIds.indexOf(lastdj); //master id's check   
 
     
@@ -685,7 +683,7 @@ global.checkOnNewSong = function (data)
     curSongWatchdog = setTimeout(function ()
     {
         curSongWatchdog = null;
-        bot.speak("@" + theUsersList[checkLast + 1] + ", you have 20 seconds to skip your stuck song before you are removed");
+        bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", you have 20 seconds to skip your stuck song before you are removed");
         //START THE 20 SEC TIMER
         takedownTimer = setTimeout(function ()
         {
@@ -703,7 +701,7 @@ global.checkOnNewSong = function (data)
         {
             if (LIMIT === true)
             {
-                bot.speak("@" + theUsersList[checkLast + 1]+ ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
+                bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1]+ ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
                 //START THE 20 SEC TIMER
                 songLimitTimer = setTimeout(function ()
                 {
