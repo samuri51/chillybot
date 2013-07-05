@@ -10,8 +10,6 @@
 
 
 /*******************************BeginSetUp*****************************************************************************/
-
-
 var Bot = require('ttapi');
 var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
