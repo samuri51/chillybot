@@ -841,7 +841,7 @@ bot.on('newsong', function (data)
                     {
                         var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
                         bot.remDj(checkWhoIsDj);
-                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
+                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned artist.');
                         break;
                     }
                 }
@@ -855,7 +855,7 @@ bot.on('newsong', function (data)
                     {
                         var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
                         bot.remDj(checkWhoIsDj);
-                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
+                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track.');
                         break;
                     }                
                 }
