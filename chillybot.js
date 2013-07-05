@@ -10,6 +10,8 @@
 
 
 /*******************************BeginSetUp*****************************************************************************/
+
+
 var Bot = require('ttapi');
 var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
 var USERID = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the userid of your bot here.
@@ -49,10 +51,11 @@ var matchSongs = true; //set this true to enable banned song matching
 
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed. 
-global.bannedArtists = [/\b(dj tiesto|skrillex|lil wayne|t-pain|tpain|katy perry|eminem)\b/i, //banned artist / song list (make sure to escape any special characters
-/\b(porter robinson|gorgoroth|justin bieber|deadmau5|rick roll)\b/i,                          //with a backslash, example * should be \* in your regex expression
-/\b(nosia|infected mushroom|never gonna give you up)\b/i,                                     //to add more artists simply follow the pattern given, you can also
-/\b(rick astley|spongebob squarepants|usher)\b/i];                                            //copy paste lines and replace the artist or song names
+global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain', 'tpain', 'katy perry', 'eminem', //banned artist / song list 
+    'porter robinson', 'gorgoroth', 'justin bieber', 'deadmau5', 'rick roll', //see the function formatBannedArtists below if you want to
+    'nosia', 'infected mushroom', 'never gonna give you up', //to know what its doing
+    'rick astley', 'spongebob squarepants', 'usher'
+];
 
 global.bannedUsers = ['636473737373', 'bob', '535253533353', 'joe']; //banned users list, put userids in string form here for permanent banning(put their name after their userid to tell who is banned).
 global.bannedFromStage = ['636473737373', 'bob', '535253533353', 'joe']; //put userids in here to ban from djing permanently(put their name after their userid to tell who is banned)
@@ -149,6 +152,7 @@ var attemptToReconnect = null; //used for reconnecting to the bots room if its n
 var returnToRoom = true; //used to toggle on and off the bot reconnecting to its room(it toggles off when theres no internet connection because it only works when its connected to turntable.fm)
 var wserrorTimeout = null; //this is for the setTimeout in ws error
 var errorMessage = null; //the error message you get when trying to connect to the room
+var bannedArtistsMatcher; //holds the regular expression for banned artist / song matching
 
 global.modpm = []; //holds the userid's of everyone in the /modpm feature
 global.warnme = []; //holds the userid's of everyone using the /warnme feature
@@ -187,13 +191,13 @@ bot.listen(randomPort, '127.0.0.1'); //needed if running on a server
 
 bot.on('disconnected', function (data)
 { // Loss of connection detected, takes about 20 seconds     
-    if(wserrorTimeout === null)
+    if (wserrorTimeout === null)
     {
         wserrorTimeout = setTimeout(function ()
         {
             console.log(data);
-            if(attemptToReconnect !== null)
-            {            
+            if (attemptToReconnect !== null)
+            {
                 clearInterval(attemptToReconnect);
                 attemptToReconnect = null;
             }
@@ -208,19 +212,19 @@ bot.on('disconnected', function (data)
 bot.on('alive', function (data)
 { // Reset the watchdog timer if bot is alive
     if (netwatchdogTimer != null)
-    {        
-        console.log("connection with turntable.fm is back!");              
+    {
+        console.log("connection with turntable.fm is back!");
         clearInterval(netwatchdogTimer);
-        netwatchdogTimer = null;        
+        netwatchdogTimer = null;
     }
-    
-    if(wserrorTimeout != null)
+
+    if (wserrorTimeout != null)
     {
         clearTimeout(wserrorTimeout);
         wserrorTimeout = null;
     }
-    
-    if(returnToRoom === false)
+
+    if (returnToRoom === false)
     {
         returnToRoom = true;
     }
@@ -238,14 +242,14 @@ function startWatchdog()
             bot.roomRegister(ROOMID, function (data)
             {
                 if (data.success === true)
-                {                   
+                {
                     errorMessage = null;
                     clearInterval(netwatchdogTimer);
                     returnToRoom = true;
                 }
                 else
-                {                    
-                    if(errorMessage === null && typeof data.err === 'string')
+                {
+                    if (errorMessage === null && typeof data.err === 'string')
                     {
                         errorMessage = data.err;
                     }
@@ -258,46 +262,46 @@ function startWatchdog()
 
 
 var checkIfConnected = function ()
-{ 
-    if(returnToRoom === true) //only use this if the recovery code for wserror did not work
+{
+    if (returnToRoom === true) //only use this if the recovery code for wserror did not work
     {
-        if(attemptToReconnect === null) //if a reconnection attempt is already in progress, do not attempt it
+        if (attemptToReconnect === null) //if a reconnection attempt is already in progress, do not attempt it
         {
             var currentActivity = (Date.now() - checkActivity) / 1000 / 60;
-        
+
             if (currentActivity > 30) //if greater than 30 minutes of no talking
-            {        
+            {
                 bot.speak('ping', function (callback) //attempt to talk
-                {
-                    if (callback.success === false) //if it fails
-                    {                    
-                        attemptToReconnect = setInterval(function()
-                        {            
-                            console.log('it looks like your bot is not in it\'s room. attempting to reconnect now....');
-                            bot.roomRegister(ROOMID, function (data)
-                            {                                
-                                if(data.success === true)
+                    {
+                        if (callback.success === false) //if it fails
+                        {
+                            attemptToReconnect = setInterval(function ()
+                            {
+                                console.log('it looks like your bot is not in it\'s room. attempting to reconnect now....');
+                                bot.roomRegister(ROOMID, function (data)
                                 {
-                                    errorMessage = null;
-                                    clearInterval(attemptToReconnect);
-                                    attemptToReconnect = null;
-                                    console.log('the bot has reconnected to the room '+
-                                    'specified by your choosen roomid');
-                                }
-                                else
-                                {                                   
-                                    if(errorMessage === null && typeof data.err === 'string')
-                                    {                                        
-                                        errorMessage = data.err;
+                                    if (data.success === true)
+                                    {
+                                        errorMessage = null;
+                                        clearInterval(attemptToReconnect);
+                                        attemptToReconnect = null;
+                                        console.log('the bot has reconnected to the room ' +
+                                            'specified by your choosen roomid');
                                     }
-                                }
-                            });
-                        }, 1000 * 10);                   
-                    }
-                });
+                                    else
+                                    {
+                                        if (errorMessage === null && typeof data.err === 'string')
+                                        {
+                                            errorMessage = data.err;
+                                        }
+                                    }
+                                });
+                            }, 1000 * 10);
+                        }
+                    });
             }
-        } 
-    }  
+        }
+    }
 };
 
 setInterval(checkIfConnected, 5000);
@@ -626,6 +630,45 @@ global.warnMeCall = function ()
 
 
 
+//formats the banned artist array to be used in a regex expression
+global.formatBannedArtists = function ()
+{
+    if (bannedArtists.length !== 0)
+    {
+        var tempArray = [];
+        var tempString = '(';
+
+        //add a backslash in front of all special characters
+        for (var i = 0; i < bannedArtists.length; i++)
+        {
+            tempArray.push(bannedArtists[i].replace(/([-[\]{}()*^=!:+?.,\\^$|#\s])/g, "\\$1"));
+        }
+
+        //join everything into one string
+        for (var i = 0; i < bannedArtists.length; i++)
+        {
+            if (i < bannedArtists.length - 1)
+            {
+                tempString += tempArray[i] + '|';
+            }
+            else
+            {
+                tempString += tempArray[i] + ')';
+            }
+        }
+
+        //create regular expression
+        bannedArtistsMatcher = new RegExp('\\b' + tempString + '\\b', 'i');
+    }
+}
+
+
+
+//format the bannedArtists list at runtime
+formatBannedArtists();
+
+
+
 //stuck song detection, song length limit, /inform command
 global.checkOnNewSong = function (data)
 {
@@ -674,10 +717,10 @@ global.checkOnNewSong = function (data)
 
 
     // Set this after processing things from last timer calls
-    lastdj = data.room.metadata.current_dj;   
+    lastdj = data.room.metadata.current_dj;
     var masterIndex = masterIds.indexOf(lastdj); //master id's check   
 
-    
+
 
     // Set a new watchdog timer for the current song.
     curSongWatchdog = setTimeout(function ()
@@ -701,7 +744,7 @@ global.checkOnNewSong = function (data)
         {
             if (LIMIT === true)
             {
-                bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1]+ ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
+                bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
                 //START THE 20 SEC TIMER
                 songLimitTimer = setTimeout(function ()
                 {
@@ -812,54 +855,40 @@ bot.on('newsong', function (data)
 
     //this is for /warnme
     warnMeCall();
-
-    var checkIfAdmin = masterIds.indexOf(checkWhoIsDj);
+    
     //removes current dj from stage if they play a banned song or artist.
     if (bannedArtists.length !== 0)
     {
-        for (var j = 0; j < bannedArtists.length; j++)
+        var checkIfAdmin = masterIds.indexOf(checkWhoIsDj); //is user an exempt admin?
+        var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1; //the currently playing dj's name
+        
+        if (checkIfAdmin == -1)
         {
             //if matching is enabled for both songs and artists
-            if(matchArtists && matchSongs)
+            if (matchArtists && matchSongs)
             {
-                if (artist.match(bannedArtists[j])|| song.match(bannedArtists[j]))
+                if (artist.match(bannedArtistsMatcher) || song.match(bannedArtistsMatcher))
                 {
-                    if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
-                    {
-                        var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
-                        bot.remDj(checkWhoIsDj);
-                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
-                        break;
-                    }
+                    bot.remDj(checkWhoIsDj);
+                    bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
                 }
             }
-            else if(matchArtists) //if just artist matching is enabled
+            else if (matchArtists) //if just artist matching is enabled
             {
-                if (artist.match(bannedArtists[j]))
+                if (artist.match(bannedArtistsMatcher))
                 {
-                    if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
-                    {
-                        var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
-                        bot.remDj(checkWhoIsDj);
-                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned artist.');
-                        break;
-                    }
+                    bot.remDj(checkWhoIsDj);
+                    bot.speak('@' + theUsersList[nameDj] + ' you have played a banned artist.');
                 }
-            
             }
-            else if(matchSongs) //if just song matching is enabled
+            else if (matchSongs) //if just song matching is enabled
             {
-                if(song.match(bannedArtists[j]))
+                if (song.match(bannedArtistsMatcher))
                 {
-                    if (checkIfAdmin == -1 || checkWhoIsDj == USERID)
-                    {
-                        var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1;
-                        bot.remDj(checkWhoIsDj);
-                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track.');
-                        break;
-                    }                
+                    bot.remDj(checkWhoIsDj);
+                    bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track.');
                 }
-            }            
+            }
         }
     }
 
@@ -900,7 +929,7 @@ bot.on('speak', function (data)
     // Get the data
     var text = data.text;
     //name of person doing the command.
-    name = data.name;    
+    name = data.name;
     checkActivity = Date.now(); //update when someone says something
 
     //checks to see if the speaker is a moderator or not.
@@ -4184,16 +4213,16 @@ bot.on('roomChanged', function (data)
             myTime[userIds[zy]] = Date.now();
         }
     }
-    catch(err)
+    catch (err)
     {
-        if(typeof errorMessage === 'string')
+        if (typeof errorMessage === 'string')
         {
             console.log('unable to join the room the room due to: ' + errorMessage);
         }
         else
         {
             console.log('unable to join the room the room due to: ' + err);
-        }        
+        }
     }
 });
 
@@ -4367,8 +4396,8 @@ bot.on('update_user', function (data)
             queueNamePosition = queueName.indexOf(oldname);
             queueListPosition = queueList.indexOf(oldname);
             afkPeoplePosition = afkPeople.indexOf(oldname);
-            theUsersList[nameIndex + 1] = data.name;            
-            
+            theUsersList[nameIndex + 1] = data.name;
+
             if (queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
             {
                 queueName[queueNamePosition] = data.name;
@@ -4384,7 +4413,7 @@ bot.on('update_user', function (data)
                 afkPeople[afkPeoplePosition] = data.name;
             }
         }
-    }   
+    }
 })
 
 
