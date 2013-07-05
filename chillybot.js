@@ -50,8 +50,8 @@ var matchSongs = true; //set this true to enable banned song matching
 //note that anything added to the script manually will have to be removed from the script manually
 //all the values currently in these arrays are examples and can be removed. 
 global.bannedArtists = ['dj tiesto', 'skrillex', 'lil wayne', 't-pain', 'tpain', 'katy perry', 'eminem', //banned artist / song list 
-    'porter robinson', 'gorgoroth', 'justin bieber', 'deadmau5', 'rick roll', //see the function formatBannedArtists below if you want to
-    'nosia', 'infected mushroom', 'never gonna give you up', //to know what its doing
+    'porter robinson', 'gorgoroth', 'justin bieber', 'deadmau5', 'rick roll',                            //see the function formatBannedArtists below if you want to
+    'nosia', 'infected mushroom', 'never gonna give you up',                                             //to know what its doing
     'rick astley', 'spongebob squarepants', 'usher'
 ];
 
