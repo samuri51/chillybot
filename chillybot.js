@@ -604,40 +604,43 @@ global.verifyUsersList = function()
     {
         bot.roomInfo(false, function(data)
         {       
-            var theUsersListOkay = true; //assume it will not need to be rebuilt
-            
-            //if the length of the users list does not match
-            //the amount of people in the room
-            if(theUsersList.length != (data.users.length * 2))
-            {
-                theUsersListOkay = false;       
-            }
-            
-            //only run this test if it passed the first one
-            if(theUsersListOkay)
-            {
-                //if any undefined values are found
-                for(var i = 0; i < theUsersList.length; i++)
+            if(typeof data === 'object')
+            {  
+                var theUsersListOkay = true; //assume it will not need to be rebuilt
+                
+                //if the length of the users list does not match
+                //the amount of people in the room
+                if(theUsersList.length != (data.users.length * 2))
                 {
-                    if(typeof theUsersList[i] === 'undefined')
-                    {                        
-                        theUsersListOkay = false;  
-                        break;
-                    }
+                    theUsersListOkay = false;       
                 }
-            }               
-            
-            //if data got corrupted then rebuild theUsersList array
-            if(!theUsersListOkay)
-            {
-                theUsersList = [];
-            
-                for(var i = 0; i < data.users.length; i++)
+                
+                //only run this test if it passed the first one
+                if(theUsersListOkay)
                 {
-                    //userid then the name
-                    theUsersList.push(data.users[i].userid, data.users[i].name);
-                }            
-            }          
+                    //if any undefined values are found
+                    for(var i = 0; i < theUsersList.length; i++)
+                    {
+                        if(typeof theUsersList[i] === 'undefined')
+                        {                        
+                            theUsersListOkay = false;  
+                            break;
+                        }
+                    }
+                }               
+                
+                //if data got corrupted then rebuild theUsersList array
+                if(!theUsersListOkay)
+                {
+                    theUsersList = [];
+                
+                    for(var i = 0; i < data.users.length; i++)
+                    {
+                        //userid then the name
+                        theUsersList.push(data.users[i].userid, data.users[i].name);
+                    }            
+                }
+            }
         });       
     }
 }
