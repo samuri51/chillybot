@@ -4446,25 +4446,30 @@ bot.on('update_user', function (data)
         if (nameIndex !== -1) //if their userid was found in theUsersList
         {
             oldname = theUsersList[nameIndex + 1];
-            queueNamePosition = queueName.indexOf(oldname);
-            queueListPosition = queueList.indexOf(oldname);
-            afkPeoplePosition = afkPeople.indexOf(oldname);
             theUsersList[nameIndex + 1] = data.name;
-
-            if (queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
+            
+            if(typeof oldname !== 'undefined')
             {
-                queueName[queueNamePosition] = data.name;
-            }
+                queueNamePosition = queueName.indexOf(oldname);
+                queueListPosition = queueList.indexOf(oldname);
+                afkPeoplePosition = afkPeople.indexOf(oldname);
+                
 
-            if (queueListPosition !== -1) //this is also for the queue
-            {
-                queueList[queueListPosition] = data.name;
-            }
+                if (queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
+                {
+                    queueName[queueNamePosition] = data.name;
+                }
 
-            if (afkPeoplePosition !== -1) //this checks the afk list
-            {
-                afkPeople[afkPeoplePosition] = data.name;
-            }
+                if (queueListPosition !== -1) //this is also for the queue
+                {
+                    queueList[queueListPosition] = data.name;
+                }
+
+                if (afkPeoplePosition !== -1) //this checks the afk list
+                {
+                    afkPeople[afkPeoplePosition] = data.name;
+                }
+            }            
         }
     }
 })
