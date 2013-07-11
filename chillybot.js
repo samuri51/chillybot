@@ -2535,45 +2535,6 @@ bot.on('snagged', function (data)
 
 
 
-
-//checks when a dj leaves the stage
-bot.on('rem_dj', function (data)
-{
-    //removes user from the dj list when they leave the stage
-    delete djs20[data.user[0].userid];
-
-    //updates the current dj's list.
-    var check30 = currentDjs.indexOf(data.user[0].userid);
-    if (check30 != -1)
-    {
-        currentDjs.splice(check30, 1);
-    }
-
-    //this is for /warnme
-    if (warnme.length != 0)
-    {
-        var areTheyBeingWarned = warnme.indexOf(data.user[0].userid);
-
-        if (areTheyBeingWarned != -1) //if theyre on /warnme and they leave the stage
-        {
-            warnme.splice(areTheyBeingWarned, 1);
-        }
-    }
-
-    //checks if when someone gets off the stage, if the person
-    //on the left is now the next dj
-    warnMeCall();
-
-    //takes a user off the escort list if they leave the stage.
-    var checkEscort = escortList.indexOf(data.user[0].userid);
-    if (checkEscort != -1)
-    {
-        escortList.splice(checkEscort, 1);
-    }
-})
-
-
-
 //this activates when a user joins the stage.
 bot.on('add_dj', function (data)
 {
@@ -2776,6 +2737,43 @@ bot.on('add_dj', function (data)
 
 })
 
+
+
+//checks when a dj leaves the stage
+bot.on('rem_dj', function (data)
+{
+    //removes user from the dj list when they leave the stage
+    delete djs20[data.user[0].userid];
+
+    //updates the current dj's list.
+    var check30 = currentDjs.indexOf(data.user[0].userid);
+    if (check30 != -1)
+    {
+        currentDjs.splice(check30, 1);
+    }
+
+    //this is for /warnme
+    if (warnme.length != 0)
+    {
+        var areTheyBeingWarned = warnme.indexOf(data.user[0].userid);
+
+        if (areTheyBeingWarned != -1) //if theyre on /warnme and they leave the stage
+        {
+            warnme.splice(areTheyBeingWarned, 1);
+        }
+    }
+
+    //checks if when someone gets off the stage, if the person
+    //on the left is now the next dj
+    warnMeCall();
+
+    //takes a user off the escort list if they leave the stage.
+    var checkEscort = escortList.indexOf(data.user[0].userid);
+    if (checkEscort != -1)
+    {
+        escortList.splice(checkEscort, 1);
+    }
+})
 
 
 
@@ -4563,16 +4561,6 @@ bot.on('update_user', function (data)
 })
 
 
-
-//updates the moderator list when a moderator is removed.
-bot.on('rem_moderator', function (data)
-{
-    var test51 = modList.indexOf(data.userid);
-    modList.splice(test51, 1);
-})
-
-
-
 //updates the moderator list when a moderator is added.
 bot.on('new_moderator', function (data)
 {
@@ -4581,6 +4569,15 @@ bot.on('new_moderator', function (data)
     {
         modList.push(data.userid);
     }
+})
+
+
+
+//updates the moderator list when a moderator is removed.
+bot.on('rem_moderator', function (data)
+{
+    var test51 = modList.indexOf(data.userid);
+    modList.splice(test51, 1);
 })
 
 
