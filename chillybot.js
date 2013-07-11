@@ -2716,6 +2716,12 @@ bot.on('add_dj', function (data)
     {
         bot.boot(data.user[0].userid, 'stop spamming');
     }
+    else if(typeof people[data.user[0].userid] == 'undefined') //if something weird happened, recover here
+    {
+        people[data.user[0].userid] = {
+            spamCount: 0
+        };
+    }
 
 })
 
