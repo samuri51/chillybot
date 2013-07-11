@@ -2712,7 +2712,7 @@ bot.on('add_dj', function (data)
 
 
     //if person exceeds spam count within 10 seconds they are kicked
-    if (people[data.user[0].userid].spamCount >= spamLimit)
+    if (typeof people[data.user[0].userid] != 'undefined' && people[data.user[0].userid].spamCount >= spamLimit)
     {
         bot.boot(data.user[0].userid, 'stop spamming');
     }
@@ -4185,7 +4185,7 @@ bot.on('roomChanged', function (data)
         userIds = [];
         queueList = [];
         queueName = [];
-
+        people = [];
 
         //load the playlist into memory
         bot.playlistAll(function (callback)
