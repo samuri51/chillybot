@@ -794,7 +794,7 @@ global.checkOnNewSong = function (data)
                 {
                     songLimitTimer = null;
                     bot.remDj(lastdj); // Remove Saved DJ from last newsong call
-                }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
+                }, 30 * 1000); // Current DJ has 30 seconds to skip before they are removed
             }
         }
     }
@@ -1630,17 +1630,16 @@ bot.on('speak', function (data)
         switch (x)
         {
         case 0:
-            bot.speak('@' + name + ' ur mom is fat');
+            bot.speak('@' + name + ' your mom is cool');
             break;
         case 1:
-            bot.speak('@' + name + ' yo momma sooo fat....');
+            bot.speak('@' + name + ' your mom is so fun');
             break;
         case 2:
-            bot.speak('@' + name + ' damn yo momma fat');
+            bot.speak('@' + name + ' your mom loves you');
             break;
         case 3:
-            bot.speak('@' + name + ' your mother is an outstanding member of the community ' +
-                'and well liked by all.');
+            bot.speak('@' + name + ' your mother is an outstanding member of the community ' + 'and well liked by all.');
             break;
         }
     }
@@ -1663,7 +1662,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/chilly$/))
     {
-        bot.speak('@' + name + ' is pleasantly chilled.');
+        bot.speak('@' + name + ' is chilled.');
     }
     else if (text.match(/^\/skipon$/) && condition === true)
     {
@@ -1708,10 +1707,10 @@ bot.on('speak', function (data)
             getonstage = false;
         }
     }
-    else if (text.match('/beer'))
+    else if (text.match('/tiger'))
     {
         var botname = theUsersList.indexOf(USERID) + 1;
-        bot.speak('@' + theUsersList[botname] + ' hands ' + '@' + name + ' a nice cold :beer:');
+        bot.speak('@' + theUsersList[botname] + ' hands ' + '@' + name + ' a nice fuzzy :tiger:');
     }
     else if (data.text == '/escortme')
     {
