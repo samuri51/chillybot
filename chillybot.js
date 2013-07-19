@@ -2458,10 +2458,13 @@ bot.on('speak', function (data)
     {
         for (var j = 0; j < afkPeople.length; j++) //loop through afk people array
         {
-            var areTheyAfk56 = data.text.toLowerCase().indexOf(afkPeople[j].toLowerCase()); //is an afk persons name being called             
-            if (areTheyAfk56 !== -1)
+            if(typeof(afkPeople[j] !== 'undefined'))
             {
-                bot.speak(afkPeople[j] + ' is afk');
+                var areTheyAfk56 = data.text.toLowerCase().indexOf(afkPeople[j].toLowerCase()); //is an afk persons name being called             
+                if (areTheyAfk56 !== -1)
+                {
+                    bot.speak(afkPeople[j] + ' is afk');
+                }
             }
         }
     }
