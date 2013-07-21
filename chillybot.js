@@ -634,8 +634,11 @@ global.verifyUsersList = function ()
 
                     for (var i = 0; i < data.users.length; i++)
                     {
-                        //userid then the name
-                        theUsersList.push(data.users[i].userid, data.users[i].name);
+                        if(typeof data.users[i] !== 'undefined')
+                        {
+                            //userid then the name
+                            theUsersList.push(data.users[i].userid, data.users[i].name);
+                        }                        
                     }
                 }
             }
@@ -723,7 +726,15 @@ global.checkOnNewSong = function (data)
     {
         clearTimeout(informTimer);
         informTimer = null;
-        bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        
+        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+        {
+            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        }
+        else
+        {
+            bot.speak('Thanks buddy ;-)');
+        }
     }
 
 
@@ -734,7 +745,15 @@ global.checkOnNewSong = function (data)
     {
         clearTimeout(songLimitTimer);
         songLimitTimer = null;
-        bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        
+        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+        {
+            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        }
+        else
+        {
+            bot.speak('Thanks buddy ;-)');
+        }
     }
 
 
@@ -755,7 +774,15 @@ global.checkOnNewSong = function (data)
     {
         clearTimeout(takedownTimer);
         takedownTimer = null;
-        bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        
+        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+        {
+            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        }
+        else
+        {
+            bot.speak('Thanks buddy ;-)');
+        }
     }
 
 
@@ -770,7 +797,16 @@ global.checkOnNewSong = function (data)
     curSongWatchdog = setTimeout(function ()
     {
         curSongWatchdog = null;
-        bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", you have 20 seconds to skip your stuck song before you are removed");
+        
+        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+        {
+            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", you have 20 seconds to skip your stuck song before you are removed");
+        }
+        else
+        {
+            bot.speak("current dj, you have 20 seconds to skip your stuck song before you are removed");        
+        }       
+        
         //START THE 20 SEC TIMER
         takedownTimer = setTimeout(function ()
         {
@@ -788,7 +824,15 @@ global.checkOnNewSong = function (data)
         {
             if (LIMIT === true)
             {
-                bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
+                if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+                {               
+                    bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
+                }
+                else
+                {
+                    bot.speak('current dj, your song is over ' + songLengthLimit + ' mins long, you have 20 seconds to skip before being removed.');
+                }
+                
                 //START THE 20 SEC TIMER
                 songLimitTimer = setTimeout(function ()
                 {
@@ -908,7 +952,7 @@ bot.on('newsong', function (data)
     warnMeCall();
 
     //removes current dj from stage if they play a banned song or artist.
-    if (bannedArtists.length !== 0)
+    if (bannedArtists.length !== 0 && typeof artist !== 'undefined' && typeof song !== 'undefined')
     {
         var checkIfAdmin = masterIds.indexOf(checkWhoIsDj); //is user an exempt admin?
         var nameDj = theUsersList.indexOf(checkWhoIsDj) + 1; //the currently playing dj's name
@@ -921,7 +965,15 @@ bot.on('newsong', function (data)
                 if (artist.match(bannedArtistsMatcher) || song.match(bannedArtistsMatcher))
                 {
                     bot.remDj(checkWhoIsDj);
-                    bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
+                    
+                    if(typeof theUsersList[nameDj] !== 'undefined')
+                    {
+                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
+                    }
+                    else
+                    {
+                        bot.speak('current dj, you have played a banned track or artist.');
+                    }                    
                 }
             }
             else if (matchArtists) //if just artist matching is enabled
@@ -929,7 +981,15 @@ bot.on('newsong', function (data)
                 if (artist.match(bannedArtistsMatcher))
                 {
                     bot.remDj(checkWhoIsDj);
-                    bot.speak('@' + theUsersList[nameDj] + ' you have played a banned artist.');
+                    
+                    if(typeof theUsersList[nameDj] !== 'undefined')
+                    {
+                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned artist.');
+                    }
+                    else
+                    {
+                        bot.speak('current dj, you have played a banned artist.');
+                    }
                 }
             }
             else if (matchSongs) //if just song matching is enabled
@@ -937,7 +997,15 @@ bot.on('newsong', function (data)
                 if (song.match(bannedArtistsMatcher))
                 {
                     bot.remDj(checkWhoIsDj);
-                    bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track.');
+                    
+                    if(typeof theUsersList[nameDj] !== 'undefined')
+                    {
+                        bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track.');
+                    }
+                    else
+                    {
+                        bot.speak('current dj, you have played a banned track.');
+                    }
                 }
             }
         }
@@ -954,7 +1022,10 @@ bot.on('newsong', function (data)
 
         for (var hjg = 0; hjg < data.room.metadata.djcount; hjg++)
         {
-            currentDjs.push(data.room.metadata.djs[hjg]);
+            if(typeof data.room.metadata.djs[hjg] !== 'undefined')
+            {
+                currentDjs.push(data.room.metadata.djs[hjg]);
+            }            
         }
     }
 });
@@ -4299,13 +4370,16 @@ bot.on('roomChanged', function (data)
         //finds out who the currently playing dj's are.    
         for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
         {
-            currentDjs.push(data.room.metadata.djs[iop]);
-            djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
-                nbSong: 0
-            };
-            justSaw(data.room.metadata.djs[iop], 'justSaw'); //initialize dj afk count
-            justSaw(data.room.metadata.djs[iop], 'justSaw1');
-            justSaw(data.room.metadata.djs[iop], 'justSaw2');
+            if(typeof data.room.metadata.djs[iop] !== 'undefined')
+            {
+                currentDjs.push(data.room.metadata.djs[iop]);
+                djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
+                    nbSong: 0
+                };
+                justSaw(data.room.metadata.djs[iop], 'justSaw'); //initialize dj afk count
+                justSaw(data.room.metadata.djs[iop], 'justSaw1');
+                justSaw(data.room.metadata.djs[iop], 'justSaw2');
+            }
         }
 
 
@@ -4324,14 +4398,14 @@ bot.on('roomChanged', function (data)
 
 
 
-        //used to get user names and user id's
-        var users = data.users;
-        var user;
-        for (var i = 0; i < users.length; i++)
-        {
-            user = users[i];
-            theUsersList.push(user.userid, user.name);
-            userIds.push(user.userid);
+        //used to get user names and user id's      
+        for (var i = 0; i < data.users.length; i++)
+        {            
+            if(typeof data.users[i] !== 'undefined')
+            {
+                theUsersList.push(data.users[i].userid, data.users[i].name);
+                userIds.push(data.users[i].userid);
+            }           
         }
 
 
@@ -4340,11 +4414,14 @@ bot.on('roomChanged', function (data)
         //puts people on the global afk list when it joins the room	
         for (var z = 0; z < userIds.length; z++)
         {
-            people[userIds[z]] = {
+            if(typeof userIds[z] !== 'undefined')
+            {
+                people[userIds[z]] = {
                 spamCount: 0
-            };
-            justSaw(userIds[z], 'justSaw3');
-            justSaw(userIds[z], 'justSaw4');
+                };
+                justSaw(userIds[z], 'justSaw3');
+                justSaw(userIds[z], 'justSaw4');            
+            }            
         }
 
 
@@ -4352,7 +4429,10 @@ bot.on('roomChanged', function (data)
         //starts time in room for everyone currently in the room
         for (var zy = 0; zy < userIds.length; zy++)
         {
-            myTime[userIds[zy]] = Date.now();
+            if(typeof userIds[zy] !== 'undefined')
+            {
+                myTime[userIds[zy]] = Date.now();
+            }            
         }
     }
     catch (err)
@@ -4461,7 +4541,10 @@ bot.on('registered', function (data)
     var checkList = theUsersList.indexOf(data.user[0].userid);
     if (checkList == -1)
     {
-        theUsersList.push(data.user[0].userid, data.user[0].name);
+        if(typeof data.user[0] !== 'undefined')
+        {
+            theUsersList.push(data.user[0].userid, data.user[0].name);
+        }        
     }
 
 
@@ -4629,13 +4712,17 @@ bot.on('deregistered', function (data)
         {
             var whatIsTheirName = theUsersList.indexOf(data.user[0].userid);
             modpm.splice(areTheyStillInModpm, 1);
-            for (var hg = 0; hg < modpm.length; hg++)
+            
+            if(whatIsTheirName !== -1)
             {
-                if (modpm[hg] != data.user[0].userid)
+                for (var hg = 0; hg < modpm.length; hg++)
                 {
-                    bot.pm(theUsersList[whatIsTheirName + 1] + ' has left the modpm chat', modpm[hg]);
+                    if (typeof modpm[hg] !== 'undefined' && modpm[hg] != data.user[0].userid)
+                    {
+                        bot.pm(theUsersList[whatIsTheirName + 1] + ' has left the modpm chat', modpm[hg]);
+                    }
                 }
-            }
+            }           
         }
     }
 
@@ -4644,7 +4731,7 @@ bot.on('deregistered', function (data)
     var user = data.user[0].userid;
     var checkLeave = theUsersList.indexOf(data.user[0].userid);
     var checkUserIds = userIds.indexOf(data.user[0].userid);
-    if (checkLeave != -1)
+    if (checkLeave != -1 && checkUserIds != -1)
     {
         theUsersList.splice(checkLeave, 2);
         userIds.splice(checkUserIds, 1);
@@ -4678,13 +4765,23 @@ bot.on('endsong', function (data)
                 if (djId == currentDjs[0] && playLimit === 1) //if person is in the far left seat and limit is set to one
                 {
                     var checklist33 = theUsersList.indexOf(djId) + 1;
-                    bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' song');
+                    
+                    if(checklist33 !== -1)
+                    {
+                        bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' song');
+                    }            
+                    
                     bot.remDj(djId);
                 }
                 else if (djId != USERID && playLimit !== 1) //if limit is more than one
                 {
                     var checklist33 = theUsersList.indexOf(djId) + 1;
-                    bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
+                    
+                    if(checklist33 !== -1)
+                    {
+                        bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
+                    }
+                    
                     bot.remDj(djId);
                 }
             }
@@ -4695,13 +4792,22 @@ bot.on('endsong', function (data)
     //iterates through the escort list and escorts all djs on the list off the stage.	  
     for (var i = 0; i < escortList.length; i++)
     {
-        if (data.room.metadata.current_dj == escortList[i])
+        if (typeof escortList[i] !== 'undefined' && data.room.metadata.current_dj == escortList[i])
         {
             var lookname = theUsersList.indexOf(data.room.metadata.current_dj) + 1;
             bot.remDj(escortList[i]);
-            bot.speak('@' + theUsersList[lookname] + ' had enabled escortme');
+            
+            if(lookname !== -1)
+            {
+                bot.speak('@' + theUsersList[lookname] + ' had enabled escortme');
+            }
+            
             var removeFromList = escortList.indexOf(escortList[i]);
-            escortList.splice(removeFromList, 1);
+            
+            if(removeFromList !== -1)
+            {
+                escortList.splice(removeFromList, 1);
+            }            
         }
     }
 });
