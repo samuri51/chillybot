@@ -563,7 +563,7 @@ setInterval(repeatMessage, howOftenToRepeatMessage * 60 * 1000) //repeats this m
 global.verifyUsersList = function ()
 {
     //only execute when not disconnected
-    if (wserrorTimeout === null)
+    if (bot._isAuthenticated)
     {
         bot.roomInfo(false, function (data)
         {
