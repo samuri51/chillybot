@@ -185,83 +185,17 @@ bot.listen(randomPort, '127.0.0.1'); //needed if running on a server
 
 
 
-bot.on('disconnected', function (data)
-{ // Loss of connection detected, takes about 20 seconds     
-    if (wserrorTimeout === null)
-    {
-        wserrorTimeout = setTimeout(function ()
-        {
-            console.log(data);
-            if (attemptToReconnect !== null)
-            {
-                clearInterval(attemptToReconnect);
-                attemptToReconnect = null;
-            }
-            returnToRoom = false;
-            startWatchdog();
-        }, 10 * 1000); // give the bot 10 seconds to fully fail before attempting to reconnect
-    }
+bot.on('disconnected', function (data) {
+
 });
-
-
-
-bot.on('alive', function (data)
-{ // Reset the watchdog timer if bot is alive
-    if (netwatchdogTimer != null)
-    {
-        console.log("connection with turntable.fm is back!");
-        clearInterval(netwatchdogTimer);
-        netwatchdogTimer = null;
-    }
-
-    if (wserrorTimeout != null)
-    {
-        clearTimeout(wserrorTimeout);
-        wserrorTimeout = null;
-    }
-
-    if (returnToRoom === false)
-    {
-        returnToRoom = true;
-    }
-});
-
-
-
-function startWatchdog()
-{ // Start the watchdog timer
-    if (netwatchdogTimer == null)
-    {
-        netwatchdogTimer = setInterval(function ()
-        {
-            console.log("connection with turntable.fm lost, now waiting for connection to come back");
-            bot.roomRegister(ROOMID, function (data)
-            {
-                if (data.success === true)
-                {
-                    errorMessage = null;
-                    clearInterval(netwatchdogTimer);
-                    returnToRoom = true;
-                }
-                else
-                {
-                    if (errorMessage === null && typeof data.err === 'string')
-                    {
-                        errorMessage = data.err;
-                    }
-                }
-            });
-        }, 10 * 1000); // Try to log back in every 10 seconds
-    }
-}
 
 
 
 var checkIfConnected = function ()
 {
-    if (returnToRoom === true) //only use this if the recovery code for wserror did not work
+    if (attemptToReconnect === null) //if a reconnection attempt is already in progress, do not attempt it
     {
-        if (attemptToReconnect === null) //if a reconnection attempt is already in progress, do not attempt it
+        if (bot._isAuthenticated) // if bot is actually connected to turntable use the speaking method
         {
             var currentActivity = (Date.now() - checkActivity) / 1000 / 60;
 
@@ -271,36 +205,67 @@ var checkIfConnected = function ()
                     {
                         if (callback.success === false) //if it fails
                         {
-                            attemptToReconnect = setInterval(function ()
-                            {
-                                console.log('it looks like your bot is not in it\'s room. attempting to reconnect now....');
-                                bot.roomRegister(ROOMID, function (data)
-                                {
-                                    if (data.success === true)
-                                    {
-                                        errorMessage = null;
-                                        clearInterval(attemptToReconnect);
-                                        attemptToReconnect = null;
-                                        console.log('the bot has reconnected to the room ' +
-                                            'specified by your choosen roomid');
-                                    }
-                                    else
-                                    {
-                                        if (errorMessage === null && typeof data.err === 'string')
-                                        {
-                                            errorMessage = data.err;
-                                        }
-                                    }
-                                });
-                            }, 1000 * 10);
+                            attempToReconnect();
                         }
                     });
             }
+        }
+        else //else attempt to reconnect right away
+        {
+            attempToReconnect();
         }
     }
 };
 
 setInterval(checkIfConnected, 5000);
+
+
+
+//makes the bot attempt to reconnect to the room
+function attempToReconnect()
+{
+    attemptToReconnect = setInterval(function ()
+    {
+        if (bot._isAuthenticated)
+        {
+            whichMessage = true;
+            console.log('it looks like your bot is not in it\'s room. attempting to reconnect now....');
+        }
+        else
+        {
+            whichMessage = false;
+            console.log('connection with turntable lost, waiting for connection to come back...');
+        }
+
+        bot.roomRegister(ROOMID, function (data)
+        {
+            if (data.success === true)
+            {
+                errorMessage = null;
+                clearInterval(attemptToReconnect);
+                attemptToReconnect = null;
+                checkActivity = Date.now();
+
+                if (whichMessage)
+                {
+                    console.log('the bot has reconnected to the room ' +
+                        'specified by your choosen roomid');
+                }
+                else
+                {
+                    console.log('connection with turntable is back!');
+                }
+            }
+            else
+            {
+                if (errorMessage === null && typeof data.err === 'string')
+                {
+                    errorMessage = data.err;
+                }
+            }
+        });
+    }, 1000 * 10);
+};
 
 
 
