@@ -679,10 +679,7 @@ global.formatBannedArtists = function ()
     }
 }
 
-
-
-//clears timeouts when no song is playing
-global.checkOnNoSong = function()
+global.clearTimers = function()
 {
     //this is for the /inform command
     if (informTimer !== null)
@@ -748,79 +745,17 @@ global.checkOnNoSong = function()
 global.checkOnNewSong = function (data)
 {
     var length = data.room.metadata.current_song.metadata.length;
+    
+    
+    //clears timers if previously set
+    clearTimers();
 
-    //this is for the /inform command
-    if (informTimer !== null)
-    {
-        clearTimeout(informTimer);
-        informTimer = null;
-        
-        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
-        {
-            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
-        }
-        else
-        {
-            bot.speak('Thanks buddy ;-)');
-        }
-    }
-
-
-
-
-    //this is for the song length limit
-    if (songLimitTimer !== null)
-    {
-        clearTimeout(songLimitTimer);
-        songLimitTimer = null;
-        
-        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
-        {
-            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
-        }
-        else
-        {
-            bot.speak('Thanks buddy ;-)');
-        }
-    }
-
-
-
-    // If watch dog has been previously set, 
-    // clear since we've made it to the next song
-    if (curSongWatchdog !== null)
-    {
-        clearTimeout(curSongWatchdog);
-        curSongWatchdog = null;
-    }
-
-
-
-    // If takedown Timer has been set, 
-    // clear since we've made it to the next song
-    if (takedownTimer !== null)
-    {
-        clearTimeout(takedownTimer);
-        takedownTimer = null;
-        
-        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
-        {
-            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
-        }
-        else
-        {
-            bot.speak('Thanks buddy ;-)');
-        }
-    }
-
-
-
+    
     // Set this after processing things from last timer calls
     lastdj = data.room.metadata.current_dj;
-    var masterIndex = masterIds.indexOf(lastdj); //master id's check   
-
-
-
+    var masterIndex = masterIds.indexOf(lastdj); //master id's check
+    
+    
     // Set a new watchdog timer for the current song.
     curSongWatchdog = setTimeout(function ()
     {
@@ -842,8 +777,7 @@ global.checkOnNewSong = function (data)
             bot.remDj(lastdj); // Remove Saved DJ from last newsong call
         }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
     }, (length + 10) * 1000); //Timer expires 10 seconds after the end of the song, if not cleared by a newsong
-
-
+    
 
     //this boots the user if their song is over the length limit
     if ((length / 60) >= songLengthLimit)
@@ -1068,7 +1002,7 @@ bot.on('nosong', function (data)
         bot.addDj();
     }
     skipOn = false;
-    checkOnNoSong();
+    clearTimers();
 })
 
 
