@@ -4569,42 +4569,45 @@ bot.on('registered', function (data)
 
 bot.on('update_user', function (data)
 {
-    var oldname = ''; //holds users old name if exists
-    var queueNamePosition;
-    var queueListPosition;
-    var afkPeoplePosition;
-
-    //when when person updates their profile
-    //and their name is not found in the users list then they must have changed
-    //their name   
-    if (theUsersList.indexOf(data.name) === -1)
+    if(typeof data.name === 'string')
     {
-        var nameIndex = theUsersList.indexOf(data.userid);
-        if (nameIndex !== -1) //if their userid was found in theUsersList
+        var oldname = ''; //holds users old name if exists
+        var queueNamePosition;
+        var queueListPosition;
+        var afkPeoplePosition;
+
+        //when when person updates their profile
+        //and their name is not found in the users list then they must have changed
+        //their name   
+        if (theUsersList.indexOf(data.name) === -1)
         {
-            oldname = theUsersList[nameIndex + 1];
-            theUsersList[nameIndex + 1] = data.name;
-
-            if (typeof oldname !== 'undefined')
+            var nameIndex = theUsersList.indexOf(data.userid);
+            if (nameIndex !== -1) //if their userid was found in theUsersList
             {
-                queueNamePosition = queueName.indexOf(oldname);
-                queueListPosition = queueList.indexOf(oldname);
-                afkPeoplePosition = afkPeople.indexOf(oldname);
+                oldname = theUsersList[nameIndex + 1];
+                theUsersList[nameIndex + 1] = data.name;
 
-
-                if (queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
+                if (typeof oldname !== 'undefined')
                 {
-                    queueName[queueNamePosition] = data.name;
-                }
+                    queueNamePosition = queueName.indexOf(oldname);
+                    queueListPosition = queueList.indexOf(oldname);
+                    afkPeoplePosition = afkPeople.indexOf(oldname);
 
-                if (queueListPosition !== -1) //this is also for the queue
-                {
-                    queueList[queueListPosition] = data.name;
-                }
 
-                if (afkPeoplePosition !== -1) //this checks the afk list
-                {
-                    afkPeople[afkPeoplePosition] = data.name;
+                    if (queueNamePosition !== -1) //if they were in the queue when they changed their name, then replace their name
+                    {
+                        queueName[queueNamePosition] = data.name;
+                    }
+
+                    if (queueListPosition !== -1) //this is also for the queue
+                    {
+                        queueList[queueListPosition] = data.name;
+                    }
+
+                    if (afkPeoplePosition !== -1) //this checks the afk list
+                    {
+                        afkPeople[afkPeoplePosition] = data.name;
+                    }
                 }
             }
         }
