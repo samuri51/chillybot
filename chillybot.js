@@ -681,6 +681,69 @@ global.formatBannedArtists = function ()
 
 
 
+//clears timeouts when no song is playing
+global.checkOnNoSong = function()
+{
+    //this is for the /inform command
+    if (informTimer !== null)
+    {
+        clearTimeout(informTimer);
+        informTimer = null;
+        
+        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+        {
+            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        }
+        else
+        {
+            bot.speak('Thanks buddy ;-)');
+        }
+    }
+    
+    //this is for the song length limit
+    if (songLimitTimer !== null)
+    {
+        clearTimeout(songLimitTimer);
+        songLimitTimer = null;
+        
+        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+        {
+            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        }
+        else
+        {
+            bot.speak('Thanks buddy ;-)');
+        }
+    }
+    
+    // If watch dog has been previously set, 
+    // clear since we've made it to the next song
+    if (curSongWatchdog !== null)
+    {
+        clearTimeout(curSongWatchdog);
+        curSongWatchdog = null;
+    }
+
+    // If takedown Timer has been set, 
+    // clear since we've made it to the next song
+    if (takedownTimer !== null)
+    {
+        clearTimeout(takedownTimer);
+        takedownTimer = null;
+        
+        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+        {
+            bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
+        }
+        else
+        {
+            bot.speak('Thanks buddy ;-)');
+        }
+    }
+};
+
+
+
 //stuck song detection, song length limit, /inform command
 global.checkOnNewSong = function (data)
 {
@@ -1005,6 +1068,7 @@ bot.on('nosong', function (data)
         bot.addDj();
     }
     skipOn = false;
+    checkOnNoSong();
 })
 
 
