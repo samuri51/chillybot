@@ -567,7 +567,7 @@ global.verifyUsersList = function ()
     {
         bot.roomInfo(false, function (data)
         {
-            if (typeof data === 'object')
+            if (typeof data.users === 'object')
             {
                 var theUsersListOkay = true; //assume it will not need to be rebuilt
 
