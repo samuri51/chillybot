@@ -4309,6 +4309,17 @@ bot.on('roomChanged', function (data)
         queueList = [];
         queueName = [];
         people = [];
+        myTime = [];
+        afkPeople = [];
+        lastSeen = {};
+        lastSeen1 = {};
+        lastSeen2 = {};
+        lastSeen3 = {};
+        lastSeen4 = {};
+        djs20 = [];
+        warnme = [];
+        modpm = [];
+        
 
         //load the playlist into memory
         bot.playlistAll(function (callback)
@@ -4329,7 +4340,6 @@ bot.on('roomChanged', function (data)
         ttRoomName = data.room.shortcut;
 
 
-
         //finds out who the currently playing dj's are.    
         for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
         {
@@ -4346,7 +4356,6 @@ bot.on('roomChanged', function (data)
         }
 
 
-
         //set modlist to list of moderators
         //modList = data.room.metadata.moderator_id;
         for (var ihp = 0; ihp < data.room.metadata.moderator_id.length; ihp++)
@@ -4355,10 +4364,8 @@ bot.on('roomChanged', function (data)
         }
 
 
-
         //used to get room description
         detail = data.room.description;
-
 
 
         //used to get user names and user id's      
@@ -4370,7 +4377,6 @@ bot.on('roomChanged', function (data)
                 userIds.push(data.users[i].userid);
             }           
         }
-
 
 
         //sets everyones spam count to zero	
@@ -4386,7 +4392,6 @@ bot.on('roomChanged', function (data)
                 justSaw(userIds[z], 'justSaw4');            
             }            
         }
-
 
 
         //starts time in room for everyone currently in the room
