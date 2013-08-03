@@ -2231,6 +2231,8 @@ bot.on('speak', function (data)
         queueName = [];
         bot.speak('the queue is now active.');
         queue = true;
+        clearTimeout(beginTimer); //if queue is turned on again while somebody was on timeout to get on stage, then clear it
+        sayOnce = true;
     }
     else if (text.match(/^\/whatsplaylimit/))
     {
@@ -3217,7 +3219,9 @@ bot.on('pmmed', function (data)
         queueList = [];
         queueName = [];
         bot.pm('the queue is now active.', data.senderid);
-        queue = true;
+        queue = true;        
+        clearTimeout(beginTimer); //if queue is turned on again while somebody was on timeout to get on stage, then clear it
+        sayOnce = true;
     }
     else if (text.match(/^\/queueOff$/) && condition === true && isInRoom === true)
     {
