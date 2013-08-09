@@ -7,6 +7,8 @@
 	and a credit to alaingilbert for his help and the afk timer pattern. thanks to DubbyTT also for 
 	the song skipping algorithm and the auto reconnecting when turntable goes down
 */
+
+
 /*******************************BeginSetUp*****************************************************************************/
 var Bot = require('ttapi');
 var AUTH = 'xxxxxxxxxxxxxxxxxxxxxxxxx'; //set the auth of your bot here.
@@ -222,6 +224,7 @@ setInterval(checkIfConnected, 5000);
 
 
 //makes the bot attempt to reconnect to the room
+
 function attempToReconnect()
 {
     attemptToReconnect = setInterval(function ()
@@ -599,11 +602,11 @@ global.verifyUsersList = function ()
 
                     for (var i = 0; i < data.users.length; i++)
                     {
-                        if(typeof data.users[i] !== 'undefined')
+                        if (typeof data.users[i] !== 'undefined')
                         {
                             //userid then the name
                             theUsersList.push(data.users[i].userid, data.users[i].name);
-                        }                        
+                        }
                     }
                 }
             }
@@ -679,15 +682,15 @@ global.formatBannedArtists = function ()
     }
 }
 
-global.clearTimers = function()
+global.clearTimers = function ()
 {
     //this is for the /inform command
     if (informTimer !== null)
     {
         clearTimeout(informTimer);
         informTimer = null;
-        
-        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+
+        if (typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
         {
             bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
         }
@@ -696,14 +699,14 @@ global.clearTimers = function()
             bot.speak('Thanks buddy ;-)');
         }
     }
-    
+
     //this is for the song length limit
     if (songLimitTimer !== null)
     {
         clearTimeout(songLimitTimer);
         songLimitTimer = null;
-        
-        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+
+        if (typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
         {
             bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
         }
@@ -712,7 +715,7 @@ global.clearTimers = function()
             bot.speak('Thanks buddy ;-)');
         }
     }
-    
+
     // If watch dog has been previously set, 
     // clear since we've made it to the next song
     if (curSongWatchdog !== null)
@@ -727,8 +730,8 @@ global.clearTimers = function()
     {
         clearTimeout(takedownTimer);
         takedownTimer = null;
-        
-        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+
+        if (typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
         {
             bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", Thanks buddy ;-)");
         }
@@ -745,31 +748,31 @@ global.clearTimers = function()
 global.checkOnNewSong = function (data)
 {
     var length = data.room.metadata.current_song.metadata.length;
-    
-    
+
+
     //clears timers if previously set
     clearTimers();
 
-    
+
     // Set this after processing things from last timer calls
     lastdj = data.room.metadata.current_dj;
     var masterIndex = masterIds.indexOf(lastdj); //master id's check
-    
-    
+
+
     // Set a new watchdog timer for the current song.
     curSongWatchdog = setTimeout(function ()
     {
         curSongWatchdog = null;
-        
-        if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+
+        if (typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
         {
             bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", you have 20 seconds to skip your stuck song before you are removed");
         }
         else
         {
-            bot.speak("current dj, you have 20 seconds to skip your stuck song before you are removed");        
-        }       
-        
+            bot.speak("current dj, you have 20 seconds to skip your stuck song before you are removed");
+        }
+
         //START THE 20 SEC TIMER
         takedownTimer = setTimeout(function ()
         {
@@ -777,7 +780,7 @@ global.checkOnNewSong = function (data)
             bot.remDj(lastdj); // Remove Saved DJ from last newsong call
         }, 20 * 1000); // Current DJ has 20 seconds to skip before they are removed
     }, (length + 10) * 1000); //Timer expires 10 seconds after the end of the song, if not cleared by a newsong
-    
+
 
     //this boots the user if their song is over the length limit
     if ((length / 60) >= songLengthLimit)
@@ -786,15 +789,15 @@ global.checkOnNewSong = function (data)
         {
             if (LIMIT === true)
             {
-                if(typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
-                {               
+                if (typeof theUsersList[theUsersList.indexOf(lastdj) + 1] !== 'undefined')
+                {
                     bot.speak("@" + theUsersList[theUsersList.indexOf(lastdj) + 1] + ", your song is over " + songLengthLimit + " mins long, you have 20 seconds to skip before being removed.");
                 }
                 else
                 {
                     bot.speak('current dj, your song is over ' + songLengthLimit + ' mins long, you have 20 seconds to skip before being removed.');
                 }
-                
+
                 //START THE 20 SEC TIMER
                 songLimitTimer = setTimeout(function ()
                 {
@@ -927,15 +930,15 @@ bot.on('newsong', function (data)
                 if (artist.match(bannedArtistsMatcher) || song.match(bannedArtistsMatcher))
                 {
                     bot.remDj(checkWhoIsDj);
-                    
-                    if(typeof theUsersList[nameDj] !== 'undefined')
+
+                    if (typeof theUsersList[nameDj] !== 'undefined')
                     {
                         bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track or artist.');
                     }
                     else
                     {
                         bot.speak('current dj, you have played a banned track or artist.');
-                    }                    
+                    }
                 }
             }
             else if (matchArtists) //if just artist matching is enabled
@@ -943,8 +946,8 @@ bot.on('newsong', function (data)
                 if (artist.match(bannedArtistsMatcher))
                 {
                     bot.remDj(checkWhoIsDj);
-                    
-                    if(typeof theUsersList[nameDj] !== 'undefined')
+
+                    if (typeof theUsersList[nameDj] !== 'undefined')
                     {
                         bot.speak('@' + theUsersList[nameDj] + ' you have played a banned artist.');
                     }
@@ -959,8 +962,8 @@ bot.on('newsong', function (data)
                 if (song.match(bannedArtistsMatcher))
                 {
                     bot.remDj(checkWhoIsDj);
-                    
-                    if(typeof theUsersList[nameDj] !== 'undefined')
+
+                    if (typeof theUsersList[nameDj] !== 'undefined')
                     {
                         bot.speak('@' + theUsersList[nameDj] + ' you have played a banned track.');
                     }
@@ -984,10 +987,10 @@ bot.on('newsong', function (data)
 
         for (var hjg = 0; hjg < data.room.metadata.djcount; hjg++)
         {
-            if(typeof data.room.metadata.djs[hjg] !== 'undefined')
+            if (typeof data.room.metadata.djs[hjg] !== 'undefined')
             {
                 currentDjs.push(data.room.metadata.djs[hjg]);
-            }            
+            }
         }
     }
 });
@@ -1825,9 +1828,9 @@ bot.on('speak', function (data)
         var whatIsTheirUserid2 = theUsersList.indexOf(whatIsTheirName); //userid	
 
         //if either name or userid is undefined, do not perform a move operation        
-        if(typeof theUsersList[whatIsTheirUserid2 - 1] == 'undefined' || typeof tempName[1] == 'undefined')
+        if (typeof theUsersList[whatIsTheirUserid2 - 1] == 'undefined' || typeof tempName[1] == 'undefined')
         {
-            if(typeof theUsersList[whatIsTheirUserid2 - 1] != 'undefined')
+            if (typeof theUsersList[whatIsTheirUserid2 - 1] != 'undefined')
             {
                 bot.pm('failed to perform move operation, please try the command again', theUsersList[whatIsTheirUserid2 - 1]);
             }
@@ -2160,35 +2163,35 @@ bot.on('speak', function (data)
         }
     }
     else if (text.match(/^\/removeme$/) && queue === true)
-    {  
-        if(typeof data.name == 'undefined')
+    {
+        if (typeof data.name == 'undefined')
         {
-            if(typeof(data.userid) != 'undefined')
+            if (typeof (data.userid) != 'undefined')
             {
                 bot.pm('failed to remove from queue, please try the command again', data.userid);
             }
             else
             {
                 bot.speak('failed to remove from queue, please try the command again');
-            }        
+            }
         }
         else
-        {    
+        {
             var list1 = queueList.indexOf(data.name);
             var list2 = queueName.indexOf(data.name);
-            
+
             if (list2 != -1 && list1 != -1)
             {
                 queueList.splice(list1, 2);
-            
+
                 if (data.name == queueName[0])
                 {
                     clearTimeout(beginTimer);
                     sayOnce = true;
                 }
-                
+
                 queueName.splice(list2, 1);
-                
+
                 if (queueName.length !== 0)
                 {
                     var temp90 = 'The queue is now: ';
@@ -2218,20 +2221,20 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/addme$/) && queue === true)
     {
-        if(typeof data.userid == 'undefined')
+        if (typeof data.userid == 'undefined')
         {
             bot.speak('failed to add to queue, please try the command again');
         }
         else
-        {  
-            var indexInUsersList = theUsersList.indexOf(data.userid) + 1;         
-            
-            if(typeof theUsersList[indexInUsersList] == 'undefined')
+        {
+            var indexInUsersList = theUsersList.indexOf(data.userid) + 1;
+
+            if (typeof theUsersList[indexInUsersList] == 'undefined')
             {
                 bot.pm('failed to add to queue, please try the command again', data.userid);
             }
             else
-            {            
+            {
                 var list3 = queueList.indexOf(theUsersList[indexInUsersList]);
                 var list10 = currentDjs.indexOf(data.userid)
                 var checkStageList = stageList.indexOf(data.userid);
@@ -2539,7 +2542,7 @@ bot.on('speak', function (data)
     {
         for (var j = 0; j < afkPeople.length; j++) //loop through afk people array
         {
-            if(typeof(afkPeople[j] !== 'undefined'))
+            if (typeof (afkPeople[j] !== 'undefined'))
             {
                 var areTheyAfk56 = data.text.toLowerCase().indexOf(afkPeople[j].toLowerCase()); //is an afk persons name being called             
                 if (areTheyAfk56 !== -1)
@@ -3025,11 +3028,11 @@ bot.on('pmmed', function (data)
         var areTheyInTheQueue = queueName.indexOf(tempName[1]); //name in queueName
         var areTheyInTheQueueList = queueList.indexOf(tempName[1]); //name in queuList
         var whatIsTheirUserid2 = theUsersList.indexOf(tempName[1]); //userid
-    
+
         //if either name or userid is undefined, do not perform a move operation        
-        if(typeof theUsersList[whatIsTheirUserid2 - 1] == 'undefined' || typeof tempName[1] == 'undefined')
+        if (typeof theUsersList[whatIsTheirUserid2 - 1] == 'undefined' || typeof tempName[1] == 'undefined')
         {
-            if(typeof theUsersList[whatIsTheirUserid2 - 1] != 'undefined')
+            if (typeof theUsersList[whatIsTheirUserid2 - 1] != 'undefined')
             {
                 bot.pm('failed to perform move operation, please try the command again', theUsersList[whatIsTheirUserid2 - 1]);
             }
@@ -3279,7 +3282,7 @@ bot.on('pmmed', function (data)
         queueList = [];
         queueName = [];
         bot.pm('the queue is now active.', data.senderid);
-        queue = true;        
+        queue = true;
         clearTimeout(beginTimer); //if queue is turned on again while somebody was on timeout to get on stage, then clear it
         sayOnce = true;
     }
@@ -3289,17 +3292,17 @@ bot.on('pmmed', function (data)
         queue = false;
     }
     else if (text.match(/^\/addme$/) && queue === true && isInRoom === true)
-    {      
-        if(typeof data.senderid == 'undefined' || typeof theUsersList[name1] == 'undefined')
+    {
+        if (typeof data.senderid == 'undefined' || typeof theUsersList[name1] == 'undefined')
         {
-            if(typeof data.senderid != 'undefined')
+            if (typeof data.senderid != 'undefined')
             {
                 bot.pm('failed to add to queue, please try the command again', data.senderid);
             }
             else
             {
                 bot.speak('failed to add to queue, please try the command again');
-            }            
+            }
         }
         else
         {
@@ -3336,64 +3339,64 @@ bot.on('pmmed', function (data)
             else if (list10 !== -1) //if already on stage
             {
                 bot.pm('you are already djing!', data.senderid);
-            }       
+            }
         }
     }
     else if (text.match(/^\/removeme$/) && queue === true && isInRoom === true)
-    {               
-            if(typeof theUsersList[name1] == 'undefined')
+    {
+        if (typeof theUsersList[name1] == 'undefined')
+        {
+            if (typeof data.senderid != 'undefined')
             {
-                if(typeof data.senderid != 'undefined')
-                {
-                    bot.pm('failed to remove from queue, please try the command again', data.senderid);
-                }
-                else
-                {
-                    bot.speak('failed to remove from queue, please try the command again');
-                }            
+                bot.pm('failed to remove from queue, please try the command again', data.senderid);
             }
             else
-            {        
-                var list1 = queueList.indexOf(theUsersList[name1]);
-                var list2 = queueName.indexOf(theUsersList[name1]);          
-                
-                if (list2 != -1 && list1 != -1)
+            {
+                bot.speak('failed to remove from queue, please try the command again');
+            }
+        }
+        else
+        {
+            var list1 = queueList.indexOf(theUsersList[name1]);
+            var list2 = queueName.indexOf(theUsersList[name1]);
+
+            if (list2 != -1 && list1 != -1)
+            {
+                queueList.splice(list1, 2);
+
+                if (theUsersList[name1] == queueName[0])
                 {
-                    queueList.splice(list1, 2);
-                
-                    if (theUsersList[name1] == queueName[0])
+                    clearTimeout(beginTimer);
+                    sayOnce = true;
+                }
+                queueName.splice(list2, 1);
+
+                if (queueName.length !== 0)
+                {
+                    var temp90 = 'The queue is now: ';
+                    for (var kj = 0; kj < queueName.length; kj++)
                     {
-                        clearTimeout(beginTimer);
-                        sayOnce = true;
-                    }
-                    queueName.splice(list2, 1);
-                    
-                    if (queueName.length !== 0)
-                    {
-                        var temp90 = 'The queue is now: ';
-                        for (var kj = 0; kj < queueName.length; kj++)
+                        if (kj != (queueName.length - 1))
                         {
-                            if (kj != (queueName.length - 1))
-                            {
-                                temp90 += queueName[kj] + ', ';
-                            }
-                            else if (kj == (queueName.length - 1))
-                            {
-                                temp90 += queueName[kj];
-                            }
+                            temp90 += queueName[kj] + ', ';
                         }
-                        bot.speak(temp90);
+                        else if (kj == (queueName.length - 1))
+                        {
+                            temp90 += queueName[kj];
+                        }
                     }
-                    else
-                    {
-                        bot.speak('The queue is now empty.');
-                    }
+                    bot.speak(temp90);
                 }
                 else
                 {
-                    bot.pm('error, you have to be in the queue to remove yourself from the queue', data.senderid);
+                    bot.speak('The queue is now empty.');
                 }
             }
+            else
+            {
+                bot.pm('error, you have to be in the queue to remove yourself from the queue', data.senderid);
+            }
+        }
     }
     else if (text.match('/removefromqueue') && queue === true && isInRoom === true)
     {
@@ -4405,7 +4408,7 @@ bot.on('roomChanged', function (data)
         djs20 = [];
         warnme = [];
         modpm = [];
-        
+
 
         //load the playlist into memory
         bot.playlistAll(function (callback)
@@ -4429,7 +4432,7 @@ bot.on('roomChanged', function (data)
         //finds out who the currently playing dj's are.    
         for (var iop = 0; iop < data.room.metadata.djs.length; iop++)
         {
-            if(typeof data.room.metadata.djs[iop] !== 'undefined')
+            if (typeof data.room.metadata.djs[iop] !== 'undefined')
             {
                 currentDjs.push(data.room.metadata.djs[iop]);
                 djs20[data.room.metadata.djs[iop]] = { //set dj song play count to zero
@@ -4456,12 +4459,12 @@ bot.on('roomChanged', function (data)
 
         //used to get user names and user id's      
         for (var i = 0; i < data.users.length; i++)
-        {            
-            if(typeof data.users[i] !== 'undefined')
+        {
+            if (typeof data.users[i] !== 'undefined')
             {
                 theUsersList.push(data.users[i].userid, data.users[i].name);
                 userIds.push(data.users[i].userid);
-            }           
+            }
         }
 
 
@@ -4469,24 +4472,24 @@ bot.on('roomChanged', function (data)
         //puts people on the global afk list when it joins the room	
         for (var z = 0; z < userIds.length; z++)
         {
-            if(typeof userIds[z] !== 'undefined')
+            if (typeof userIds[z] !== 'undefined')
             {
                 people[userIds[z]] = {
-                spamCount: 0
+                    spamCount: 0
                 };
                 justSaw(userIds[z], 'justSaw3');
-                justSaw(userIds[z], 'justSaw4');            
-            }            
+                justSaw(userIds[z], 'justSaw4');
+            }
         }
 
 
         //starts time in room for everyone currently in the room
         for (var zy = 0; zy < userIds.length; zy++)
         {
-            if(typeof userIds[zy] !== 'undefined')
+            if (typeof userIds[zy] !== 'undefined')
             {
                 myTime[userIds[zy]] = Date.now();
-            }            
+            }
         }
     }
     catch (err)
@@ -4595,10 +4598,10 @@ bot.on('registered', function (data)
     var checkList = theUsersList.indexOf(data.user[0].userid);
     if (checkList == -1)
     {
-        if(typeof data.user[0] !== 'undefined')
+        if (typeof data.user[0] !== 'undefined')
         {
             theUsersList.push(data.user[0].userid, data.user[0].name);
-        }        
+        }
     }
 
 
@@ -4658,7 +4661,7 @@ bot.on('registered', function (data)
 
 bot.on('update_user', function (data)
 {
-    if(typeof data.name === 'string')
+    if (typeof data.name === 'string')
     {
         var oldname = ''; //holds users old name if exists
         var queueNamePosition;
@@ -4769,8 +4772,8 @@ bot.on('deregistered', function (data)
         {
             var whatIsTheirName = theUsersList.indexOf(data.user[0].userid);
             modpm.splice(areTheyStillInModpm, 1);
-            
-            if(whatIsTheirName !== -1)
+
+            if (whatIsTheirName !== -1)
             {
                 for (var hg = 0; hg < modpm.length; hg++)
                 {
@@ -4779,7 +4782,7 @@ bot.on('deregistered', function (data)
                         bot.pm(theUsersList[whatIsTheirName + 1] + ' has left the modpm chat', modpm[hg]);
                     }
                 }
-            }           
+            }
         }
     }
 
@@ -4822,23 +4825,23 @@ bot.on('endsong', function (data)
                 if (djId == currentDjs[0] && playLimit === 1) //if person is in the far left seat and limit is set to one
                 {
                     var checklist33 = theUsersList.indexOf(djId) + 1;
-                    
-                    if(checklist33 !== -1)
+
+                    if (checklist33 !== -1)
                     {
                         bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' song');
-                    }            
-                    
+                    }
+
                     bot.remDj(djId);
                 }
                 else if (djId != USERID && playLimit !== 1) //if limit is more than one
                 {
                     var checklist33 = theUsersList.indexOf(djId) + 1;
-                    
-                    if(checklist33 !== -1)
+
+                    if (checklist33 !== -1)
                     {
                         bot.speak('@' + theUsersList[checklist33] + ' you are over the playlimit of ' + playLimit + ' songs');
                     }
-                    
+
                     bot.remDj(djId);
                 }
             }
@@ -4853,18 +4856,18 @@ bot.on('endsong', function (data)
         {
             var lookname = theUsersList.indexOf(data.room.metadata.current_dj) + 1;
             bot.remDj(escortList[i]);
-            
-            if(lookname !== -1)
+
+            if (lookname !== -1)
             {
                 bot.speak('@' + theUsersList[lookname] + ' had enabled escortme');
             }
-            
+
             var removeFromList = escortList.indexOf(escortList[i]);
-            
-            if(removeFromList !== -1)
+
+            if (removeFromList !== -1)
             {
                 escortList.splice(removeFromList, 1);
-            }            
+            }
         }
     }
 });
