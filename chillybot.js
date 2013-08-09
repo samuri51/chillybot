@@ -2189,15 +2189,16 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/addme$/) && queue === true)
     {
-        var list3 = queueList.indexOf(data.name);
+        var indexInUsersList = theUsersList.indexOf(data.userid) + 1;        
+        var list3 = queueList.indexOf(theUsersList[indexInUsersList]);
         var list10 = currentDjs.indexOf(data.userid)
         var checkStageList = stageList.indexOf(data.userid);
         var checkManualStageList = bannedFromStage.indexOf(data.userid);
         //if not in the queue already, not already a dj, not banned from stage
         if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
         {
-            queueList.push(data.name, data.userid);
-            queueName.push(data.name);
+            queueList.push(theUsersList[indexInUsersList], data.userid);
+            queueName.push(theUsersList[indexInUsersList]);
             var temp91 = 'The queue is now: ';
             for (var hj = 0; hj < queueName.length; hj++)
             {
@@ -3229,17 +3230,15 @@ bot.on('pmmed', function (data)
         queue = false;
     }
     else if (text.match(/^\/addme$/) && queue === true && isInRoom === true)
-    {
-        bot.getProfile(data.senderid, function (data6)
-        {
-            var list3 = queueList.indexOf(data6.name);
+    {        
+            var list3 = queueList.indexOf(theUsersList[name1]);
             var list10 = currentDjs.indexOf(data.senderid)
             var checkStageList = stageList.indexOf(data.senderid);
             var checkManualStageList = bannedFromStage.indexOf(data.senderid);
             if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
             {
-                queueList.push(data6.name, data.senderid);
-                queueName.push(data6.name);
+                queueList.push(theUsersList[name1], data.senderid);
+                queueName.push(theUsersList[name1]);
                 var temp91 = 'The queue is now: ';
                 for (var hj = 0; hj < queueName.length; hj++)
                 {
@@ -3265,8 +3264,7 @@ bot.on('pmmed', function (data)
             else if (list10 !== -1) //if already on stage
             {
                 bot.pm('you are already djing!', data.senderid);
-            }
-        });
+            }        
     }
     else if (text.match(/^\/removeme$/) && queue === true && isInRoom === true)
     {
