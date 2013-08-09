@@ -1822,75 +1822,89 @@ bot.on('speak', function (data)
 
         var areTheyInTheQueue = queueName.indexOf(whatIsTheirName); //name in queueName
         var areTheyInTheQueueList = queueList.indexOf(whatIsTheirName); //name in queuList
-        var whatIsTheirUserid2 = theUsersList.indexOf(whatIsTheirName); //userid		
+        var whatIsTheirUserid2 = theUsersList.indexOf(whatIsTheirName); //userid	
 
-        if (queue == true) //if queue is turned on
+        //if either name or userid is undefined, do not perform a move operation        
+        if(typeof theUsersList[whatIsTheirUserid2 - 1] == 'undefined' || typeof tempName[1] == 'undefined')
         {
-            if (tempName.length == 3 && areTheyInTheQueue != -1) //if three parameters, and name found
+            if(typeof theUsersList[whatIsTheirUserid2 - 1] != 'undefined')
             {
-                if (!isNaN(tempName[2]))
-                {
-                    if (tempName[2] <= 1) //if position given lower than 1
-                    {
-                        queueName.splice(areTheyInTheQueue, 1); //remove them
-                        queueList.splice(areTheyInTheQueueList, 2); //remove them
-                        queueName.splice(0, 0, whatIsTheirName); //add them to beggining
-                        queueList.splice(0, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to beggining
-                        clearTimeout(beginTimer); //clear timeout because first person has been replaced
-                        sayOnce = true;
-                        bot.speak(whatIsTheirName + ' has been moved to position 1 in the queue');
-                    }
-                    else if (tempName[2] >= queueName.length)
-                    {
-                        if (queueName[areTheyInTheQueue] == queueName[0]) //if position given higher than end
-                        {
-                            clearTimeout(beginTimer); //clear timeout because first person has been replaced
-                            sayOnce = true;
-                        }
-                        queueName.splice(areTheyInTheQueue, 1); //remove them
-                        queueList.splice(areTheyInTheQueueList, 2); //remove them
-                        queueName.splice(queueName.length + 1, 0, whatIsTheirName); //add them to end
-                        queueList.splice(queueName.length + 1, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to end
-
-                        bot.speak(whatIsTheirName + ' has been moved to position ' + queueName.length + ' in the queue');
-                    }
-                    else
-                    {
-                        if (queueName[areTheyInTheQueue] == queueName[0])
-                        {
-                            clearTimeout(beginTimer); //clear timeout because first person has been replaced
-                            sayOnce = true;
-                        }
-
-                        queueName.splice(areTheyInTheQueue, 1); //remove them
-                        queueList.splice(areTheyInTheQueueList, 2); //remove them                       
-                        queueName.splice((Math.round(tempName[2]) - 1), 0, whatIsTheirName); //add them to given position shift left 1 because array starts at 0
-                        queueList.splice(((Math.round(tempName[2]) - 1) * 2), 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //same as above
-
-
-                        bot.speak(whatIsTheirName + ' has been moved to position ' + Math.round(tempName[2]) + ' in the queue');
-                    }
-                }
-                else
-                {
-                    bot.pm('error, position parameter passed was not a number, please pass a valid integer arguement', data.userid);
-                }
-
+                bot.pm('failed to perform move operation, please try the command again', theUsersList[whatIsTheirUserid2 - 1]);
             }
-            else if (tempName.length != 3) //if invalid number of parameters
+            else
             {
-                bot.pm('error, invalid number of parameters, must have /move name #', data.userid);
-            }
-            else if (areTheyInTheQueue == -1) //if name not found
-            {
-                bot.pm('error, name not found', data.userid);
+                bot.speak('failed to perform move operation, please try the command again');
             }
         }
         else
         {
-            bot.pm('error, queue must turned on to use this command', data.userid);
-        }
+            if (queue == true) //if queue is turned on
+            {
+                if (tempName.length == 3 && areTheyInTheQueue != -1) //if three parameters, and name found
+                {
+                    if (!isNaN(tempName[2]))
+                    {
+                        if (tempName[2] <= 1) //if position given lower than 1
+                        {
+                            queueName.splice(areTheyInTheQueue, 1); //remove them
+                            queueList.splice(areTheyInTheQueueList, 2); //remove them
+                            queueName.splice(0, 0, whatIsTheirName); //add them to beggining
+                            queueList.splice(0, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to beggining
+                            clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                            sayOnce = true;
+                            bot.speak(whatIsTheirName + ' has been moved to position 1 in the queue');
+                        }
+                        else if (tempName[2] >= queueName.length)
+                        {
+                            if (queueName[areTheyInTheQueue] == queueName[0]) //if position given higher than end
+                            {
+                                clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                                sayOnce = true;
+                            }
+                            queueName.splice(areTheyInTheQueue, 1); //remove them
+                            queueList.splice(areTheyInTheQueueList, 2); //remove them
+                            queueName.splice(queueName.length + 1, 0, whatIsTheirName); //add them to end
+                            queueList.splice(queueName.length + 1, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to end
 
+                            bot.speak(whatIsTheirName + ' has been moved to position ' + queueName.length + ' in the queue');
+                        }
+                        else
+                        {
+                            if (queueName[areTheyInTheQueue] == queueName[0])
+                            {
+                                clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                                sayOnce = true;
+                            }
+
+                            queueName.splice(areTheyInTheQueue, 1); //remove them
+                            queueList.splice(areTheyInTheQueueList, 2); //remove them                       
+                            queueName.splice((Math.round(tempName[2]) - 1), 0, whatIsTheirName); //add them to given position shift left 1 because array starts at 0
+                            queueList.splice(((Math.round(tempName[2]) - 1) * 2), 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //same as above
+
+
+                            bot.speak(whatIsTheirName + ' has been moved to position ' + Math.round(tempName[2]) + ' in the queue');
+                        }
+                    }
+                    else
+                    {
+                        bot.pm('error, position parameter passed was not a number, please pass a valid integer arguement', data.userid);
+                    }
+
+                }
+                else if (tempName.length != 3) //if invalid number of parameters
+                {
+                    bot.pm('error, invalid number of parameters, must have /move name #', data.userid);
+                }
+                else if (areTheyInTheQueue == -1) //if name not found
+                {
+                    bot.pm('error, name not found', data.userid);
+                }
+            }
+            else
+            {
+                bot.pm('error, queue must turned on to use this command', data.userid);
+            }
+        }
     }
     else if (text.match(/^\/m/) && !text.match(/^\/me/) && condition === true)
     {
@@ -2146,84 +2160,114 @@ bot.on('speak', function (data)
         }
     }
     else if (text.match(/^\/removeme$/) && queue === true)
-    {
-        var list1 = queueList.indexOf(data.name);
-        if (list1 != -1)
+    {  
+        if(typeof data.name == 'undefined')
         {
-            queueList.splice(list1, 2);
-        }
-        var list2 = queueName.indexOf(data.name);
-        if (list2 != -1)
-        {
-            if (data.name == queueName[0])
+            if(typeof(data.userid) != 'undefined')
             {
-                clearTimeout(beginTimer);
-                sayOnce = true;
-            }
-            queueName.splice(list2, 1);
-            if (queueName.length !== 0)
-            {
-                var temp90 = 'The queue is now: ';
-                for (var kj = 0; kj < queueName.length; kj++)
-                {
-                    if (kj != (queueName.length - 1))
-                    {
-                        temp90 += queueName[kj] + ', ';
-                    }
-                    else if (kj == (queueName.length - 1))
-                    {
-                        temp90 += queueName[kj];
-                    }
-                }
-                bot.speak(temp90);
+                bot.pm('failed to remove from queue, please try the command again', data.userid);
             }
             else
             {
-                bot.speak('The queue is now empty.');
-            }
+                bot.speak('failed to remove from queue, please try the command again');
+            }        
         }
         else
-        {
-            bot.pm('error, you have to be in the queue to remove yourself from the queue', data.userid);
+        {    
+            var list1 = queueList.indexOf(data.name);
+            var list2 = queueName.indexOf(data.name);
+            
+            if (list2 != -1 && list1 != -1)
+            {
+                queueList.splice(list1, 2);
+            
+                if (data.name == queueName[0])
+                {
+                    clearTimeout(beginTimer);
+                    sayOnce = true;
+                }
+                
+                queueName.splice(list2, 1);
+                
+                if (queueName.length !== 0)
+                {
+                    var temp90 = 'The queue is now: ';
+                    for (var kj = 0; kj < queueName.length; kj++)
+                    {
+                        if (kj != (queueName.length - 1))
+                        {
+                            temp90 += queueName[kj] + ', ';
+                        }
+                        else if (kj == (queueName.length - 1))
+                        {
+                            temp90 += queueName[kj];
+                        }
+                    }
+                    bot.speak(temp90);
+                }
+                else
+                {
+                    bot.speak('The queue is now empty.');
+                }
+            }
+            else
+            {
+                bot.pm('error, you have to be in the queue to remove yourself from the queue', data.userid);
+            }
         }
     }
     else if (text.match(/^\/addme$/) && queue === true)
     {
-        var indexInUsersList = theUsersList.indexOf(data.userid) + 1;        
-        var list3 = queueList.indexOf(theUsersList[indexInUsersList]);
-        var list10 = currentDjs.indexOf(data.userid)
-        var checkStageList = stageList.indexOf(data.userid);
-        var checkManualStageList = bannedFromStage.indexOf(data.userid);
-        //if not in the queue already, not already a dj, not banned from stage
-        if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
+        if(typeof data.userid == 'undefined')
         {
-            queueList.push(theUsersList[indexInUsersList], data.userid);
-            queueName.push(theUsersList[indexInUsersList]);
-            var temp91 = 'The queue is now: ';
-            for (var hj = 0; hj < queueName.length; hj++)
+            bot.speak('failed to add to queue, please try the command again');
+        }
+        else
+        {  
+            var indexInUsersList = theUsersList.indexOf(data.userid) + 1;         
+            
+            if(typeof theUsersList[indexInUsersList] == 'undefined')
             {
-                if (hj != (queueName.length - 1))
+                bot.pm('failed to add to queue, please try the command again', data.userid);
+            }
+            else
+            {            
+                var list3 = queueList.indexOf(theUsersList[indexInUsersList]);
+                var list10 = currentDjs.indexOf(data.userid)
+                var checkStageList = stageList.indexOf(data.userid);
+                var checkManualStageList = bannedFromStage.indexOf(data.userid);
+                //if not in the queue already, not already a dj, not banned from stage
+                if (list3 == -1 && list10 == -1 && checkStageList == -1 && checkManualStageList == -1)
                 {
-                    temp91 += queueName[hj] + ', ';
+                    queueList.push(theUsersList[indexInUsersList], data.userid);
+                    queueName.push(theUsersList[indexInUsersList]);
+                    var temp91 = 'The queue is now: ';
+                    for (var hj = 0; hj < queueName.length; hj++)
+                    {
+                        if (hj != (queueName.length - 1))
+                        {
+                            temp91 += queueName[hj] + ', ';
+                        }
+                        else if (hj == (queueName.length - 1))
+                        {
+                            temp91 += queueName[hj];
+                        }
+                    }
+                    bot.speak(temp91);
                 }
-                else if (hj == (queueName.length - 1))
+                else if (list3 != -1) //if already in queue
                 {
-                    temp91 += queueName[hj];
+                    bot.pm('sorry i can\'t add you to the queue because you are already in the queue!', data.userid);
+                }
+                else if (checkStageList != -1 || checkManualStageList != -1) //if banned from stage
+                {
+                    bot.pm('sorry i can\'t add you to the queue because you are currently banned from djing', data.userid);
+                }
+                else if (list10 !== -1) //if already on stage
+                {
+                    bot.pm('you are already djing!', data.userid);
                 }
             }
-            bot.speak(temp91);
-        }
-        else if (list3 != -1) //if already in queue
-        {
-            bot.pm('sorry i can\'t add you to the queue because you are already in the queue!', data.userid);
-        }
-        else if (checkStageList != -1 || checkManualStageList != -1) //if banned from stage
-        {
-            bot.pm('sorry i can\'t add you to the queue because you are currently banned from djing', data.userid);
-        }
-        else if (list10 !== -1) //if already on stage
-        {
-            bot.pm('you are already djing!', data.userid);
         }
     }
     else if (text.match(/^\/queueOn$/) && condition === true)
@@ -2639,7 +2683,7 @@ bot.on('add_dj', function (data)
 
     //adds a user to the current Djs list when they join the stage.
     var check89 = currentDjs.indexOf(data.user[0].userid);
-    if (check89 == -1)
+    if (check89 == -1 && typeof data.user[0] != 'undefined')
     {
         currentDjs.push(data.user[0].userid);
     }
@@ -2981,70 +3025,85 @@ bot.on('pmmed', function (data)
         var areTheyInTheQueue = queueName.indexOf(tempName[1]); //name in queueName
         var areTheyInTheQueueList = queueList.indexOf(tempName[1]); //name in queuList
         var whatIsTheirUserid2 = theUsersList.indexOf(tempName[1]); //userid
-
-        if (queue == true) //if queue is turned on
+    
+        //if either name or userid is undefined, do not perform a move operation        
+        if(typeof theUsersList[whatIsTheirUserid2 - 1] == 'undefined' || typeof tempName[1] == 'undefined')
         {
-            if (tempName.length == 3 && areTheyInTheQueue != -1) //if three parameters, and name found
+            if(typeof theUsersList[whatIsTheirUserid2 - 1] != 'undefined')
             {
-                if (!isNaN(tempName[2]))
-                {
-                    if (tempName[2] <= 1)
-                    {
-                        queueName.splice(areTheyInTheQueue, 1); //remove them
-                        queueList.splice(areTheyInTheQueueList, 2); //remove them
-                        queueName.splice(0, 0, tempName[1]); //add them to beggining
-                        queueList.splice(0, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to beggining
-                        clearTimeout(beginTimer); //clear timeout because first person has been replaced
-                        sayOnce = true;
-                        bot.pm(tempName[1] + ' has been moved to position 1 in the queue', data.senderid);
-                    }
-                    else if (tempName[2] >= queueName.length)
-                    {
-                        if (queueName[areTheyInTheQueue] == queueName[0])
-                        {
-                            clearTimeout(beginTimer); //clear timeout because first person has been replaced
-                            sayOnce = true;
-                        }
-                        queueName.splice(areTheyInTheQueue, 1); //remove them
-                        queueList.splice(areTheyInTheQueueList, 2); //remove them
-                        queueName.splice(queueName.length + 1, 0, tempName[1]); //add them to end
-                        queueList.splice(queueName.length + 1, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to end
-
-                        bot.pm(tempName[1] + ' has been moved to position ' + queueName.length + ' in the queue', data.senderid);
-                    }
-                    else
-                    {
-                        if (queueName[areTheyInTheQueue] == queueName[0])
-                        {
-                            clearTimeout(beginTimer); //clear timeout because first person has been replaced
-                            sayOnce = true;
-                        }
-
-                        queueName.splice(areTheyInTheQueue, 1); //remove them
-                        queueList.splice(areTheyInTheQueueList, 2); //remove them                      
-                        queueName.splice((Math.round(tempName[2]) - 1), 0, tempName[1]); //add them to given position shift left 1 because array starts at 0
-                        queueList.splice(((Math.round(tempName[2]) - 1) * 2), 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //same as above                        
-
-                        bot.pm(tempName[1] + ' has been moved to position ' + Math.round(tempName[2]) + ' in the queue', data.senderid);
-                    }
-                }
-                else
-                {
-                    bot.pm('error, position parameter passed was not a number, please pass a valid integer arguement', data.senderid);
-                }
+                bot.pm('failed to perform move operation, please try the command again', theUsersList[whatIsTheirUserid2 - 1]);
             }
-            else if (tempName.length != 3) //if invalid number of parameters
+            else
             {
-                bot.pm('error, invalid number of parameters, must have /move name #', data.senderid);
-            }
-            else if (areTheyInTheQueue == -1) //if name not found
-            {
-                bot.pm('error, name not found', data.senderid);
+                bot.speak('failed to perform move operation, please try the command again');
             }
         }
         else
         {
-            bot.pm('error, queue must turned on to use this command', data.senderid);
+            if (queue == true) //if queue is turned on
+            {
+                if (tempName.length == 3 && areTheyInTheQueue != -1) //if three parameters, and name found
+                {
+                    if (!isNaN(tempName[2]))
+                    {
+                        if (tempName[2] <= 1)
+                        {
+                            queueName.splice(areTheyInTheQueue, 1); //remove them
+                            queueList.splice(areTheyInTheQueueList, 2); //remove them
+                            queueName.splice(0, 0, tempName[1]); //add them to beggining
+                            queueList.splice(0, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to beggining
+                            clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                            sayOnce = true;
+                            bot.pm(tempName[1] + ' has been moved to position 1 in the queue', data.senderid);
+                        }
+                        else if (tempName[2] >= queueName.length)
+                        {
+                            if (queueName[areTheyInTheQueue] == queueName[0])
+                            {
+                                clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                                sayOnce = true;
+                            }
+                            queueName.splice(areTheyInTheQueue, 1); //remove them
+                            queueList.splice(areTheyInTheQueueList, 2); //remove them
+                            queueName.splice(queueName.length + 1, 0, tempName[1]); //add them to end
+                            queueList.splice(queueName.length + 1, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to end
+
+                            bot.pm(tempName[1] + ' has been moved to position ' + queueName.length + ' in the queue', data.senderid);
+                        }
+                        else
+                        {
+                            if (queueName[areTheyInTheQueue] == queueName[0])
+                            {
+                                clearTimeout(beginTimer); //clear timeout because first person has been replaced
+                                sayOnce = true;
+                            }
+
+                            queueName.splice(areTheyInTheQueue, 1); //remove them
+                            queueList.splice(areTheyInTheQueueList, 2); //remove them                      
+                            queueName.splice((Math.round(tempName[2]) - 1), 0, tempName[1]); //add them to given position shift left 1 because array starts at 0
+                            queueList.splice(((Math.round(tempName[2]) - 1) * 2), 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //same as above                        
+
+                            bot.pm(tempName[1] + ' has been moved to position ' + Math.round(tempName[2]) + ' in the queue', data.senderid);
+                        }
+                    }
+                    else
+                    {
+                        bot.pm('error, position parameter passed was not a number, please pass a valid integer arguement', data.senderid);
+                    }
+                }
+                else if (tempName.length != 3) //if invalid number of parameters
+                {
+                    bot.pm('error, invalid number of parameters, must have /move name #', data.senderid);
+                }
+                else if (areTheyInTheQueue == -1) //if name not found
+                {
+                    bot.pm('error, name not found', data.senderid);
+                }
+            }
+            else
+            {
+                bot.pm('error, queue must turned on to use this command', data.senderid);
+            }
         }
     }
     else if (text.match(/^\/position/)) //tells you your position in the queue, if there is one
@@ -3230,7 +3289,20 @@ bot.on('pmmed', function (data)
         queue = false;
     }
     else if (text.match(/^\/addme$/) && queue === true && isInRoom === true)
-    {        
+    {      
+        if(typeof data.senderid == 'undefined' || typeof theUsersList[name1] == 'undefined')
+        {
+            if(typeof data.senderid != 'undefined')
+            {
+                bot.pm('failed to add to queue, please try the command again', data.senderid);
+            }
+            else
+            {
+                bot.speak('failed to add to queue, please try the command again');
+            }            
+        }
+        else
+        {
             var list3 = queueList.indexOf(theUsersList[name1]);
             var list10 = currentDjs.indexOf(data.senderid)
             var checkStageList = stageList.indexOf(data.senderid);
@@ -3264,52 +3336,64 @@ bot.on('pmmed', function (data)
             else if (list10 !== -1) //if already on stage
             {
                 bot.pm('you are already djing!', data.senderid);
-            }        
+            }       
+        }
     }
     else if (text.match(/^\/removeme$/) && queue === true && isInRoom === true)
-    {
-        bot.getProfile(data.senderid, function (data6)
-        {
-            var list1 = queueList.indexOf(data6.name);
-            if (list1 != -1)
+    {               
+            if(typeof theUsersList[name1] == 'undefined')
             {
-                queueList.splice(list1, 2);
-            }
-            var list2 = queueName.indexOf(data6.name);
-            if (list2 != -1)
-            {
-                if (data6.name == queueName[0])
+                if(typeof data.senderid != 'undefined')
                 {
-                    clearTimeout(beginTimer);
-                    sayOnce = true;
-                }
-                queueName.splice(list2, 1);
-                if (queueName.length !== 0)
-                {
-                    var temp90 = 'The queue is now: ';
-                    for (var kj = 0; kj < queueName.length; kj++)
-                    {
-                        if (kj != (queueName.length - 1))
-                        {
-                            temp90 += queueName[kj] + ', ';
-                        }
-                        else if (kj == (queueName.length - 1))
-                        {
-                            temp90 += queueName[kj];
-                        }
-                    }
-                    bot.speak(temp90);
+                    bot.pm('failed to remove from queue, please try the command again', data.senderid);
                 }
                 else
                 {
-                    bot.speak('The queue is now empty.');
-                }
+                    bot.speak('failed to remove from queue, please try the command again');
+                }            
             }
             else
-            {
-                bot.pm('error, you have to be in the queue to remove yourself from the queue', data.senderid);
+            {        
+                var list1 = queueList.indexOf(theUsersList[name1]);
+                var list2 = queueName.indexOf(theUsersList[name1]);          
+                
+                if (list2 != -1 && list1 != -1)
+                {
+                    queueList.splice(list1, 2);
+                
+                    if (theUsersList[name1] == queueName[0])
+                    {
+                        clearTimeout(beginTimer);
+                        sayOnce = true;
+                    }
+                    queueName.splice(list2, 1);
+                    
+                    if (queueName.length !== 0)
+                    {
+                        var temp90 = 'The queue is now: ';
+                        for (var kj = 0; kj < queueName.length; kj++)
+                        {
+                            if (kj != (queueName.length - 1))
+                            {
+                                temp90 += queueName[kj] + ', ';
+                            }
+                            else if (kj == (queueName.length - 1))
+                            {
+                                temp90 += queueName[kj];
+                            }
+                        }
+                        bot.speak(temp90);
+                    }
+                    else
+                    {
+                        bot.speak('The queue is now empty.');
+                    }
+                }
+                else
+                {
+                    bot.pm('error, you have to be in the queue to remove yourself from the queue', data.senderid);
+                }
             }
-        });
     }
     else if (text.match('/removefromqueue') && queue === true && isInRoom === true)
     {
