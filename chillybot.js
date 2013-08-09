@@ -2491,9 +2491,16 @@ bot.on('speak', function (data)
     {
         var isAlreadyAfk = afkPeople.indexOf(data.name);
         if (isAlreadyAfk == -1)
-        {
-            bot.speak('@' + name + ' you are marked as afk');
-            afkPeople.push(data.name);
+        { 
+            if(typeof data.name == 'undefined')
+            {
+                bot.pm('failed to add to the afk list, please try the command again', data.userid);
+            }
+            else
+            {            
+                bot.speak('@' + name + ' you are marked as afk');
+                afkPeople.push(data.name);
+            }
         }
         else if (isAlreadyAfk != -1)
         {
@@ -4317,11 +4324,18 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/afk/) && isInRoom === true)
     {
         var isUserAfk = theUsersList.indexOf(data.senderid) + 1;
-        var isAlreadyAfk = afkPeople.indexOf(theUsersList[isUserAfk]);
+        var isAlreadyAfk = afkPeople.indexOf(theUsersList[isUserAfk]);        
         if (isAlreadyAfk == -1)
-        {
-            bot.pm('you are marked as afk', data.senderid);
-            afkPeople.push(theUsersList[isUserAfk]);
+        {            
+            if(typeof theUsersList[isUserAfk] == 'undefined')
+            {
+                bot.pm('failed to add to the afk list, please try the command again', data.senderid);
+            }
+            else
+            {
+                bot.pm('you are marked as afk', data.senderid);
+                afkPeople.push(theUsersList[isUserAfk]);
+            }      
         }
         else if (isAlreadyAfk != -1)
         {
