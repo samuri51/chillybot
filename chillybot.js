@@ -63,8 +63,7 @@ global.vipList = [];
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
                      */
 
-var isRefreshing = true; //whether or not /refresh can be used or not (true = yes, false = no)
-var amountOfTimeToRefresh = 30; //the amount of seconds someone has to use the refresh command(if enabled)                     
+
 
 //these variables set features to on or off as the default when the bot starts up,
 //most of them can be changed with commands while the bot is running
@@ -1658,6 +1657,7 @@ bot.on('speak', function (data)
             var isRefresherOnStage = currentDjs.indexOf(data.userid); //are they a dj
             var hasRefreshAlreadyBeenUsed = refreshList.indexOf(data.userid); //are they already being refreshed?
             var whatIsRefresherName = theUsersList.indexOf(data.userid) + 1;
+            var numberRepresent = (amountOfTimeToRefresh / 60);
 
             if (hasRefreshAlreadyBeenUsed != -1) //if they are already being refreshed
             {
@@ -1691,8 +1691,19 @@ bot.on('speak', function (data)
                         {
                             playLimitOfRefresher[data.userid] = djs20[data.userid].nbSong; //save a copy of their play limit
                         }
-
-                        bot.speak('@' + theUsersList[whatIsRefresherName] + ' i\'ll hold your spot on stage for the next ' + amountOfTimeToRefresh + ' seconds');
+                        
+                        if(numberRepresent < 1)
+                        {
+                            bot.speak('@' + theUsersList[whatIsRefresherName] + ' i\'ll hold your spot on stage for the next ' + amountOfTimeToRefresh + ' seconds');
+                        }
+                        else if(numberRepresent == 1)
+                        {
+                            bot.speak('@' + theUsersList[whatIsRefresherName] + ' i\'ll hold your spot on stage for the next ' + numberRepresent+ ' minute');
+                        }
+                        else
+                        {
+                            bot.speak('@' + theUsersList[whatIsRefresherName] + ' i\'ll hold your spot on stage for the next ' + numberRepresent+ ' minutes');
+                        }
                     }
                     else
                     {
