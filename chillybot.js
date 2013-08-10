@@ -2863,18 +2863,21 @@ bot.on('add_dj', function (data)
 
     if ((refreshList.length + currentDjs.length) <= 5) //if there are still seats left to give out, then give them(but reserve for refreshers)
     {
-        //tells a dj trying to get on stage how to add themselves to the queuelist
-        var ifUser2 = queueList.indexOf(data.user[0].userid);
-        if (queue === true && ifUser2 == -1)
+        if(refreshList.indexOf(data.user[0].userid) == -1) //don't show these messages to people on the refresh list
         {
-            if (queueList.length !== 0)
+            //tells a dj trying to get on stage how to add themselves to the queuelist
+            var ifUser2 = queueList.indexOf(data.user[0].userid);
+            if (queue === true && ifUser2 == -1)
             {
-                bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
+                if (queueList.length !== 0)
+                {
+                    bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
+                }
             }
-        }
-        else if (queue === true && ifUser2 !== -1 && data.user[0].name !== queueName[0])
-        {
-            bot.pm('sorry, but you are not first in queue. please wait your turn.', data.user[0].userid);
+            else if (queue === true && ifUser2 !== -1 && data.user[0].name !== queueName[0])
+            {
+                bot.pm('sorry, but you are not first in queue. please wait your turn.', data.user[0].userid);
+            }
         }
     }
     else if (refreshList.length != 0 && refreshList.indexOf(data.user[0].userid) == -1) //if there are people in the refresh list
