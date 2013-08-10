@@ -62,8 +62,9 @@ global.vipList = [];
 /* this is the vip list, it accepts userids as input, this is for when you have a special guest or guests in your room and you only
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
                      */
-
-
+                     
+var isRefreshing = true; //whether or not /refresh can be used or not (true = yes, false = no)
+var amountOfTimeToRefresh = 30; //the amount of seconds someone has to use the refresh command(if enabled)                     
 
 //these variables set features to on or off as the default when the bot starts up,
 //most of them can be changed with commands while the bot is running
