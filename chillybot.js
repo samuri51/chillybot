@@ -2886,7 +2886,7 @@ bot.on('add_dj', function (data)
     //escorting for the queue will not apply to people who are on the refresh list
     if (refreshList.indexOf(data.user[0].userid) == -1)
     {
-        if ((refreshList.length + currentDjs.length) < 5) //if there are still seats left to give out, then give them(but reserve for refreshers)
+        if ((refreshList.length + currentDjs.length) <= 5) //if there are still seats left to give out, then give them(but reserve for refreshers)
         {
             //removes a user from the queue list when they join the stage.
             if (queue === true)
