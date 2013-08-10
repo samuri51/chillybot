@@ -151,6 +151,7 @@ var returnToRoom = true; //used to toggle on and off the bot reconnecting to its
 var wserrorTimeout = null; //this is for the setTimeout in ws error
 var errorMessage = null; //the error message you get when trying to connect to the room
 var bannedArtistsMatcher; //holds the regular expression for banned artist / song matching
+var autoDjingTimer = null; //governs the timer for the bot's auto djing
 
 global.modpm = []; //holds the userid's of everyone in the /modpm feature
 global.warnme = []; //holds the userid's of everyone using the /warnme feature
@@ -618,6 +619,41 @@ setInterval(verifyUsersList, 1000 * 60 * 15); //check every 15 minutes
 
 
 
+//governs whether the bot gets on or off the stage automatically (autodjing)
+global.autoDjing = function ()
+{
+    if (autoDjingTimer != null)
+    {
+        clearTimeout(autoDjingTimer);
+        autoDjingTimer = null;
+    }
+
+    autoDjingTimer = setTimeout(function ()
+    {
+        var isBotAlreadyOnStage = currentDjs.indexOf(USERID);
+
+        if (isBotAlreadyOnStage == -1) //if the bot is not already on stage
+        {
+            if (currentDjs.length >= 1 && currentDjs.length <= whenToGetOnStage && queueList.length === 0)
+            {
+                if (getonstage === true && vipList.length === 0)
+                {
+                    bot.addDj();
+                }
+            }
+        }
+        else //else it is on stage
+        {
+            if (currentDjs.length >= whenToGetOffStage && getonstage === true)
+            {
+                bot.remDj();
+            }
+        }
+    }, 1000 * 10); //delay for 10 seconds        
+};
+
+
+
 global.warnMeCall = function ()
 {
     if (warnme.length != 0) //is there anyone in the warnme?
@@ -895,17 +931,11 @@ bot.on('newsong', function (data)
 
     //puts bot on stage if there is one dj on stage, and removes them when there is 5 dj's on stage.
     current = data.room.metadata.djcount;
-    if (current >= 1 && current <= whenToGetOnStage && queueList.length === 0)
-    {
-        if (getonstage === true && vipList.length === 0)
-        {
-            bot.addDj();
-        }
-    }
-    if (current >= whenToGetOffStage && getonstage === true)
-    {
-        bot.remDj();
-    }
+
+
+    autoDjing(); //check to see if conditions are met for bot's autodjing feature
+
+
     //if the bot is the only one on stage and they are skipping their songs
     //they will stop skipping
     if (current == 1 && checkWhoIsDj == USERID && skipOn === true)
@@ -2491,13 +2521,13 @@ bot.on('speak', function (data)
     {
         var isAlreadyAfk = afkPeople.indexOf(data.name);
         if (isAlreadyAfk == -1)
-        { 
-            if(typeof data.name == 'undefined')
+        {
+            if (typeof data.name == 'undefined')
             {
                 bot.pm('failed to add to the afk list, please try the command again', data.userid);
             }
             else
-            {            
+            {
                 bot.speak('@' + name + ' you are marked as afk');
                 afkPeople.push(data.name);
             }
@@ -2817,6 +2847,9 @@ bot.on('add_dj', function (data)
     }
 
 
+    autoDjing(); //check to see if conditions are met for bot's autodjing feature
+
+
     //if person exceeds spam count within 10 seconds they are kicked
     if (typeof people[data.user[0].userid] != 'undefined' && people[data.user[0].userid].spamCount >= spamLimit)
     {
@@ -2860,6 +2893,8 @@ bot.on('rem_dj', function (data)
     //checks if when someone gets off the stage, if the person
     //on the left is now the next dj
     warnMeCall();
+
+    autoDjing(); //check to see if conditions are met for bot's autodjing feature    
 
     //takes a user off the escort list if they leave the stage.
     var checkEscort = escortList.indexOf(data.user[0].userid);
@@ -4324,10 +4359,10 @@ bot.on('pmmed', function (data)
     else if (text.match(/^\/afk/) && isInRoom === true)
     {
         var isUserAfk = theUsersList.indexOf(data.senderid) + 1;
-        var isAlreadyAfk = afkPeople.indexOf(theUsersList[isUserAfk]);        
+        var isAlreadyAfk = afkPeople.indexOf(theUsersList[isUserAfk]);
         if (isAlreadyAfk == -1)
-        {            
-            if(typeof theUsersList[isUserAfk] == 'undefined')
+        {
+            if (typeof theUsersList[isUserAfk] == 'undefined')
             {
                 bot.pm('failed to add to the afk list, please try the command again', data.senderid);
             }
@@ -4335,7 +4370,7 @@ bot.on('pmmed', function (data)
             {
                 bot.pm('you are marked as afk', data.senderid);
                 afkPeople.push(theUsersList[isUserAfk]);
-            }      
+            }
         }
         else if (isAlreadyAfk != -1)
         {
