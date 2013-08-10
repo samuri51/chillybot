@@ -2861,7 +2861,7 @@ bot.on('add_dj', function (data)
     }
 
 
-    if ((refreshList.length + currentDjs.length) < 5) //if there are still seats left to give out, then give them(but reserve for refreshers)
+    if ((refreshList.length + currentDjs.length) <= 5) //if there are still seats left to give out, then give them(but reserve for refreshers)
     {
         //tells a dj trying to get on stage how to add themselves to the queuelist
         var ifUser2 = queueList.indexOf(data.user[0].userid);
