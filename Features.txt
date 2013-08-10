@@ -142,12 +142,15 @@ the dj afk limit. all others are affected, including moderators, when those limi
 are active.
 
 
+refresh command - some special things to note about this command is that it saves the persons play limit when they leave the room.
+this is to prevent exploiting this command to reset your play limit. the most important thing to know about this is that it saves you "a" seat
+on stage, not the same exact seat that you had. this means that if there is a queue and one person uses the refresh command and there are bunch
+of empty seats open, it allows those seats to be filled, leaving only exactly enough space for the refresher or (refreshers) to get back on stage.
+
+
 
 when people leave the room - most values and objects that people are occupying are freed
 in memory when people leave the room, the queue is the exception to this, when people join
 the queue they are not removed even if they leave the room, this is due to the nature of turntable
 and the fact that sometimes you have to restart your browser. They will automatically be dealt
 with in time by the queue timeout mechanism.
-
-
-

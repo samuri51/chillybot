@@ -63,6 +63,9 @@ global.vipList = [];
                         want to hear them dj, leave this empty unless you want everyone other than the people whos userids are in the vip list to be automatically kicked from stage.
                      */
 
+var isRefreshing = true; //whether or not /refresh can be used or not (true = yes, false = no)
+var amountOfTimeToRefresh = 30; //the amount of seconds someone has to use the refresh command(if enabled)                     
+
 //these variables set features to on or off as the default when the bot starts up,
 //most of them can be changed with commands while the bot is running
 // true = on, false = off
@@ -153,6 +156,9 @@ var errorMessage = null; //the error message you get when trying to connect to t
 var bannedArtistsMatcher; //holds the regular expression for banned artist / song matching
 var autoDjingTimer = null; //governs the timer for the bot's auto djing
 
+global.playLimitOfRefresher = []; //holds a copy of the number of plays for people who have used the /refresh command
+global.refreshList = []; //this holds the userid's of people who have used the /refresh command
+global.refreshTimer = []; //this holds the timers of people who have used the /refresh command
 global.modpm = []; //holds the userid's of everyone in the /modpm feature
 global.warnme = []; //holds the userid's of everyone using the /warnme feature
 global.timer = []; //holds the timeout of everyone who has been spamming the stage, resets their spam count if their timer completes
@@ -442,7 +448,7 @@ queueCheck15 = function ()
     //in line has 60 seconds to get on stage before being remove from the queue
     if (queue === true && queueList.length !== 0)
     {
-        if (sayOnce === true && currentDjs.length < 5)
+        if (sayOnce === true && (refreshList.length + currentDjs.length) < 5)
         {
             sayOnce = false;
             if ((howLongStage / 60) < 1) //is it seconds
@@ -636,7 +642,7 @@ global.autoDjing = function ()
         {
             if (currentDjs.length >= 1 && currentDjs.length <= whenToGetOnStage && queueList.length === 0)
             {
-                if (getonstage === true && vipList.length === 0)
+                if (getonstage === true && vipList.length === 0 && refreshList.length === 0)
                 {
                     bot.addDj();
                 }
@@ -1030,7 +1036,7 @@ bot.on('newsong', function (data)
 //bot gets on stage and starts djing if no song is playing.
 bot.on('nosong', function (data)
 {
-    if (getonstage === true && vipList.length === 0 && queueList.length === 0)
+    if (getonstage === true && vipList.length === 0 && queueList.length === 0 && refreshList.length === 0)
     {
         bot.addDj();
     }
@@ -1335,6 +1341,14 @@ bot.on('speak', function (data)
         {
             whatsOn += 'song play limit: Off, ';
         }
+        if (isRefreshing === true)
+        {
+            whatsOn += 'refreshing: On, ';
+        }
+        else
+        {
+            whatsOn += 'refreshing: Off, ';
+        }
         if (skipOn === true)
         {
             whatsOn += 'autoskipping: On, ';
@@ -1595,6 +1609,103 @@ bot.on('speak', function (data)
     {
         bot.speak('@' + name + ' gives ' + '@' + dj + ' an epic high :hand:');
     }
+    else if (text.match(/^\/whosrefreshing/))
+    {
+        if (refreshList.length != 0)
+        {
+            var whosRefreshing = 'refreshing: ';
+            var namesOfRefresher;
+
+            for (var i = 0; i < refreshList.length; i++)
+            {
+                namesOfRefresher = theUsersList.indexOf(data.userid) + 1;
+
+                if (i < refreshList.length - 1)
+                {
+                    whosRefreshing += theUsersList[namesOfRefresher] + ', ';
+                }
+                else
+                {
+                    whosRefreshing += theUsersList[namesOfRefresher];
+                }
+            }
+
+            bot.speak(whosRefreshing);
+        }
+        else
+        {
+            bot.speak('no one is currently refreshing');
+        }
+    }
+    else if (text.match(/^\/refreshoff/) && condition === true)
+    {
+        bot.speak('refreshing has been disabled');
+        isRefreshing = false;
+    }
+    else if (text.match(/^\/refreshon/) && condition === true)
+    {
+        bot.speak('refreshing has been enabled');
+        isRefreshing = true;
+    }
+    else if (text.match(/^\/refresh/))
+    {
+        if (typeof (data.userid) == 'undefined')
+        {
+            bot.speak('failed to add to refresh list, please try the command again');
+        }
+        else
+        {
+            var isRefresherOnStage = currentDjs.indexOf(data.userid); //are they a dj
+            var hasRefreshAlreadyBeenUsed = refreshList.indexOf(data.userid); //are they already being refreshed?
+            var whatIsRefresherName = theUsersList.indexOf(data.userid) + 1;
+
+            if (hasRefreshAlreadyBeenUsed != -1) //if they are already being refreshed
+            {
+                clearTimeout(refreshTimer[data.userid]); //clear their timeout
+                delete refreshTimer[data.userid];
+                refreshList.splice(hasRefreshAlreadyBeenUsed, 1); //remove them from the refresh list       
+
+                bot.speak('@' + theUsersList[whatIsRefresherName] + ' you have been removed from the refresh list');
+            }
+            else
+            {
+                if (isRefreshing) //if /refresh is enabled
+                {
+                    if (isRefresherOnStage != -1) //is the person on stage
+                    {
+                        refreshList.push(data.userid);
+                        refreshTimer[data.userid] = setTimeout(function ()
+                        {
+                            hasRefreshAlreadyBeenUsed = refreshList.indexOf(data.userid); //recalculate their position
+
+                            if (hasRefreshAlreadyBeenUsed != -1)
+                            {
+                                refreshList.splice(hasRefreshAlreadyBeenUsed, 1); //remove them from the refresh list
+                                clearTimeout(refreshTimer[data.userid]); //clear their timeout
+                                delete playLimitOfRefresher[data.userid] //delete the copy of their play limit
+                                delete refreshTimer[data.userid];
+                            }
+                        }, 1000 * amountOfTimeToRefresh);
+
+                        if (typeof djs20[data.userid] == 'object')
+                        {
+                            playLimitOfRefresher[data.userid] = djs20[data.userid].nbSong; //save a copy of their play limit
+                        }
+
+                        bot.speak('@' + theUsersList[whatIsRefresherName] + ' i\'ll hold your spot on stage for the next ' + amountOfTimeToRefresh + ' seconds');
+                    }
+                    else
+                    {
+                        bot.pm('you have to be on stage to use that command', data.userid);
+                    }
+                }
+                else
+                {
+                    bot.pm('refreshing is currently disabled', data.userid);
+                }
+            }
+        }
+    }
     else if (text.match(/^\/greeton/) && condition === true)
     {
         bot.speak('room greeting: On');
@@ -1632,16 +1743,16 @@ bot.on('speak', function (data)
     else if (text.match(/^\/commands/))
     {
         bot.speak('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /whatsplaylimit, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /whosrefreshing, /refresh, /whatsplaylimit, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands');
     }
     else if (text.match(/^\/queuecommands/))
     {
-        bot.speak('the commands are /queue, /queuewithnumbers, /removefromqueue @, /removeme, /move, /addme, /queueOn, /queueOff, /bumptop @');
+        bot.speak('the commands are /queue, /position, /queuewithnumbers, /removefromqueue @, /removeme, /move, /addme, /queueOn, /queueOff, /bumptop @');
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
-        bot.speak('the mod commands are /ban @, /unban @, /whosinmodpm, /move, /eventmessageOn, /eventmessageOff, /boot, /playminus @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk @, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.speak('the mod commands are /ban @, /unban @, /whosinmodpm, /whosrefreshing, /refreshon, /refreshoff, /move, /eventmessageOn, /eventmessageOff, /boot, /playminus @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk @, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /removesong, /playLimitOn, /playLimitOff, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm');
         condition = false;
@@ -2691,9 +2802,20 @@ bot.on('add_dj', function (data)
 
 
     //sets dj's songcount to zero when they enter the stage.
-    djs20[data.user[0].userid] = {
-        nbSong: 0
-    };
+    //unless they used the refresh command, in which case its set to 
+    //what it was before they left the room
+    if (typeof playLimitOfRefresher[data.user[0].userid] == 'number')
+    {
+        djs20[data.user[0].userid] = {
+            nbSong: playLimitOfRefresher[data.user[0].userid]
+        };
+    }
+    else
+    {
+        djs20[data.user[0].userid] = {
+            nbSong: 0
+        };
+    }
 
 
     //checks if user is a moderator.
@@ -2708,7 +2830,6 @@ bot.on('add_dj', function (data)
     }
 
 
-
     //updates the afk position of the person who joins the stage.
     if (AFK === true || roomAFK === true)
     {
@@ -2720,7 +2841,6 @@ bot.on('add_dj', function (data)
     }
 
 
-
     //adds a user to the current Djs list when they join the stage.
     var check89 = currentDjs.indexOf(data.user[0].userid);
     if (check89 == -1 && typeof data.user[0] != 'undefined')
@@ -2729,29 +2849,82 @@ bot.on('add_dj', function (data)
     }
 
 
-
-    //tells a dj trying to get on stage how to add themselves to the queuelist
-    var ifUser2 = queueList.indexOf(data.user[0].userid);
-    if (queue === true && ifUser2 == -1)
+    if ((refreshList.length + currentDjs.length) < 5) //if there are still seats left to give out, then give them(but reserve for refreshers)
     {
-        if (queueList.length !== 0)
+        //tells a dj trying to get on stage how to add themselves to the queuelist
+        var ifUser2 = queueList.indexOf(data.user[0].userid);
+        if (queue === true && ifUser2 == -1)
         {
-            bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
+            if (queueList.length !== 0)
+            {
+                bot.pm('The queue is currently active. To add yourself to the queue type /addme. To remove yourself from the queue type /removeme.', data.user[0].userid);
+            }
+        }
+        else if (queue === true && ifUser2 !== -1 && data.user[0].name !== queueName[0])
+        {
+            bot.pm('sorry, but you are not first in queue. please wait your turn.', data.user[0].userid);
         }
     }
-    else if (queue === true && ifUser2 !== -1 && data.user[0].name !== queueName[0])
-    {
-        bot.pm('sorry, but you are not first in queue. please wait your turn.', data.user[0].userid);
+    else if (refreshList.length != 0 && refreshList.indexOf(data.user[0].userid) == -1) //if there are people in the refresh list
+    { //and the person who just joined the stage is not one of them
+        bot.pm('sorry, but i\m holding that spot for someone in the refresh list', data.user[0].userid);
     }
 
 
-
-    //removes a user from the queue list when they join the stage.
-    if (queue === true)
+    //escorting for the queue will not apply to people who are on the refresh list
+    if (refreshList.indexOf(data.user[0].userid) == -1)
     {
-        var firstOnly = queueList.indexOf(data.user[0].userid);
-        var queueListLength = queueList.length;
-        if (firstOnly != 1 && queueListLength !== 0)
+        if ((refreshList.length + currentDjs.length) < 5) //if there are still seats left to give out, then give them(but reserve for refreshers)
+        {
+            //removes a user from the queue list when they join the stage.
+            if (queue === true)
+            {
+                var firstOnly = queueList.indexOf(data.user[0].userid);
+                var queueListLength = queueList.length;
+                if (firstOnly != 1 && queueListLength !== 0)
+                {
+                    bot.remDj(data.user[0].userid);
+
+                    if (typeof people[data.user[0].userid] != 'undefined')
+                    {
+                        ++people[data.user[0].userid].spamCount;
+                    }
+
+                    if (timer[data.user[0].userid] !== null)
+                    {
+                        clearTimeout(timer[data.user[0].userid]);
+                        timer[data.user[0].userid] = null;
+                    }
+
+                    timer[data.user[0].userid] = setTimeout(function ()
+                    {
+                        people[data.user[0].userid] = {
+                            spamCount: 0
+                        };
+                    }, 10 * 1000);
+                }
+            }
+            if (queue === true)
+            {
+                var checkQueue = queueList.indexOf(data.user[0].name);
+                var checkName2 = queueName.indexOf(data.user[0].name);
+                if (checkQueue != -1 && checkQueue === 0)
+                {
+                    clearTimeout(beginTimer);
+                    sayOnce = true;
+                    queueList.splice(checkQueue, 2);
+                    queueName.splice(checkName2, 1);
+                }
+            }
+        }
+    }
+
+
+    //if when adding up the number of people in the refresh list with the number of dj's on stage
+    //it exceeds the number of seats available (this assumes a 5 seater room
+    if ((refreshList.length + currentDjs.length) > 5)
+    {
+        if (refreshList.indexOf(data.user[0].userid) == -1) //if person joining is not in refresh list
         {
             bot.remDj(data.user[0].userid);
 
@@ -2774,18 +2947,17 @@ bot.on('add_dj', function (data)
             }, 10 * 1000);
         }
     }
-    if (queue === true)
+
+
+    //if user is still in refresh list when they get on stage, remove them
+    var areTheyStillInRefreshList = refreshList.indexOf(data.user[0].userid);
+    if (areTheyStillInRefreshList != -1)
     {
-        var checkQueue = queueList.indexOf(data.user[0].name);
-        var checkName2 = queueName.indexOf(data.user[0].name);
-        if (checkQueue != -1 && checkQueue === 0)
-        {
-            clearTimeout(beginTimer);
-            sayOnce = true;
-            queueList.splice(checkQueue, 2);
-            queueName.splice(checkName2, 1);
-        }
+        clearTimeout(refreshTimer[data.user[0].userid]); //clear their timeout
+        delete refreshTimer[data.user[0].userid];
+        refreshList.splice(areTheyStillInRefreshList, 1); //remove them from the refresh list        
     }
+
 
     //checks to see if user is on the banned from stage list, if they are they are removed from stage
     for (var g = 0; g < stageList.length; g++)
@@ -2861,7 +3033,6 @@ bot.on('add_dj', function (data)
             spamCount: 0
         };
     }
-
 })
 
 
@@ -2871,6 +3042,12 @@ bot.on('rem_dj', function (data)
 {
     //removes user from the dj list when they leave the stage
     delete djs20[data.user[0].userid];
+
+    //gives them one chance to get off stage then after that theyre play limit is treated as normal
+    if (typeof playLimitOfRefresher[data.user[0].userid] == 'number' && refreshList.indexOf(data.user[0].userid) == -1)
+    {
+        delete playLimitOfRefresher[data.user[0].userid]
+    }
 
     //updates the current dj's list.
     var check30 = currentDjs.indexOf(data.user[0].userid);
@@ -2991,6 +3168,44 @@ bot.on('pmmed', function (data)
                 }
             }
         }
+    }
+    else if (text.match(/^\/whosrefreshing/) && isInRoom === true)
+    {
+        if (refreshList.length != 0)
+        {
+            var whosRefreshing = 'refreshing: ';
+            var namesOfRefresher;
+
+            for (var i = 0; i < refreshList.length; i++)
+            {
+                namesOfRefresher = theUsersList.indexOf(data.senderid) + 1;
+
+                if (i < refreshList.length - 1)
+                {
+                    whosRefreshing += theUsersList[namesOfRefresher] + ', ';
+                }
+                else
+                {
+                    whosRefreshing += theUsersList[namesOfRefresher];
+                }
+            }
+
+            bot.pm(whosRefreshing, data.senderid);
+        }
+        else
+        {
+            bot.pm('no one is currently refreshing', data.senderid);
+        }
+    }
+    else if (text.match(/^\/refreshoff/) && condition === true && isInRoom === true)
+    {
+        bot.pm('refreshing has been disabled', data.senderid);
+        isRefreshing = false;
+    }
+    else if (text.match(/^\/refreshon/) && condition === true && isInRoom === true)
+    {
+        bot.pm('refreshing has been enabled', data.senderid);
+        isRefreshing = true;
     }
     else if (text.match(/^\/whosinmodpm/) && condition === true && isInRoom === true)
     {
@@ -4001,6 +4216,14 @@ bot.on('pmmed', function (data)
         {
             whatsOn += 'song play limit: Off, ';
         }
+        if (isRefreshing === true)
+        {
+            whatsOn += 'refreshing: On, ';
+        }
+        else
+        {
+            whatsOn += 'refreshing: Off, ';
+        }
         if (skipOn === true)
         {
             whatsOn += 'autoskipping: On, ';
@@ -4401,29 +4624,29 @@ bot.on('pmmed', function (data)
             bot.pm('No one is currently marked as afk', data.senderid);
         }
     }
-    else if (text.match(/^\/commands/))
+    else if (text.match(/^\/commands/) && isInRoom === true)
     {
         bot.pm('the commands are  /awesome, ' +
-            ' /mom, /chilly, /cheers, /fanratio @, /whatsplaylimit, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /position, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
+            ' /mom, /chilly, /cheers, /fanratio @, /whosrefreshing, /refresh, /whatsplaylimit, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
     {
-        bot.pm('the commands are /queue, /queuewithnumbers, /removefromqueue @, /removeme, /addme, /move, /queueOn, /queueOff, /bumptop @', data.senderid);
+        bot.pm('the commands are /queue, /queuewithnumbers, /position, /removefromqueue @, /removeme, /addme, /move, /queueOn, /queueOff, /bumptop @', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
-        bot.pm('/chilly, /moon, /modpm, /whatsplaylimit, /warnme, /whosinmodpm, /playlist, /move, /eventmessageOn, /eventmessageOff, /boot, /roominfo, /djafk, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
+        bot.pm('/chilly, /moon, /modpm, /whatsplaylimit, /whosrefreshing, /refreshon, /refreshoff, /warnme, /whosinmodpm, /playlist, /move, /eventmessageOn, /eventmessageOff, /boot, /roominfo, /djafk, /playminus @, /snagevery, /autosnag, /position, /theme, /mytime, /uptime, /m, /stage @, /botstatus, /djplays, /banstage @, /unbanstage @, ' +
             '/userid @, /ban @, /unban @, /stalk @, /whobanned, /whostagebanned, /stopescortme, /escortme, /snag, /inform, ' +
             '/removesong, /username, /afk, /whosafk, /commands, /admincommands', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && !condition === true && isInRoom === true) //non - moderators see this
     {
-        bot.pm('/chilly, /moon, /addme, /whatsplaylimit, /warnme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
+        bot.pm('/chilly, /moon, /addme, /whosrefreshing, /whatsplaylimit, /warnme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /whosinmodpm, /unban @, /eventmessageOn, /eventmessageOff, /boot, /move, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk @, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /whosinmodpm, /refreshon, /refreshoff, /unban @, /eventmessageOn, /eventmessageOff, /boot, /move, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk @, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /botstatus, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;

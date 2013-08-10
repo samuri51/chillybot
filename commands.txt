@@ -105,6 +105,9 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /playminus<space><@name> --> decrements a person's play count by one (to give them more songs to dj with when the play limit is turned on)
 
+/refreshon --> enables the use of the /refresh command
+
+/refreshoff --> disables the use of the /refresh command (handy if its being abused)
 
 
 
@@ -126,8 +129,6 @@ COMMANDS: (public)
 
 /playlist --> bot says the total amount of songs in its playlist.
 
-/position --> the bot tells you your position in the queue
-
 /cheers --> user raises their glass for a toast
 
 /uptime --> get the amount of time the bot has been running for.
@@ -141,6 +142,10 @@ COMMANDS: (public)
 /theme --> tells you what the theme is if there is one.
 
 /smoke --> bot says smoke
+
+/whosrefreshing --> the bot gives you a list of all the people who are on the refresh list
+
+/refresh --> holds a persons seat on stage for x number of seconds which are set in the setup (no limit to how many times can be used)
 
 /coinflip --> bot flips a coin
 
@@ -185,6 +190,8 @@ QUEUE COMMANDS: (public / moderator)
 
 /queue --> the bot says the queue list in chat if there is one.
 
+/position --> the bot tells you your position in the queue
+
 /removefromqueue<space><@name> --> removes the person from the queue if they are currently in it.(moderator only)
 
 /removeme --> removes the user from the queue list.
@@ -206,7 +213,7 @@ QUEUE COMMANDS: (public / moderator)
 PM COMMANDS: (public / moderator)
 
 /pmcommands --> tells the sender all of the commands that they can use in the pm, there is a separate list for moderators and non- moderators. all commands have the same behavior as those listed above.
-				
+
 /stage<space><@name> --> the command that only works in the pm, it allows moderators to remove any dj from stage using their name anonymously through the bot.
 
 /boot<space><name> --> boots a person from the room, only works if the name is one word long
@@ -223,17 +230,3 @@ PM COMMANDS: (public / moderator)
 							example: /boot 3 billy bob joe get out of my room
 
 /whosinmodpm --> returns a list of all the admins that are currently in the modpm group chat (pm only / admin only)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
