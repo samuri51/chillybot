@@ -1708,7 +1708,7 @@ bot.on('speak', function (data)
                     }
                     else
                     {
-                        bot.pm('you have to be on stage to use that command', data.userid);
+                        bot.pm('you have to be on stage to add yourself to the refresh list', data.userid);
                     }
                 }
                 else
