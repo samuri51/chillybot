@@ -635,9 +635,9 @@ global.autoDjing = function ()
     }
 
     autoDjingTimer = setTimeout(function ()
-    {
+    {    
         var isBotAlreadyOnStage = currentDjs.indexOf(USERID);
-
+        
         if (isBotAlreadyOnStage == -1) //if the bot is not already on stage
         {
             if (currentDjs.length >= 1 && currentDjs.length <= whenToGetOnStage && queueList.length === 0)
@@ -650,7 +650,7 @@ global.autoDjing = function ()
         }
         else //else it is on stage
         {
-            if (currentDjs.length >= whenToGetOffStage && getonstage === true)
+            if (currentDjs.length >= whenToGetOffStage && getonstage === true && checkWhoIsDj != USERID)
             {
                 bot.remDj();
             }
