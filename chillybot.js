@@ -188,9 +188,8 @@ global.lastdj = null; //holds the userid of the currently playing dj
 global.songLimitTimer = null; //holds the timer used to remove a dj off stage if they don't skip their song in time, and their song has exceeded the max allowed song time
 global.beginTimer = null; //holds the timer the auto removes dj's from the queue if they do not get on stage within the allowed time period
 
-var randomPort = Math.ceil(Math.random() * 10000 + 6000); //a random port to the join the room on
 var bot = new Bot(AUTH, USERID, ROOMID); //initializes the bot
-bot.listen(randomPort, '127.0.0.1'); //needed if running on a server
+bot.listen(process.env.PORT,process.env.IP); //needed for running the bot on a server
 
 
 
