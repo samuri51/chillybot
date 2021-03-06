@@ -1188,7 +1188,7 @@ bot.on('speak', function (data)
             bot.pm('error, playlist reordering is already in progress', data.userid);
         }
     }
-    else if (text.match('turntable.fm/') && !text.match('turntable.fm/' + ttRoomName) && modIndex == -1 && data.userid != USERID)
+    else if (text.match('turntable.fm/') && !text.match('turntable.fm/' + ttRoomName) && !condition && data.userid != USERID)
     {
         bot.boot(data.userid, 'do not advertise other rooms here');
     }
