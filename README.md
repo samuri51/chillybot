@@ -1,8 +1,8 @@
 # Features
 ---------------
-Queue
-afk limit
-afk audience limit(separate from afk limit, both can be toggled on and off)
+*Queue
+*afk limit
+*afk audience limit(separate from afk limit, both can be toggled on and off)
 song length limit
 ban list
 master Id list
