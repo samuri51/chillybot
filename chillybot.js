@@ -1917,7 +1917,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/dance$/))
     {
-        bot.speak('https://media4.giphy.com/media/RLJxQtX8Hs7XytaoyX/giphy.gif?cid=ecf05e473vgmin342ri5nbh5yajpy37vyvms9vxzcwm2njub&rid=giphy.gif');
+        bot.speak('https://media.giphy.com/media/bHoFqabfGJLpu/giphy.gif');
     }
     else if(text.match(/^\/rika$/)) {
         bot.speak('https://media3.giphy.com/media/a6pzK009rlCak/giphy.gif?cid=ecf05e47gmw1jzg1ctr9ooz7d6czxpe6h551kvhqisgrv3xi&rid=giphy.gif');
