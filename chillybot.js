@@ -1499,10 +1499,11 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/skip$/) && voteSkip === true) //if command matches and voteskipping is enabled
     {
+        var isMaster = masterIds.includes(data.userid);
         var checkIfOnList = checkVotes.indexOf(data.userid); //check if the person using the command has already voted
         var checkIfMaster = masterIds.indexOf(lastdj); //is the currently playing dj on the master id's list?
 
-        if (checkIfOnList == -1 && data.userid != USERID) //if command user has not voted and command user is not the bot
+        if ((checkIfOnList == -1 || isMaster) && data.userid != USERID) //if command user has not voted and command user is not the bot
         {
             voteCountSkip += 1; //add one to the total count of votes for the current song to be skipped
             votesLeft -= 1; //decrement votes left by one (the votes remaining till the song will be skipped)
@@ -1916,7 +1917,10 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/dance$/))
     {
-        bot.speak('http://www.gifbin.com/f/986269');
+        bot.speak('https://media4.giphy.com/media/RLJxQtX8Hs7XytaoyX/giphy.gif?cid=ecf05e473vgmin342ri5nbh5yajpy37vyvms9vxzcwm2njub&rid=giphy.gif');
+    }
+    else if(text.match(/^\/rika$/)) {
+        bot.speak('https://media3.giphy.com/media/a6pzK009rlCak/giphy.gif?cid=ecf05e47gmw1jzg1ctr9ooz7d6czxpe6h551kvhqisgrv3xi&rid=giphy.gif');
     }
     else if (text.match(/^\/chilly$/))
     {
@@ -2704,7 +2708,7 @@ bot.on('speak', function (data)
         var ban50 = data.text.slice(10);
         var tmp94 = bot.getProfile(ban50, function (data)
         {
-            bot.speak(data.name);
+            bot.speak(''+data.name);
         });
     }
     else if (text.match(/^\/afk/))

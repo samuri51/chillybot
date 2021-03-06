@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/samuri51/chillybot#readme",
   "dependencies": {
-    "ttapi": "^3.1.2"
+    "ttapi": "^4.0.0"
   }
 }
