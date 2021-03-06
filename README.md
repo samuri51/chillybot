@@ -17,9 +17,9 @@ skips stuck songs and gives others 20 seconds to skip\
 very noninstrusive, only enforces the queue when people are in the queue\
 (very easy to make it enforce it all the time, just ask)\
 ability to toggle just about everything\
-very easy to use! entirely script based just download node, run the script and your off!
+very easy to use! entirely script based just download node, run the script and you're off!
 
-*now with the ability to automatically reconnect to your turntable room after losing internet connection!
+*now with the ability to automatically reconnect to your turntable room after losing internet connection!\
 *simply install the latest version of ttapi to do it!
 
 For a full list of commands, please consult the commands.txt file(does not contain all features, just commands).
