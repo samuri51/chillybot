@@ -1,0 +1,25 @@
+{
+  "name": "chillybot",
+  "version": "1.0.0",
+  "description": "Nacho Cheese Straight Chillin",
+  "main": "chillybot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samuri51/chillybot.git"
+  },
+  "keywords": [
+    "turntable.fm"
+  ],
+  "author": "Chris Larosa (samuri51)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samuri51/chillybot/issues"
+  },
+  "homepage": "https://github.com/samuri51/chillybot#readme",
+  "dependencies": {
+    "ttapi": "^3.1.2"
+  }
+}

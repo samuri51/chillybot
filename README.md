@@ -1,4 +1,4 @@
-Features
+# Features
 ---------------
 Queue
 afk limit
@@ -35,10 +35,14 @@ This bot uses the turntable api by alain gilbert which can be found here:
 https://github.com/alaingilbert/Turntable-API
 ------------------------------------------------------------------------------------
 
-instructions to install:
+# Installation:
 1. download node.js from nodejs.org
 
-2. download the turntable api by opening up command prompt and typing in (npm install ttapi) in the same directory that you will be running the script from.
+2. Install dependencies
+
+```
+npm install
+```
 
 3. create a new account on turntable.fm, this will be your bot. login as the bot and get its user id and auth and enter that into the script in the setup section
    make sure that you do this in the room that you want the bot to show up in as every room has a different room id. In order to find this information out download
