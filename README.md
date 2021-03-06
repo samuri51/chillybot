@@ -2,21 +2,21 @@
 ---------------
 * Queue
 * afk limit
-*afk audience limit(separate from afk limit, both can be toggled on and off)
-song length limit
-ban list
-master Id list
-song play limit
-vote skipping
-room greeting
-add songs to your bots playlist
-randomize your bots playlist
-Vip list (for when special guests come to dj)
-autodjing when 3 or less djs or when no djs on stage
-skips stuck songs and gives others 20 seconds to skip
-very noninstrusive, only enforces the queue when people are in the queue
-(very easy to make it enforce it all the time, just ask)
-ability to toggle just about everything
+afk audience limit(separate from afk limit, both can be toggled on and off)\
+song length limit\
+ban list\
+master Id list\
+song play limit\
+vote skipping\
+room greeting\
+add songs to your bots playlist\
+randomize your bots playlist\
+Vip list (for when special guests come to dj)\
+autodjing when 3 or less djs or when no djs on stage\
+skips stuck songs and gives others 20 seconds to skip\
+very noninstrusive, only enforces the queue when people are in the queue\
+(very easy to make it enforce it all the time, just ask)\
+ability to toggle just about everything\
 very easy to use! entirely script based just download node, run the script and your off!
 
 *now with the ability to automatically reconnect to your turntable room after losing internet connection!
