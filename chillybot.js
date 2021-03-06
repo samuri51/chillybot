@@ -27,7 +27,7 @@ var howLongStage = 30;
 						 (only work when queue = true)
 						*/
 
-global.masterIds = ['604283693f4bfc001af8db10', '6042ef6947b5e3001f3497ba']; //example (clear this before using)
+global.masterIds = ['1234', '1234']; //example (clear this before using)
 /*This is the master id list, userid's that are put in here will not be affected by the song length limit, artist / song banning, the /skip command, or the dj afk limit.
 						 This is meant to explicitly give extra privileges to yourself and anyone else you want to put in here. It takes userid's as input in string format separated by commas.
 						 You can put the person's name in the array either before or after a userid to tell who it belongs to, it will not affect its ability to function.
