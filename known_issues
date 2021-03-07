@@ -1,0 +1,1 @@
+/move command can have unexpected behavior depending on name formatting. best to only attempt it on no space names for now.
