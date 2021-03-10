@@ -1,1 +1,1 @@
-/move command can have unexpected behavior depending on name formatting. best to only attempt it on no space names for now.
+/move command only works on people who have a one word long name. does not work on multi-word names
