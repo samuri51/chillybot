@@ -4454,7 +4454,14 @@ bot.on('pmmed', function (data)
         var ban7 = data.text.slice(10);
         var tmp94 = bot.getProfile(ban7, function (data)
         {
-            bot.pm(data.name, senderid);
+            if (typeof (data.name) === 'string')
+	    {
+	        bot.pm(data.name, senderid);
+	    }
+	    else
+	    {
+	        bot.pm('error, please type a valid userid to resolve username.', senderid);
+	    }
         });
     }
     else if (text.match(/^\/boot/) && condition === true && isInRoom === true) //admin only
