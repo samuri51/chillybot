@@ -41,7 +41,7 @@ https://github.com/alaingilbert/Turntable-API
 2. Install dependencies
 
 ```
-npm install
+npm install ttapi
 ```
 
 3. create a new account on turntable.fm, this will be your bot. login as the bot and get it's user id and auth and enter that into the script in the setup section.
