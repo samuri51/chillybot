@@ -1169,7 +1169,7 @@ bot.on('speak', function (data)
             {
                 if (ez <= thisHoldsThePlaylist.length)
                 {
-                    var nextId = Math.ceil(Math.random() * thisHoldsThePlaylist);
+                    var nextId = Math.ceil(Math.random() * thisHoldsThePlaylist.length);
                     bot.playlistReorder(ez, nextId);
                     console.log("Song " + ez + " changed.");
                     ez++;
@@ -3993,7 +3993,7 @@ bot.on('pmmed', function (data)
             {
                 if (ez <= thisHoldsThePlaylist.length)
                 {
-                    var nextId = Math.ceil(Math.random() * thisHoldsThePlaylist);
+                    var nextId = Math.ceil(Math.random() * thisHoldsThePlaylist.length);
                     bot.playlistReorder(ez, nextId);
                     console.log("Song " + ez + " changed.");
                     ez++;
