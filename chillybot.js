@@ -108,7 +108,6 @@ global.eventMessages = ['hello there', //enter your different event messages her
     'this is a test'
 ];
 
-
 /************************************EndSetUp**********************************************************************/
 
 //do not change the values of any of the global variables below unless you know what you are doing, the discriptions given are for reference only
@@ -357,12 +356,12 @@ global.updateAfkPostionOfUser = function (userid)
 //removes afk dj's after afklimit is up.
 global.afkCheck = function ()
 {
-    for (var i = 0; i < currentDjs.length; i++)
+    for (var i = 0; i < currentDjs.length && AFK === true; i++)
     {
         afker = currentDjs[i]; //Pick a DJ
         var isAfkMaster = masterIds.indexOf(afker); //master ids check
         var whatIsAfkerName = theUsersList.indexOf(afker) + 1;
-        if ((isAfk(afker, (afkLimit - 5), 'isAfk1')) && AFK === true)
+        if ((isAfk(afker, (afkLimit - 5), 'isAfk1')))
         {
             if (afker != USERID && isAfkMaster == -1)
             {
@@ -377,7 +376,7 @@ global.afkCheck = function ()
                 justSaw(afker, 'justSaw1');
             }
         }
-        if ((isAfk(afker, (afkLimit - 1), 'isAfk2')) && AFK === true)
+        if ((isAfk(afker, (afkLimit - 1), 'isAfk2')))
         {
             if (afker != USERID && isAfkMaster == -1)
             {
@@ -392,7 +391,7 @@ global.afkCheck = function ()
                 justSaw(afker, 'justSaw2');
             }
         }
-        if ((isAfk(afker, afkLimit, 'isAfk')) && AFK === true)
+        if ((isAfk(afker, afkLimit, 'isAfk')))            
         { //if Dj is afk then	   
             if (afker != USERID && isAfkMaster == -1) //checks to see if afker is a mod or a bot or the current dj, if they are is does not kick them.
             {
@@ -423,12 +422,12 @@ setInterval(afkCheck, 5000); //This repeats the check every five seconds.
 //this removes people on the floor, not the djs
 roomAfkCheck = function ()
 {
-    for (var i = 0; i < userIds.length; i++)
+    for (var i = 0; i < userIds.length && roomAFK === true; i++)
     {
         var afker2 = userIds[i]; //Pick a DJ
         var isAfkMod = modList.indexOf(afker2);
         var isDj = currentDjs.indexOf(afker2);
-        if ((isAfk(afker2, (roomafkLimit - 1), 'isAfk3')) && roomAFK === true)
+        if ((isAfk(afker2, (roomafkLimit - 1), 'isAfk3')))
         {
 
             if (afker2 != USERID && isDj == -1 && isAfkMod == -1)
@@ -437,16 +436,16 @@ roomAfkCheck = function ()
                 justSaw(afker2, 'justSaw3');
             }
         }
-        if ((isAfk(afker2, roomafkLimit, 'isAfk4')) && roomAFK === true)
+        if ((isAfk(afker2, roomafkLimit, 'isAfk4')))
         { //if person is afk then	   
             if (afker2 != USERID && isAfkMod == -1) //checks to see if afker is a mod or a bot or a dj, if they are is does not kick them.
             {
                 if (isDj == -1)
                 {
-                    bot.pm('you are over the afk limit of ' + roomafkLimit + ' minutes.', afker2);
-                    bot.boot(afker2, 'you are over the afk limit');
+                    bot.pm('you are over the afk limit of ' + roomafkLimit + ' minutes.', afker2);                    
                     justSaw(afker2, 'justSaw3');
                     justSaw(afker2, 'justSaw4');
+					bot.boot(afker2, 'you are over the afk limit');
                 }
             }
         }
@@ -1548,13 +1547,9 @@ bot.on('speak', function (data)
         roomAFK = true;
         bot.speak('the audience afk list is now active.');
         for (var zh = 0; zh < userIds.length; zh++)
-        {
-            var isDj2 = currentDjs.indexOf(userIds[zh])
-            if (isDj2 == -1)
-            {
-                justSaw(userIds[zh], 'justSaw3');
-                justSaw(userIds[zh], 'justSaw4');
-            }
+        {            
+            justSaw(userIds[zh], 'justSaw3');
+            justSaw(userIds[zh], 'justSaw4');
         }
     }
     else if (text.match(/^\/roomafkoff/) && condition === true)
@@ -3043,11 +3038,18 @@ bot.on('rem_dj', function (data)
     //checks if when someone gets off the stage, if the person
     //on the left is now the next dj
     warnMeCall();
-
+    
 
     //check to see if conditions are met for bot's autodjing feature    
     autoDjing();
-
+    
+    
+    //resets the floor afk limit for people who leave the stage
+    if (typeof(data.user[0].userid) !== 'undefined')
+    {
+        justSaw(data.user[0].userid, 'justSaw3');
+        justSaw(data.user[0].userid, 'justSaw4');
+    }  
 
     //takes a user off the escort list if they leave the stage.
     var checkEscort = escortList.indexOf(data.user[0].userid);
@@ -3831,13 +3833,9 @@ bot.on('pmmed', function (data)
         roomAFK = true;
         bot.pm('the audience afk list is now active.', data.senderid);
         for (var zh = 0; zh < userIds.length; zh++)
-        {
-            var isDj2 = currentDjs.indexOf(userIds[zh])
-            if (isDj2 == -1)
-            {
-                justSaw(userIds[zh], 'justSaw3');
-                justSaw(userIds[zh], 'justSaw4');
-            }
+        {            
+            justSaw(userIds[zh], 'justSaw3');
+            justSaw(userIds[zh], 'justSaw4');
         }
     }
     else if (text.match(/^\/afkoff/) && condition === true && isInRoom === true)
@@ -4838,6 +4836,7 @@ bot.on('registered', function (data)
         if (typeof data.user[0] !== 'undefined')
         {
             theUsersList.push(data.user[0].userid, data.user[0].name);
+			userIds.push(data.user[0].userid);
         }
     }
 
@@ -4865,11 +4864,11 @@ bot.on('registered', function (data)
 
 
     //puts people who join the room on the global afk list
-    if (roomAFK === true)
+    if (typeof(data.user[0].userid) !== 'undefined')
     {
         justSaw(data.user[0].userid, 'justSaw3');
         justSaw(data.user[0].userid, 'justSaw4');
-    }
+    }  
 
 
     //this kicks the ttstats bot
@@ -4950,6 +4949,13 @@ bot.on('rem_moderator', function (data)
 {
     var test51 = modList.indexOf(data.userid);
     modList.splice(test51, 1);
+    
+    //resets the floor afk limit for people who are removed as moderator
+    if (typeof(data.userid) !== 'undefined')
+    {
+        justSaw(data.userid, 'justSaw3');
+        justSaw(data.userid, 'justSaw4');
+    } 
 })
 
 
