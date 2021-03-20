@@ -4836,7 +4836,7 @@ bot.on('registered', function (data)
         if (typeof data.user[0] !== 'undefined')
         {
             theUsersList.push(data.user[0].userid, data.user[0].name);
-			userIds.push(data.user[0].userid);
+	    userIds.push(data.user[0].userid);
         }
     }
 
