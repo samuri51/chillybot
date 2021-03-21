@@ -39,9 +39,9 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /lame --> the bot lames the currently playing song.
 
-/skipOn --> toggles the bots skipping features, which tells it to skip its song every it gets to them.
+/skipon --> toggles the bots skipping features, which tells it to skip its song every it gets to them.
 
-/skipOff --> toggles off the bots skip feature, they will now play their playlist.
+/skipoff --> toggles off the bots skip feature, they will now play their playlist.
 
 /snagevery --> toggles on and off the bots ability to add every song that plays (turns off /autosnag when turned on)
 
@@ -92,6 +92,8 @@ ADMIN ONLY COMMANDS: (moderator only)
 /stalk<space><@name> --> use a persons userid to get a link to the room their in(works in the pm too, only works if user is in the room)
 
 /lengthLimit --> toggles the song length limit on and off
+
+/clearplaycounts --> sets the play count of all djs to zero
 
 /playLimitOn --> if no additional arguements given it sets the play limit to the default value in the setup
 

@@ -72,3 +72,6 @@ date: 03/20/2013
 
 --> added several new commands /boot, /move, /whosinmodpm, /up?, /queuewithnumbers, /warnme
     changed definition of /modpm to be a moderator group chat, see commands.txt for details
+    
+date: 03/21/2021
+--> changed /playLimitOn so that it no longer resets playcounts. /clearplaycounts does.

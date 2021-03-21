@@ -1828,9 +1828,8 @@ bot.on('speak', function (data)
     else if (text.match(/^\/admincommands/) && condition === true)
     {
         bot.speak('the mod commands are /ban @, /unban @, /whosinmodpm, /whosrefreshing, /refreshon, /refreshoff, /move, /eventmessageOn, /eventmessageOff, /boot, /playminus @, /skipon, /snagevery, /autosnag, /botstatus, /skipoff, /noTheme, /lengthLimit, /stalk @, /setTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
-            '/snag, /removesong, /playLimitOn, /playLimitOff, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
+            '/snag, /removesong, /playLimitOn, /playLimitOff, /clearplaycounts, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, /whobanned, ' +
             '/whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm');
-        condition = false;
     }
     else if (text.match(/^\/tableflip/))
     {
@@ -2509,6 +2508,18 @@ bot.on('speak', function (data)
             bot.speak('the play limit is currently turned off');
         }
     }
+    else if (text.match(/^\/clearplaycounts/) && condition === true)
+    {
+        //reset song counters
+        for (var ig = 0; ig < currentDjs.length; ig++)
+        {
+            djs20[currentDjs[ig]] = {
+                nbSong: 0
+            };
+        }
+        
+        bot.speak('the dj play counts have been reset.');
+    }
     else if (text.match(/^\/playLimitOn/) && condition === true)
     {
         var playLimitNumber = Number(data.text.slice(13)); //holds given number
@@ -2520,15 +2531,7 @@ bot.on('speak', function (data)
                 playLimit = Math.ceil(playLimitNumber); // round play limit to make sure its not a fraction
 
                 bot.speak('the play limit is now active and has been set to ' +
-                    playLimit + ' songs. dj song counters have been reset.');
-
-                //reset song counters
-                for (var ig = 0; ig < currentDjs.length; ig++)
-                {
-                    djs20[currentDjs[ig]] = {
-                        nbSong: 0
-                    };
-                }
+                    playLimit + ' songs.');               
 
                 PLAYLIMIT = true; //mark playlimit as being on               
             }
@@ -2543,17 +2546,9 @@ bot.on('speak', function (data)
         else
         {
             bot.speak('the play limit is now active and has been set to the default value of ' +
-                defaultPlayLimit + ' songs. dj song counters have been reset.');
+                defaultPlayLimit + ' songs.');
 
-            playLimit = defaultPlayLimit; //set playlimit to default 
-
-            //reset song counters
-            for (var ig = 0; ig < currentDjs.length; ig++)
-            {
-                djs20[currentDjs[ig]] = {
-                    nbSong: 0
-                };
-            }
+            playLimit = defaultPlayLimit; //set playlimit to default           
 
             PLAYLIMIT = true; //mark playlimit as being on    
         }
@@ -3436,6 +3431,18 @@ bot.on('pmmed', function (data)
             bot.pm('the play limit is currently turned off', data.senderid);
         }
     }
+    else if (text.match(/^\/clearplaycounts/) && condition === true && isInRoom === true)
+    {
+        //reset song counters
+        for (var ig = 0; ig < currentDjs.length; ig++)
+        {
+            djs20[currentDjs[ig]] = {
+                nbSong: 0
+            };
+        }
+        
+        bot.pm('the dj play counts have been reset.', data.senderid);
+    }
     else if (text.match(/^\/playLimitOn/) && condition === true && isInRoom === true)
     {
         var playLimitNumber = Number(data.text.slice(13)); //holds given number
@@ -3447,16 +3454,8 @@ bot.on('pmmed', function (data)
                 playLimit = Math.ceil(playLimitNumber); // round play limit to make sure its not a fraction
 
                 bot.pm('the play limit is now active and has been set to ' +
-                    playLimit + ' songs. dj song counters have been reset.', data.senderid);
-
-                //reset song counters
-                for (var ig = 0; ig < currentDjs.length; ig++)
-                {
-                    djs20[currentDjs[ig]] = {
-                        nbSong: 0
-                    };
-                }
-
+                    playLimit + ' songs.', data.senderid);
+                    
                 PLAYLIMIT = true; //mark playlimit as being on               
             }
             else
@@ -3470,17 +3469,9 @@ bot.on('pmmed', function (data)
         else
         {
             bot.pm('the play limit is now active and has been set to the default value of ' +
-                defaultPlayLimit + ' songs. dj song counters have been reset.', data.senderid);
+                defaultPlayLimit + ' songs.', data.senderid);
 
             playLimit = defaultPlayLimit; //set playlimit to default 
-
-            //reset song counters
-            for (var ig = 0; ig < currentDjs.length; ig++)
-            {
-                djs20[currentDjs[ig]] = {
-                    nbSong: 0
-                };
-            }
 
             PLAYLIMIT = true; //mark playlimit as being on    
         }
@@ -4605,7 +4596,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
-        bot.pm('the mod commands are /ban @, /whosinmodpm, /refreshon, /refreshoff, /unban @, /eventmessageOn, /eventmessageOff, /boot, /move, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /skipoff, /stalk @, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
+        bot.pm('the mod commands are /ban @, /whosinmodpm, /refreshon, /refreshoff, /unban @, /eventmessageOn, /eventmessageOff, /boot, /move, /playminus @, /snagevery, /autosnag, /skipon, /playLimitOn, /playLimitOff, /clearplaycounts, /skipoff, /stalk @, /lengthLimit, /setTheme, /noTheme, /stage @, /randomSong, /messageOn, /messageOff, /afkon, /afkoff, /skipsong, /autodj, /removedj, /lame, ' +
             '/snag, /botstatus, /removesong, /voteskipon #, /voteskipoff, /greeton, /greetoff, /getonstage, /banstage @, /unbanstage @, /userid @, /inform, ' +
             '/whobanned, /whostagebanned, /roomafkon, /roomafkoff, /songstats, /username, /modpm', data.senderid);
         condition = false;
