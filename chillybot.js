@@ -1914,9 +1914,6 @@ bot.on('speak', function (data)
     {
         bot.speak('https://media.giphy.com/media/bHoFqabfGJLpu/giphy.gif');
     }
-    else if(text.match(/^\/rika$/)) {
-        bot.speak('https://media3.giphy.com/media/a6pzK009rlCak/giphy.gif?cid=ecf05e47gmw1jzg1ctr9ooz7d6czxpe6h551kvhqisgrv3xi&rid=giphy.gif');
-    }
     else if (text.match(/^\/chilly$/))
     {
         bot.speak('@' + name + ' is pleasantly chilled.');
