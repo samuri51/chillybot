@@ -204,10 +204,8 @@ QUEUE COMMANDS: (public / moderator)
 
 /queueOff --> turns the queue off. (moderator only)
 
-/move<space><name><space><number> --> this moves the person specified in the queue to the position
-				      specified. example: /move bob 3
-				      when used in the chatbox you must use an @ symbol also
-                                      example: /move @bob 3
+/move<space><@name><space><number> --> this moves the person specified in the queue to the position
+				      specified. example: /move @bob 3			     
 
 /queuewithnumbers --> returns a list of the people in the queue with a number signifying their position next to their name, this is useful with /move
 

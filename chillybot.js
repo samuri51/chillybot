@@ -2030,65 +2030,68 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/move/) && condition === true)
     {
-        var moveName = data.text.slice(5);
-        var tempName = moveName.split(" ");
-
-        if (typeof (tempName[1]) !== 'undefined')
+        var totalCommand = data.text.slice(7).trim(); //cut off @ symbol
+        var totalCommandArray = totalCommand.split(" ");
+        var commandName = ''; //the persons name
+        var commandMoveIndex = -1; //position to move person to in the queue
+        var areTheyInTheQueue = -1; //name index in queueName       
+        var areTheyInTheQueueList = -1; // name index in queueList
+        var saveUserId = ''; //temp holds the userid to be moved
+                  
+        if (queue === true) //if queue is turned on
         {
-            var whatIsTheirName = tempName[1].substring(1); //cut the @ off
-        }
-
-        var areTheyInTheQueue = queueName.indexOf(whatIsTheirName); //name in queueName
-        var areTheyInTheQueueList = queueList.indexOf(whatIsTheirName); //name in queuList
-        var whatIsTheirUserid2 = theUsersList.indexOf(whatIsTheirName); //userid	
-
-        //if either name or userid is undefined, do not perform a move operation        
-        if (typeof theUsersList[whatIsTheirUserid2 - 1] == 'undefined' || typeof tempName[1] == 'undefined')
-        {
-            if (typeof theUsersList[whatIsTheirUserid2 - 1] != 'undefined')
-            {
-                bot.pm('failed to perform move operation, please try the command again', theUsersList[whatIsTheirUserid2 - 1]);
-            }
-            else
-            {
-                bot.speak('failed to perform move operation, please try the command again');
-            }
-        }
-        else
-        {
-            if (queue == true) //if queue is turned on
-            {
-                if (tempName.length == 3 && areTheyInTheQueue != -1) //if three parameters, and name found
+            if(totalCommandArray.length >= 2)
+            {                
+                commandMoveIndex = Number(totalCommandArray[totalCommandArray.length - 1]);
+                
+                for(let i = 0; i < totalCommandArray.length - 1; i++)
                 {
-                    if (!isNaN(tempName[2]))
+                    if(i < totalCommandArray.length - 2)
                     {
-                        if (tempName[2] <= 1) //if position given lower than 1
+                        commandName += totalCommandArray[i] + ' '; //not possible to see more than one space
+                    }
+                    else
+                    {
+                        commandName += totalCommandArray[i];
+                    }                    
+                }
+                
+                areTheyInTheQueue = queueName.indexOf(commandName); 
+                areTheyInTheQueueList = queueList.indexOf(commandName);
+
+                if(areTheyInTheQueue !== -1 && areTheyInTheQueueList !== -1)
+                {
+                    if(!isNaN(commandMoveIndex))
+                    {
+                        saveUserId = queueList[areTheyInTheQueueList + 1];                        
+                        
+                        if (commandMoveIndex <= 1) //if position given lower than 1
                         {
                             queueName.splice(areTheyInTheQueue, 1); //remove them
                             queueList.splice(areTheyInTheQueueList, 2); //remove them
-                            queueName.splice(0, 0, whatIsTheirName); //add them to beggining
-                            queueList.splice(0, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to beggining
+                            queueName.splice(0, 0, commandName); //add them to beggining
+                            queueList.splice(0, 0, commandName, saveUserId); //add them to beggining
                             clearTimeout(beginTimer); //clear timeout because first person has been replaced
                             sayOnce = true;
-                            bot.speak(whatIsTheirName + ' has been moved to position 1 in the queue');
+                            bot.speak(commandName + ' has been moved to position 1 in the queue');
                         }
-                        else if (tempName[2] >= queueName.length)
+                        else if (commandMoveIndex >= queueName.length) //if position given higher than end
                         {
-                            if (queueName[areTheyInTheQueue] == queueName[0]) //if position given higher than end
+                            if (queueName[areTheyInTheQueue] == queueName[0]) //clear timeout because first person has been replaced
                             {
                                 clearTimeout(beginTimer); //clear timeout because first person has been replaced
                                 sayOnce = true;
                             }
                             queueName.splice(areTheyInTheQueue, 1); //remove them
                             queueList.splice(areTheyInTheQueueList, 2); //remove them
-                            queueName.splice(queueName.length + 1, 0, whatIsTheirName); //add them to end
-                            queueList.splice(queueName.length + 1, 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //add them to end
+                            queueName.splice(queueName.length + 1, 0, commandName); //add them to end
+                            queueList.splice(queueList.length + 1, 0, commandName, saveUserId); //add them to end
 
-                            bot.speak(whatIsTheirName + ' has been moved to position ' + queueName.length + ' in the queue');
+                            bot.speak(commandName + ' has been moved to position ' + queueName.length + ' in the queue');
                         }
                         else
                         {
-                            if (queueName[areTheyInTheQueue] == queueName[0])
+                            if (queueName[areTheyInTheQueue] == queueName[0]) //clear timeout because first person has been replaced
                             {
                                 clearTimeout(beginTimer); //clear timeout because first person has been replaced
                                 sayOnce = true;
@@ -2096,32 +2099,30 @@ bot.on('speak', function (data)
 
                             queueName.splice(areTheyInTheQueue, 1); //remove them
                             queueList.splice(areTheyInTheQueueList, 2); //remove them                       
-                            queueName.splice((Math.round(tempName[2]) - 1), 0, whatIsTheirName); //add them to given position shift left 1 because array starts at 0
-                            queueList.splice(((Math.round(tempName[2]) - 1) * 2), 0, whatIsTheirName, theUsersList[whatIsTheirUserid2 - 1]); //same as above
+                            queueName.splice((Math.round(commandMoveIndex) - 1), 0, commandName); //add them to given position shift left 1 because array starts at 0
+                            queueList.splice(((Math.round(commandMoveIndex) - 1) * 2), 0, commandName, saveUserId); //same as above
 
-
-                            bot.speak(whatIsTheirName + ' has been moved to position ' + Math.round(tempName[2]) + ' in the queue');
+                            bot.speak(commandName + ' has been moved to position ' + Math.round(commandMoveIndex) + ' in the queue');
                         }
                     }
                     else
                     {
                         bot.pm('error, position parameter passed was not a number, please pass a valid integer arguement', data.userid);
-                    }
-
+                    }                    
                 }
-                else if (tempName.length != 3) //if invalid number of parameters
-                {
-                    bot.pm('error, invalid number of parameters, must have /move name #', data.userid);
-                }
-                else if (areTheyInTheQueue == -1) //if name not found
-                {
-                    bot.pm('error, name not found', data.userid);
-                }
+                else
+                {               
+                    bot.pm('error, name not found in queue', data.userid);
+                }                
             }
             else
             {
-                bot.pm('error, queue must turned on to use this command', data.userid);
+                bot.pm('error, invalid number of parameters, must use /move @name #', data.userid);
             }
+        }
+        else
+        {
+            bot.pm('error, queue must be turned on to use this command', data.userid);
         }
     }
     else if (text.match(/^\/m/) && !text.match(/^\/me/) && condition === true)
@@ -3231,90 +3232,99 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/move/) && condition === true && isInRoom === true)
     {
-        var moveName = data.text.slice(5);
-        var tempName = moveName.split(" ");
-        var areTheyInTheQueue = queueName.indexOf(tempName[1]); //name in queueName
-        var areTheyInTheQueueList = queueList.indexOf(tempName[1]); //name in queuList
-        var whatIsTheirUserid2 = theUsersList.indexOf(tempName[1]); //userid
+        var totalCommand = data.text.slice(7).trim(); //cut off @ symbol
+        var totalCommandArray = totalCommand.split(" ");
+        var commandName = ''; //the persons name
+        var commandMoveIndex = -1; //position to move person to in the queue
+        var areTheyInTheQueue = -1; //name index in queueName       
+        var areTheyInTheQueueList = -1; // name index in queueList
+        var saveUserId = ''; //temp holds the userid to be moved
 
-        //if either name or userid is undefined, do not perform a move operation        
-        if (typeof theUsersList[whatIsTheirUserid2 - 1] == 'undefined' || typeof tempName[1] == 'undefined')
+        if (queue === true) //if queue is turned on
         {
-            if (typeof theUsersList[whatIsTheirUserid2 - 1] != 'undefined')
-            {
-                bot.pm('failed to perform move operation, please try the command again', theUsersList[whatIsTheirUserid2 - 1]);
-            }
-            else
-            {
-                bot.speak('failed to perform move operation, please try the command again');
-            }
-        }
-        else
-        {
-            if (queue == true) //if queue is turned on
-            {
-                if (tempName.length == 3 && areTheyInTheQueue != -1) //if three parameters, and name found
+            if(totalCommandArray.length >= 2)
+            {                
+                commandMoveIndex = Number(totalCommandArray[totalCommandArray.length - 1]);
+                
+                for(let i = 0; i < totalCommandArray.length - 1; i++)
                 {
-                    if (!isNaN(tempName[2]))
+                    if(i < totalCommandArray.length - 2)
                     {
-                        if (tempName[2] <= 1)
+                        commandName += totalCommandArray[i] + ' '; //not possible to see more than one space
+                    }
+                    else
+                    {
+                        commandName += totalCommandArray[i];
+                    }                    
+                }
+                
+                areTheyInTheQueue = queueName.indexOf(commandName); 
+                areTheyInTheQueueList = queueList.indexOf(commandName);
+
+                if(areTheyInTheQueue !== -1 && areTheyInTheQueueList !== -1)
+                {
+                    if(!isNaN(commandMoveIndex))
+                    {
+                        saveUserId = queueList[areTheyInTheQueueList + 1];                        
+                        
+                        if (commandMoveIndex <= 1) //if position given lower than 1
                         {
                             queueName.splice(areTheyInTheQueue, 1); //remove them
                             queueList.splice(areTheyInTheQueueList, 2); //remove them
-                            queueName.splice(0, 0, tempName[1]); //add them to beggining
-                            queueList.splice(0, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to beggining
+                            queueName.splice(0, 0, commandName); //add them to beggining
+                            queueList.splice(0, 0, commandName, saveUserId); //add them to beggining
                             clearTimeout(beginTimer); //clear timeout because first person has been replaced
                             sayOnce = true;
-                            bot.pm(tempName[1] + ' has been moved to position 1 in the queue', data.senderid);
+                            bot.pm(commandName + ' has been moved to position 1 in the queue', data.senderid);
                         }
-                        else if (tempName[2] >= queueName.length)
+                        else if (commandMoveIndex >= queueName.length) //if position given higher than end
                         {
-                            if (queueName[areTheyInTheQueue] == queueName[0])
+                            if (queueName[areTheyInTheQueue] == queueName[0]) //clear timeout because first person has been replaced
                             {
                                 clearTimeout(beginTimer); //clear timeout because first person has been replaced
                                 sayOnce = true;
                             }
                             queueName.splice(areTheyInTheQueue, 1); //remove them
                             queueList.splice(areTheyInTheQueueList, 2); //remove them
-                            queueName.splice(queueName.length + 1, 0, tempName[1]); //add them to end
-                            queueList.splice(queueName.length + 1, 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //add them to end
+                            queueName.splice(queueName.length + 1, 0, commandName); //add them to end
+                            queueList.splice(queueList.length + 1, 0, commandName, saveUserId); //add them to end
 
-                            bot.pm(tempName[1] + ' has been moved to position ' + queueName.length + ' in the queue', data.senderid);
+                            bot.pm(commandName + ' has been moved to position ' + queueName.length + ' in the queue', data.senderid);
                         }
                         else
                         {
-                            if (queueName[areTheyInTheQueue] == queueName[0])
+                            if (queueName[areTheyInTheQueue] == queueName[0]) //clear timeout because first person has been replaced
                             {
                                 clearTimeout(beginTimer); //clear timeout because first person has been replaced
                                 sayOnce = true;
                             }
 
                             queueName.splice(areTheyInTheQueue, 1); //remove them
-                            queueList.splice(areTheyInTheQueueList, 2); //remove them                      
-                            queueName.splice((Math.round(tempName[2]) - 1), 0, tempName[1]); //add them to given position shift left 1 because array starts at 0
-                            queueList.splice(((Math.round(tempName[2]) - 1) * 2), 0, tempName[1], theUsersList[whatIsTheirUserid2 - 1]); //same as above                        
+                            queueList.splice(areTheyInTheQueueList, 2); //remove them                       
+                            queueName.splice((Math.round(commandMoveIndex) - 1), 0, commandName); //add them to given position shift left 1 because array starts at 0
+                            queueList.splice(((Math.round(commandMoveIndex) - 1) * 2), 0, commandName, saveUserId); //same as above
 
-                            bot.pm(tempName[1] + ' has been moved to position ' + Math.round(tempName[2]) + ' in the queue', data.senderid);
+                            bot.pm(commandName + ' has been moved to position ' + Math.round(commandMoveIndex) + ' in the queue', data.senderid);
                         }
                     }
                     else
                     {
                         bot.pm('error, position parameter passed was not a number, please pass a valid integer arguement', data.senderid);
-                    }
+                    }                    
                 }
-                else if (tempName.length != 3) //if invalid number of parameters
-                {
-                    bot.pm('error, invalid number of parameters, must have /move name #', data.senderid);
-                }
-                else if (areTheyInTheQueue == -1) //if name not found
-                {
-                    bot.pm('error, name not found', data.senderid);
-                }
+                else
+                {               
+                    bot.pm('error, name not found in queue', data.senderid);
+                }                
             }
             else
             {
-                bot.pm('error, queue must turned on to use this command', data.senderid);
+                bot.pm('error, invalid number of parameters, must use /move @name #', data.senderid);
             }
+        }
+        else
+        {
+            bot.pm('error, queue must be turned on to use this command', data.senderid);
         }
     }
     else if (text.match(/^\/position/)) //tells you your position in the queue, if there is one
