@@ -103,8 +103,6 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /playLimitOff --> turns play limit off
 
-/whatsplaylimit --> tells you what the play limit is currently set to, if it is turned on.
-
 /botstatus --> tells you which features are turned off and which are turned on (only the ones that you can toggle)
 
 /playminus<space><@name> --> decrements a person's play count by one (to give them more songs to dj with when the play limit is turned on)
@@ -179,7 +177,7 @@ COMMANDS: (public)
 
 /props --> gives the currently playing dj a high five.
 
-/skip --> votes for the currently playing dj to be removed from stage.
+/skip --> votes for the currently playing dj to be removed from stage if this is turned on.
 
 /dive --> removes you from stage if your on stage.
 
@@ -187,6 +185,7 @@ COMMANDS: (public)
 
 /warnme --> warns dj's on stage when their song is to be played next
 
+/whatsplaylimit --> tells you what the play limit is currently set to, if it is turned on.
 
 
 
@@ -210,6 +209,7 @@ QUEUE COMMANDS: (public / moderator)
 				      specified. example: /move @bob 3			     
 
 /queuewithnumbers --> returns a list of the people in the queue with a number signifying their position next to their name, this is useful with /move
+
 
 
 PM COMMANDS: (public / moderator)
