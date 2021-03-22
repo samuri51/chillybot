@@ -5,7 +5,7 @@ the following is a list of commands and how to use them:
 
 ADMIN ONLY COMMANDS: (moderator only)
 
-/stage<space><@name> --> removes the person specified from the stage.
+/stage<space><@name> --> removes the person specified from the stage. (pm only)
 
 /ban<space><@name> --> kicks the person specified and prevents them from reentering the room (temp ban).
 
@@ -23,9 +23,13 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /bumptop<space><@name> --> this moves the name specified to the top of the queue list.
 
-/afkon --> this turns on the afk timer and list. the default timer is 20 minutes.
+/afkon --> this turns on the dj afk timer and list. the default timer is 20 minutes.
 
-/afkoff --> this turns off the afk timer.
+/afkoff --> this turns off the dj afk timer.
+
+/roomafkon --> turns on the afk audience limit. the default timer is 10 minutes.
+
+/roomafkoff --> turns off the afk audience limit.
 
 /skipsong --> this skips your bots song if they are currently playing one.
 
@@ -62,8 +66,6 @@ ADMIN ONLY COMMANDS: (moderator only)
 /unbanstage<space><@name> --> removes the user specified from the stage banning list
 
 /userid<space><@name> --> get the userid of the person whos name you enter
-
-/dive --> removes you from stage
 
 /inform --> tells currently playing dj their song is not appropriate for the room
 
@@ -218,15 +220,14 @@ PM COMMANDS: (public / moderator)
 
 /boot<space><name> --> boots a person from the room, only works if the name is one word long
 
-/boot<space><name><space><message> --> another version of the same command, it automatically knows you are using subsequent versions of it simply by the parameters passed in.
-					the number you must pass in is the number of words that their name conists of.
+/boot<space><name><space><message> --> another version of the same command, it automatically knows you are using subsequent versions of it simply by the parameters passed in.					
 				       only works when the name is one word long, example: /boot bob booting you from the room
 
-/boot<space><number><space><name> --> this is the version of the boot command that you must use when a person's name consists of more than one word
+/boot<space><number><space><name> --> this is the version of the boot command that you must use when a person's name consists of more than one word and no message is given
 				      the number you must pass in is the number of words that their name conists of.
 			              example: /boot 3 billy bob joe
 
-/boot<space><number><space><name><space><message> --> this is the version you use when person's name is longer than one and you want a boot message.
+/boot<space><number><space><name><space><message> --> this is the version you use when person's name is longer than one word and you want a boot message.
 							example: /boot 3 billy bob joe get out of my room
 
 /whosinmodpm --> returns a list of all the admins that are currently in the modpm group chat (pm only / admin only)
