@@ -21,8 +21,6 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /randomSong --> this moves all the songs on your bots playlist into a random order. (one song switched per second, see console)
 
-/bumptop<space><@name> --> this moves the name specified to the top of the queue list.
-
 /afkon --> this turns on the dj afk timer and list. the default timer is 20 minutes.
 
 /afkoff --> this turns off the dj afk timer.
@@ -195,7 +193,7 @@ QUEUE COMMANDS: (public / moderator)
 
 /position --> the bot tells you your position in the queue
 
-/removefromqueue<space><@name> --> removes the person from the queue if they are currently in it.(moderator only)
+/removefromqueue<space><@name> --> removes the person from the queue if they are currently in it. (moderator only)
 
 /removeme --> removes the user from the queue list.
 
@@ -205,10 +203,12 @@ QUEUE COMMANDS: (public / moderator)
 
 /queueOff --> turns the queue off. (moderator only)
 
-/move<space><@name><space><number> --> this moves the person specified in the queue to the position
+/move<space><@name><space><number> --> this moves the person specified in the queue to the position (moderator only)
 				      specified. example: /move @bob 3			     
 
 /queuewithnumbers --> returns a list of the people in the queue with a number signifying their position next to their name, this is useful with /move
+
+/bumptop<space><@name> --> this moves the name specified to the top of the queue list. (moderator only)
 
 
 
