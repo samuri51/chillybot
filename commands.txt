@@ -224,7 +224,7 @@ PM COMMANDS: (public / moderator)
 				       only works when the name is one word long, example: /boot bob booting you from the room
 
 /boot<space><number><space><name> --> this is the version of the boot command that you must use when a person's name consists of more than one word and no message is given
-				      the number you must pass in is the number of words that their name conists of.
+				      the number you must pass in is the number of words that their name consists of.
 			              example: /boot 3 billy bob joe
 
 /boot<space><number><space><name><space><message> --> this is the version you use when person's name is longer than one word and you want a boot message.
