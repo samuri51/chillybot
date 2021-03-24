@@ -157,6 +157,7 @@ var autoDjingTimer = null; //governs the timer for the bot's auto djing
 
 global.playLimitOfRefresher = []; //holds a copy of the number of plays for people who have used the /refresh command
 global.refreshList = []; //this holds the userid's of people who have used the /refresh command
+global.refreshListName = []; //saves the names of people who are refreshing
 global.refreshTimer = []; //this holds the timers of people who have used the /refresh command
 global.modpm = []; //holds the userid's of everyone in the /modpm feature
 global.warnme = []; //holds the userid's of everyone using the /warnme feature
@@ -1679,17 +1680,17 @@ bot.on('speak', function (data)
             var whosRefreshing = 'refreshing: ';
             var namesOfRefresher;
 
-            for (var i = 0; i < refreshList.length; i++)
+            for (let i = 0; i < refreshListName.length; i++)
             {
-                namesOfRefresher = theUsersList.indexOf(data.userid) + 1;
+                namesOfRefresher = refreshListName[i];
 
-                if (i < refreshList.length - 1)
+                if (i < refreshListName.length - 1)
                 {
-                    whosRefreshing += theUsersList[namesOfRefresher] + ', ';
+                    whosRefreshing += namesOfRefresher + ', ';
                 }
                 else
                 {
-                    whosRefreshing += theUsersList[namesOfRefresher];
+                    whosRefreshing += namesOfRefresher;
                 }
             }
 
@@ -1720,6 +1721,7 @@ bot.on('speak', function (data)
         {
             var isRefresherOnStage = currentDjs.indexOf(data.userid); //are they a dj
             var hasRefreshAlreadyBeenUsed = refreshList.indexOf(data.userid); //are they already being refreshed?
+            var refreshNameIndex = refreshListName.indexOf(data.name);
             var whatIsRefresherName = theUsersList.indexOf(data.userid) + 1;
             var numberRepresent = (amountOfTimeToRefresh / 60);
 
@@ -1728,6 +1730,7 @@ bot.on('speak', function (data)
                 clearTimeout(refreshTimer[data.userid]); //clear their timeout
                 delete refreshTimer[data.userid];
                 refreshList.splice(hasRefreshAlreadyBeenUsed, 1); //remove them from the refresh list       
+                refreshListName.splice(refreshNameIndex, 1);
 
                 bot.speak('@' + theUsersList[whatIsRefresherName] + ' you have been removed from the refresh list');
             }
@@ -1738,13 +1741,16 @@ bot.on('speak', function (data)
                     if (isRefresherOnStage != -1) //is the person on stage
                     {
                         refreshList.push(data.userid);
+                        refreshListName.push(data.name);
                         refreshTimer[data.userid] = setTimeout(function ()
                         {
                             hasRefreshAlreadyBeenUsed = refreshList.indexOf(data.userid); //recalculate their position
+                            refreshNameIndex = refreshListName.indexOf(data.name);
 
                             if (hasRefreshAlreadyBeenUsed != -1)
                             {
                                 refreshList.splice(hasRefreshAlreadyBeenUsed, 1); //remove them from the refresh list
+                                refreshListName.splice(refreshNameIndex, 1);
                                 clearTimeout(refreshTimer[data.userid]); //clear their timeout
                                 delete playLimitOfRefresher[data.userid] //delete the copy of their play limit
                                 delete refreshTimer[data.userid];
@@ -1942,7 +1948,7 @@ bot.on('speak', function (data)
                 }
                 else
                 {
-                    bot.speak('I\m sorry I don\'t know that one');
+                    bot.speak('I\'m sorry I don\'t know that one');
                 }
             });
         });
@@ -2935,11 +2941,13 @@ bot.on('add_dj', function (data)
 
     //if user is still in refresh list when they get on stage, remove them
     var areTheyStillInRefreshList = refreshList.indexOf(data.user[0].userid);
+    var refreshNameIndex = refreshListName.indexOf(data.user[0].name);
     if (areTheyStillInRefreshList != -1)
     {
         clearTimeout(refreshTimer[data.user[0].userid]); //clear their timeout
         delete refreshTimer[data.user[0].userid];
-        refreshList.splice(areTheyStillInRefreshList, 1); //remove them from the refresh list        
+        refreshList.splice(areTheyStillInRefreshList, 1); //remove them from the refresh list      
+        refreshListName.splice(refreshNameIndex, 1);        
     }
 
 
@@ -3128,17 +3136,17 @@ bot.on('pmmed', function (data)
             var whosRefreshing = 'refreshing: ';
             var namesOfRefresher;
 
-            for (var i = 0; i < refreshList.length; i++)
+            for (let i = 0; i < refreshListName.length; i++)
             {
-                namesOfRefresher = theUsersList.indexOf(data.senderid) + 1;
+                namesOfRefresher = refreshListName[i];
 
-                if (i < refreshList.length - 1)
+                if (i < refreshListName.length - 1)
                 {
-                    whosRefreshing += theUsersList[namesOfRefresher] + ', ';
+                    whosRefreshing += namesOfRefresher + ', ';
                 }
                 else
                 {
-                    whosRefreshing += theUsersList[namesOfRefresher];
+                    whosRefreshing += namesOfRefresher;
                 }
             }
 
@@ -3275,7 +3283,7 @@ bot.on('pmmed', function (data)
                             queueList.splice(0, 0, commandName, saveUserId); //add them to beggining
                             clearTimeout(beginTimer); //clear timeout because first person has been replaced
                             sayOnce = true;
-                            bot.pm(commandName + ' has been moved to position 1 in the queue', data.senderid);
+                            bot.speak(commandName + ' has been moved to position 1 in the queue');
                         }
                         else if (commandMoveIndex >= queueName.length) //if position given higher than end
                         {
@@ -3289,7 +3297,7 @@ bot.on('pmmed', function (data)
                             queueName.splice(queueName.length + 1, 0, commandName); //add them to end
                             queueList.splice(queueList.length + 1, 0, commandName, saveUserId); //add them to end
 
-                            bot.pm(commandName + ' has been moved to position ' + queueName.length + ' in the queue', data.senderid);
+                            bot.speak(commandName + ' has been moved to position ' + queueName.length + ' in the queue');
                         }
                         else
                         {
@@ -3304,7 +3312,7 @@ bot.on('pmmed', function (data)
                             queueName.splice((Math.round(commandMoveIndex) - 1), 0, commandName); //add them to given position shift left 1 because array starts at 0
                             queueList.splice(((Math.round(commandMoveIndex) - 1) * 2), 0, commandName, saveUserId); //same as above
 
-                            bot.pm(commandName + ' has been moved to position ' + Math.round(commandMoveIndex) + ' in the queue', data.senderid);
+                            bot.speak(commandName + ' has been moved to position ' + Math.round(commandMoveIndex) + ' in the queue');
                         }
                     }
                     else
