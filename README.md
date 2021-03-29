@@ -29,8 +29,6 @@ This is a bot for straight chillin on turntable.fm but the code can be used in a
 If you notice any bugs or have any questions, comments, or concerns feel free to open an issue
 and i will try to respond.
 
-**A recent change has made it so that your bot will not be able to login unless you verify it's email address first**
-
 -----------------------------------------------------------------------------------
 This bot uses the turntable api by alain gilbert which can be found here:
 
@@ -63,6 +61,8 @@ npm install ttapi
 
   *A last note, the auto djing in this script is meant for a 5 seater room, if you have less than five seats i highly recommend you turn this feature off when you start the bot up with the /getonstage command
    If you cannot get this bot to run for some reason feel free to open an issue on github.
+  
+ **A recent change has made it so that your bot will not be able to login unless you verify it's email address first**
 
 --------------------------------------------------------------------------------------
 In order to find the userid, auth and roomid of your bot use this bookmark by alain gilbert.
