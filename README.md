@@ -29,6 +29,8 @@ This is a bot for straight chillin on turntable.fm but the code can be used in a
 If you notice any bugs or have any questions, comments, or concerns feel free to open an issue
 and i will try to respond.
 
+**A recent change has made it so that your bot will not be able to login unless you verify it's email address first**
+
 -----------------------------------------------------------------------------------
 This bot uses the turntable api by alain gilbert which can be found here:
 
