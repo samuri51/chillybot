@@ -4071,7 +4071,7 @@ bot.on('pmmed', function (data)
     {
         var ban = data.text.slice(8);
         var checkUser = theUsersList.indexOf(ban) - 1;
-        if (checkUser != -1)
+        if (checkUser >= 0)
         {
             bot.remDj(theUsersList[checkUser]);
             condition = false;
