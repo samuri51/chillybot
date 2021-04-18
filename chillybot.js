@@ -2565,10 +2565,6 @@ bot.on('speak', function (data)
         PLAYLIMIT = false;
         bot.speak('the play limit is now inactive.');
     }
-    else if (text.match('/surf'))
-    {
-        bot.speak('http://25.media.tumblr.com/tumblr_mce8z6jN0d1qbzqexo1_r1_500.gif');
-    }
     else if (text.match(/^\/queueOff$/) && condition === true)
     {
         bot.speak('the queue is now inactive.');
