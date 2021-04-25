@@ -1608,13 +1608,20 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/skipsong/) && condition === true)
     {
-        if (checkWhoIsDj == USERID)
+        if (checkWhoIsDj !== null)
         {
-            bot.skip();
+            if(currentDjs.length !== 0)
+            {
+                bot.skip();
+            }
+            else
+            {
+                bot.pm('there must be a currently playing dj to skip their song', data.userid);
+            }            
         }
         else
         {
-            bot.pm('error, that command only skips the bots currently playing song', data.userid);
+            bot.pm('error, you must wait one song since the bot has entered the room to use that command.', data.userid);
         }
     }
     else if (text.match(/^\/mytime/))
@@ -3816,13 +3823,20 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/skipsong/) && condition === true && isInRoom === true)
     {
-        if (checkWhoIsDj == USERID)
+        if (checkWhoIsDj !== null)
         {
-            bot.skip();
+            if(currentDjs.length !== 0)
+            {
+                bot.skip();
+            }
+            else
+            {
+                bot.pm('there must be a currently playing dj to skip their song', data.senderid);
+            }            
         }
         else
         {
-            bot.pm('error, that command only skips the bots currently playing song', data.senderid);
+            bot.pm('error, you must wait one song since the bot has entered the room to use that command.', data.senderid);
         }
     }
     else if (text.match(/^\/roomafkoff/) && condition === true && isInRoom === true)

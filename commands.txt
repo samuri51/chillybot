@@ -29,7 +29,7 @@ ADMIN ONLY COMMANDS: (moderator only)
 
 /roomafkoff --> turns off the afk audience limit.
 
-/skipsong --> this skips your bots song if they are currently playing one.
+/skipsong --> this skips the currently playing djs song.
 
 /greeton --> turns the bots greeting message that it gives to users that join the room off and on.
 
