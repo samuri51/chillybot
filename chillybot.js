@@ -1231,6 +1231,9 @@ bot.on('speak', function (data)
         var stalker = text.substring(8);
         bot.getUserId(stalker, function (data6)
         {
+            //necessary because the stalk call will fail if the bot is already a fan of the user
+            bot.removeFan(data6);
+            
             bot.stalk(data6.userid, allInformations = true, function (data4)
             {
                 if (data4.success !== false)
@@ -4339,6 +4342,9 @@ bot.on('pmmed', function (data)
         var stalker = text.substring(8);
         bot.getUserId(stalker, function (data6)
         {
+            //necessary because the stalk call will fail if the bot is already a fan of the user
+            bot.removeFan(data6);
+            
             bot.stalk(data6.userid, allInformations = true, function (data4)
             {
                 if (data4.success !== false)
