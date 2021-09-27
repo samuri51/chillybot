@@ -4773,7 +4773,7 @@ bot.on('registered', function (data)
     var roomjoin = data.user[0];
     var areTheyBanned = blackList.indexOf(data.user[0].userid);
     var areTheyBanned2 = bannedUsers.indexOf(data.user[0].userid);
-    if (GREET === true && data.user[0].userid != USERID && !data.user[0].name.match('ttstat'))
+    if (GREET === true && data.user[0].userid != USERID && !data.user[0].name.match(/^ttstats/))
     {
         if (areTheyBanned == -1 && areTheyBanned2 == -1)
         {
@@ -4896,7 +4896,7 @@ bot.on('registered', function (data)
     //this kicks the ttstats bot
     if (kickTTSTAT === true)
     {
-        if (data.user[0].name.match('ttstat'))
+        if (data.user[0].name.match(/^ttstats/))
         {
             bot.boot(data.user[0].userid);
         }
