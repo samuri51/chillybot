@@ -67,5 +67,5 @@ npm install ttapi
 --------------------------------------------------------------------------------------
 In order to find the userid, auth and roomid of your bot use this bookmark by alain gilbert.
 
-http://alaingilbert.github.com/Turntable-API/bookmarklet.html
+http://alaingilbert.github.io/Turntable-API/bookmarklet.html
 --------------------------------------------------------------------------------------
