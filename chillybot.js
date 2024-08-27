@@ -1188,7 +1188,7 @@ bot.on('speak', function (data)
             bot.pm('error, playlist reordering is already in progress', data.userid);
         }
     }
-    else if (text.match('turntable.fm/') && !text.match('turntable.fm/' + ttRoomName) && !condition && data.userid != USERID)
+    else if (text.match('deepcut.fm/') && !text.match('deepcut.fm/' + ttRoomName) && !condition && data.userid != USERID)
     {
         bot.boot(data.userid, 'do not advertise other rooms here');
     }
@@ -1238,7 +1238,7 @@ bot.on('speak', function (data)
             {
                 if (data4.success !== false)
                 {
-                    bot.speak('User found in room: http://turntable.fm/' + data4.room.shortcut);
+                    bot.speak('User found in room: http://deepcut.fm/' + data4.room.shortcut);
                 }
                 else
                 {
@@ -4349,7 +4349,7 @@ bot.on('pmmed', function (data)
             {
                 if (data4.success !== false)
                 {
-                    bot.pm('User found in room: http://turntable.fm/' + data4.room.shortcut, data.senderid);
+                    bot.pm('User found in room: http://deepcut.fm/' + data4.room.shortcut, data.senderid);
                 }
                 else
                 {
