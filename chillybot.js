@@ -1839,7 +1839,7 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/queuecommands/))
     {
-        bot.speak('the commands are /queue, /position, /queuewithnumbers, q#, /removefromqueue @, /removeme, /move, /addme, /queueOn, /queueOff, /bumptop @');
+        bot.speak('the commands are /queue, /position, /queuewithnumbers, /q#, /removefromqueue @, /removeme, /move, /addme, /queueOn, /queueOff, /bumptop @');
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
@@ -4616,7 +4616,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
     {
-        bot.pm('the commands are /queue, /queuewithnumbers, q#, /position, /removefromqueue @, /removeme, /addme, /move, /queueOn, /queueOff, /bumptop @', data.senderid);
+        bot.pm('the commands are /queue, /queuewithnumbers, /q#, /position, /removefromqueue @, /removeme, /addme, /move, /queueOn, /queueOff, /bumptop @', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
