@@ -1833,13 +1833,13 @@ bot.on('speak', function (data)
     }
     else if (text.match(/^\/commands/))
     {
-        bot.speak('the commands are  /awesome, ' +
+        bot.speak('the commands are  /awesome, /bop,' +
             ' /mom, /chilly, /cheers, /fanratio @, /whosrefreshing, /refresh, /whatsplaylimit, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands');
     }
     else if (text.match(/^\/queuecommands/))
     {
-        bot.speak('the commands are /queue, /position, /queuewithnumbers, /removefromqueue @, /removeme, /move, /addme, /queueOn, /queueOff, /bumptop @');
+        bot.speak('the commands are /queue, /position, /queuewithnumbers, q#, /removefromqueue @, /removeme, /move, /addme, /queueOn, /queueOff, /bumptop @');
     }
     else if (text.match(/^\/admincommands/) && condition === true)
     {
@@ -1851,7 +1851,7 @@ bot.on('speak', function (data)
     {
         bot.speak('/tablefix');
     }
-    else if (text.match('/awesome'))
+    else if (text.match('/awesome') || text.match(/^\/bop/))
     {
         bot.vote('up');
     }
@@ -2222,7 +2222,7 @@ bot.on('speak', function (data)
             bot.speak('the last snagged song has been removed.');
         }
     }
-    else if (text.match(/^\/queuewithnumbers$/))
+    else if (text.match(/^\/queuewithnumbers$/) || text.match(/^\/q#$/))
     {
         if (queue === true && queueName.length !== 0)
         {
@@ -3744,7 +3744,7 @@ bot.on('pmmed', function (data)
         bot.pm('i am now skipping my songs', data.senderid);
         skipOn = true;
     }
-    else if (text.match('/awesome') && isInRoom === true)
+    else if ((text.match('/awesome') || text.match(/^\/bop/)) && isInRoom === true)
     {
         bot.vote('up');
     }
@@ -3943,7 +3943,7 @@ bot.on('pmmed', function (data)
             votesLeft = HowManyVotesToSkip;
         }
     }
-    else if (text.match(/^\/queuewithnumbers$/) && isInRoom === true)
+    else if ((text.match(/^\/queuewithnumbers$/) || text.match(/^\/q#$/)) && isInRoom === true)
     {
         if (queue === true && queueName.length !== 0)
         {
@@ -4610,13 +4610,13 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/commands/) && isInRoom === true)
     {
-        bot.pm('the commands are  /awesome, ' +
+        bot.pm('the commands are  /awesome, /bop,' +
             ' /mom, /chilly, /cheers, /fanratio @, /whosrefreshing, /refresh, /whatsplaylimit, /warnme, /theme, /up?, /djafk, /mytime, /playlist, /afk, /whosafk, /coinflip, /moon, /hello, /escortme, /stopescortme, /fanme, /unfanme, /roominfo, /beer, /dice, /props, /m, /getTags, ' +
             '/skip, /dive, /dance, /smoke, /surf, /uptime, /djplays, /admincommands, /queuecommands, /pmcommands', data.senderid);
     }
     else if (text.match(/^\/queuecommands/) && isInRoom === true)
     {
-        bot.pm('the commands are /queue, /queuewithnumbers, /position, /removefromqueue @, /removeme, /addme, /move, /queueOn, /queueOff, /bumptop @', data.senderid);
+        bot.pm('the commands are /queue, /queuewithnumbers, q#, /position, /removefromqueue @, /removeme, /addme, /move, /queueOn, /queueOff, /bumptop @', data.senderid);
     }
     else if (text.match(/^\/pmcommands/) && condition === true && isInRoom === true) //the moderators see this
     {
@@ -4626,7 +4626,7 @@ bot.on('pmmed', function (data)
     }
     else if (text.match(/^\/pmcommands/) && !condition === true && isInRoom === true) //non - moderators see this
     {
-        bot.pm('/chilly, /moon, /addme, /whosrefreshing, /whatsplaylimit, /warnme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
+        bot.pm('/chilly, /moon, /addme, /whosrefreshing, /whatsplaylimit, /warnme, /removeme, /djafk, /position, /dive, /getTags, /roominfo, /awesome, /bop, ' + '/theme, /mytime, /uptime, /queue, /djplays, /stopescortme, /escortme, /afk, ' + '/whosafk, /commands, /queuecommands', data.senderid);
     }
     else if (text.match(/^\/admincommands/) && condition === true && isInRoom === true)
     {
