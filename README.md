@@ -64,6 +64,9 @@ npm install ttapi
   
  **A recent change has made it so that your bot will not be able to log in unless you verify it's email address first**
 
+ **Turntable.fm has changed domains to Deepcut.fm. If the bot doesn't start because of this change you'll either have to wait for an update to be published to the global node repo for ttapi 
+ or go into the bot.js file in the ttapi folder in the node_modules folder and change all references from turntable.fm to deepcut.fm**
+
 --------------------------------------------------------------------------------------
 In order to find the userid, auth and roomid of your bot use this bookmark by alain gilbert.
 
