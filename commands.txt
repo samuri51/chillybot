@@ -125,7 +125,7 @@ COMMANDS: (public)
 
 /whosafk --> the bot says the names of everyone whos currently using the /afk command
 
-/awesome --> the bot awesomes the currently playing song if they are not already.
+/awesome or /bop --> the bot awesomes the currently playing song if they are not already.
 
 /playlist --> bot says the total amount of songs in its playlist.
 
@@ -206,7 +206,7 @@ QUEUE COMMANDS: (public / moderator)
 /move<space><@name><space><number> --> this moves the person specified in the queue to the position (moderator only)
 				      specified. example: /move @bob 3			     
 
-/queuewithnumbers --> returns a list of the people in the queue with a number signifying their position next to their name, this is useful with /move
+/queuewithnumbers or /q# --> returns a list of the people in the queue with a number signifying their position next to their name, this is useful with /move
 
 /bumptop<space><@name> --> this moves the name specified to the top of the queue list. (moderator only)
 
